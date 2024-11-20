@@ -1,0 +1,132 @@
+{
+  "transactions": [
+    {
+      "id": "1",
+      "valor": 1500,
+      "dataVencimento": "2024-10-05",
+      "descricao": "Aluguel",
+      "categoria": "moradia",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "2",
+      "valor": 200,
+      "dataVencimento": "2024-10-10",
+      "descricao": "Conta de luz",
+      "categoria": "energia",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "3",
+      "valor": 100,
+      "dataVencimento": "2024-10-15",
+      "descricao": "Conta de água",
+      "categoria": "agua",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "4",
+      "valor": 500,
+      "dataVencimento": "2024-10-20",
+      "descricao": "Parcela do carro",
+      "categoria": "transporte",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "5",
+      "valor": 150,
+      "dataVencimento": "2024-10-25",
+      "descricao": "Plano de saúde",
+      "categoria": "saúde",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "6",
+      "valor": 80,
+      "dataVencimento": "2024-10-01",
+      "descricao": "Netflix e Spotify",
+      "categoria": "streams",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "7",
+      "valor": 300,
+      "dataVencimento": "2024-10-12",
+      "descricao": "Curso de inglês",
+      "categoria": "educação",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "8",
+      "valor": 1000,
+      "dataVencimento": "2024-10-30",
+      "descricao": "Parcela do terreno",
+      "categoria": "terreno",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "9",
+      "valor": 200,
+      "dataVencimento": "2024-10-18",
+      "descricao": "Roupas de inverno",
+      "categoria": "roupas",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "10",
+      "valor": 800,
+      "dataVencimento": "2024-10-22",
+      "descricao": "Novo smartphone",
+      "categoria": "eletronicos",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "11",
+      "valor": 1200,
+      "dataVencimento": "2024-10-28",
+      "descricao": "Viagem de fim de semana",
+      "categoria": "viagem",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "12",
+      "valor": 50,
+      "dataVencimento": "2024-10-08",
+      "descricao": "Presente de aniversário",
+      "categoria": "outros",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "13",
+      "valor": 400,
+      "dataVencimento": "2024-10-16",
+      "descricao": "Fatura do cartão de crédito",
+      "categoria": "cartoes",
+      "repeteMensalmente": true
+    },
+    {
+      "id": "14",
+      "valor": 100,
+      "dataVencimento": "2024-10-03",
+      "descricao": "Ingresso para show",
+      "categoria": "evento",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "15",
+      "valor": 300,
+      "dataVencimento": "2024-10-14",
+      "descricao": "Empréstimo para amigo",
+      "categoria": "emprestimo",
+      "repeteMensalmente": false
+    },
+    {
+      "id": "2c4a",
+      "descricao": "Teste",
+      "valor": 2500,
+      "dataVencimento": "1999-03-29",
+      "categoria": "cartoes",
+      "repeteMensalmente": true
+    }
+  ]
+}

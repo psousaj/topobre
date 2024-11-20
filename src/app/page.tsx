@@ -16,6 +16,16 @@ type Transaction = {
   repeteMensalmente: boolean
 }
 
+// Currency formatting helper function
+const formatCurrency = (value: number): string => {
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
+
 async function fetchTransactions(): Promise<Transaction[]> {
   const res = await fetch('http://localhost:3001/transactions', {
     cache: 'no-store',
@@ -27,6 +37,17 @@ async function fetchTransactions(): Promise<Transaction[]> {
 
 export default function Page() {
   const transactions = use(fetchTransactions())
+
+  // Calculate financial summaries
+  const payments = transactions
+    .filter(t => t.valor < 0)
+    .reduce((sum, t) => sum + Math.abs(t.valor), 0);
+
+  const receipts = transactions
+    .filter(t => t.valor > 0)
+    .reduce((sum, t) => sum + t.valor, 0);
+
+  const balance = receipts - payments;
 
   return (
     <div className="min-h-screen min-w-full flex flex-col justify-between gap-4">
@@ -64,7 +85,7 @@ export default function Page() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Pagamentos</p>
-                  <p className="text-2xl font-bold text-red-600">R$ 1.700,69</p>
+                  <p className="text-2xl font-bold text-red-600">{formatCurrency(payments)}</p>
                 </div>
                 <HelpCircle className="h-5 w-5 text-red-400" />
               </div>
@@ -74,7 +95,7 @@ export default function Page() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Recebimentos</p>
-                  <p className="text-2xl font-bold text-green-600">R$ 4.306,23</p>
+                  <p className="text-2xl font-bold text-green-600">{formatCurrency(receipts)}</p>
                 </div>
                 <HelpCircle className="h-5 w-5 text-green-400" />
               </div>
@@ -84,7 +105,9 @@ export default function Page() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Saldo</p>
-                  <p className="text-2xl font-bold text-blue-600">R$ 429,54</p>
+                  <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                    {formatCurrency(balance)}
+                  </p>
                 </div>
                 <HelpCircle className="h-5 w-5 text-blue-400" />
               </div>
@@ -113,7 +136,7 @@ export default function Page() {
                     </div>
                     <div className="text-right">
                       <p className={`font-bold ${transaction.valor > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        R$ {Math.abs(transaction.valor).toFixed(2)}
+                        {formatCurrency(transaction.valor)}
                       </p>
                       <p className="text-xs text-gray-500">{transaction.repeteMensalmente ? 'Mensal' : 'Única'}</p>
                     </div>

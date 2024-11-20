@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import { Montserrat_Alternates } from 'next/font/google'
+import {
+  ClerkProvider,
+  SignIn,
+  useUser,
+} from '@clerk/nextjs'
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import "./globals.css";
+import Header from "@/components/layouts/Header";
+
+export const montserrat = Montserrat_Alternates({
+  weight: ["200", "400", "600", "700", "900"],
+  variable: "--montserrat-font",
+  subsets: ["latin"]
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,12 +26,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="pt-BR">
+        <body
+          className={`${montserrat.variable} antialiased min-h-screen w-full flex flex-col justify-between bg-[url('/assets/img/background.svg')] bg-cover bg-center bg-repeat`}
+        >
+          <Header />
+          <main className="w-full h-full mx-auto">
+            {children}
+          </main>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

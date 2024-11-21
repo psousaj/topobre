@@ -14,16 +14,12 @@ import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from 'lucide-react'
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Category } from '@/@types/transactions'
 
-const categories = [
-    'emprestimo', 'cartoes', 'terreno', 'agua', 'energia', 'moradia',
-    'outros', 'evento', 'eletronicos', 'viagem', 'roupas', 'streams',
-    'educação', 'saúde', 'transporte'
-]
 
-export default function AddTransactionDialog() {
-    const [selectedCategory, setSelectedCategory] = useState<string>('')
+export default function AddTransactionDialog({ categories }: { categories: Category[] }) {
+    const [selectedCategory, setSelectedCategory] = useState<Category>({} as Category)
     const [isRecurring, setIsRecurring] = useState(false)
     const [numberOfRepetitions, setNumberOfRepetitions] = useState(1)
     const [transactionType, setTransactionType] = useState<'payment' | 'receipt'>('payment')
@@ -31,6 +27,7 @@ export default function AddTransactionDialog() {
     const [value, setValue] = useState('')
     const [open, setOpen] = useState(false)
     const router = useRouter()
+    const [formattedDate, setFormattedDate] = useState<string>('')
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -82,6 +79,21 @@ export default function AddTransactionDialog() {
         setValue(value)
     }
 
+    const handleDateChange = (selectedDate: Date | undefined) => {
+        setDate(selectedDate)
+        if (selectedDate) {
+            setFormattedDate(format(selectedDate, 'dd/MM/yyyy'))
+        } else {
+            setFormattedDate('')
+        }
+    }
+
+    const handleCategorySelect = (currentValue: string) => {
+        const selectedCat = categories.find(cat => cat.name === currentValue);
+        setSelectedCategory(selectedCat || ({} as Category));
+        setOpen(false);
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -89,16 +101,17 @@ export default function AddTransactionDialog() {
                     <Plus className="mr-2 h-4 w-4" /> Adicionar Transação
                 </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className='overflow-y-auto'>
                 <DialogHeader>
                     <DialogTitle>Nova Transação</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Nome */}
                     <div className="space-y-2">
                         <Label htmlFor="descricao">Nome da transação</Label>
                         <Input id="descricao" name="descricao" required />
                     </div>
-
+                    {/* Valor */}
                     <div className="space-y-2">
                         <Label htmlFor="valor">Valor da transação</Label>
                         <Input
@@ -109,7 +122,7 @@ export default function AddTransactionDialog() {
                             required
                         />
                     </div>
-
+                    {/* Vencimento */}
                     <div className="space-y-2">
                         <Label>Data de vencimento</Label>
                         <Popover>
@@ -118,10 +131,10 @@ export default function AddTransactionDialog() {
                                     variant={"outline"}
                                     className={cn(
                                         "w-full justify-start text-left font-normal",
-                                        !date && "text-muted-foreground"
+                                        !formattedDate && "text-muted-foreground"
                                     )}
                                 >
-                                    {date ? format(date, "PPP") : <span>Selecione uma data</span>}
+                                    {formattedDate || <span>Selecione uma data</span>}
                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
@@ -129,13 +142,13 @@ export default function AddTransactionDialog() {
                                 <Calendar
                                     mode="single"
                                     selected={date}
-                                    onSelect={setDate}
+                                    onSelect={handleDateChange}
                                     initialFocus
                                 />
                             </PopoverContent>
                         </Popover>
                     </div>
-
+                    {/* Tipo */}
                     <div className="space-y-2">
                         <Label htmlFor="transactionType">Tipo de transação</Label>
                         <Select value={transactionType} onValueChange={(value: 'payment' | 'receipt') => setTransactionType(value)}>
@@ -148,7 +161,7 @@ export default function AddTransactionDialog() {
                             </SelectContent>
                         </Select>
                     </div>
-
+                    {/* Categoria */}
                     <div className="space-y-2">
                         <Label>Categoria</Label>
                         <Popover open={open} onOpenChange={setOpen}>
@@ -159,38 +172,37 @@ export default function AddTransactionDialog() {
                                     aria-expanded={open}
                                     className="w-full justify-between"
                                 >
-                                    {selectedCategory || "Selecione a categoria..."}
+                                    {selectedCategory.name || "Selecione a categoria..."}
                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-full p-0">
                                 <Command>
                                     <CommandInput placeholder="Procurar categoria..." />
-                                    <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
-                                    <CommandGroup>
-                                        {categories.map((category) => (
-                                            <CommandItem
-                                                key={category}
-                                                onSelect={(currentValue) => {
-                                                    setSelectedCategory(currentValue === selectedCategory ? "" : currentValue)
-                                                    setOpen(false)
-                                                }}
-                                            >
-                                                <Check
-                                                    className={cn(
-                                                        "mr-2 h-4 w-4",
-                                                        selectedCategory === category ? "opacity-100" : "opacity-0"
-                                                    )}
-                                                />
-                                                {category}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
+                                    <CommandList>
+                                        <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
+                                        <CommandGroup>
+                                            {categories.map((category) => (
+                                                <CommandItem
+                                                    key={category.name}
+                                                    onSelect={currentValue => handleCategorySelect(currentValue)}
+                                                >
+                                                    <Check
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            selectedCategory.name === category.name ? "opacity-100" : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {category.name}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </CommandList>
                                 </Command>
                             </PopoverContent>
                         </Popover>
                     </div>
-
+                    {/* Repete? */}
                     <div className="flex items-center space-x-2">
                         <Switch
                             id="repeteMensalmente"
@@ -202,7 +214,7 @@ export default function AddTransactionDialog() {
 
                     {isRecurring && (
                         <div className="space-y-2">
-                            <Label htmlFor="numberOfRepetitions">Número de repetições</Label>
+                            <Label htmlFor="numberOfRepetitions">Número de vezes</Label>
                             <Input
                                 id="numberOfRepetitions"
                                 type="number"

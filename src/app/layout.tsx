@@ -27,7 +27,7 @@ export default function RootLayout({
         <body
           className={`${montserrat.variable} antialiased bg-[url('/assets/img/background.svg')] bg-cover bg-center bg-repeat`}
         >
-          <div className="w-full min-h-fit flex justify-center items-center">
+          <div className="w-full min-h-screen flex justify-center items-center">
             {children}
           </div>
         </body>

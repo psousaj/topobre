@@ -1,15 +1,6 @@
 {
   "transactions": [
     {
-      "id": "4",
-      "valor": 500,
-      "dataVencimento": "2024-10-20",
-      "descricao": "Parcela do carro",
-      "categoria": "transporte",
-      "repeteMensalmente": true,
-      "tipo": "payment"
-    },
-    {
       "id": "5",
       "valor": 150,
       "dataVencimento": "2024-10-25",
@@ -100,15 +91,6 @@
       "tipo": "receipt"
     },
     {
-      "id": "15",
-      "valor": 300,
-      "dataVencimento": "2024-10-14",
-      "descricao": "Empréstimo para amigo",
-      "categoria": "emprestimo",
-      "repeteMensalmente": false,
-      "tipo": "receipt"
-    },
-    {
       "id": "2c4a",
       "descricao": "Teste",
       "valor": 2500,
@@ -125,6 +107,68 @@
       "categoria": "agua",
       "repeteMensalmente": false,
       "tipo": "payment"
+    }
+  ],
+  "categories": [
+    {
+      "name": "emprestimo",
+      "color": "#FFCC00"
+    },
+    {
+      "name": "cartoes",
+      "color": "#FF5733"
+    },
+    {
+      "name": "terreno",
+      "color": "#33FF57"
+    },
+    {
+      "name": "agua",
+      "color": "#3399FF"
+    },
+    {
+      "name": "energia",
+      "color": "#FF33A1"
+    },
+    {
+      "name": "moradia",
+      "color": "#FF33D4"
+    },
+    {
+      "name": "outros",
+      "color": "#FF8C00"
+    },
+    {
+      "name": "evento",
+      "color": "#8C00FF"
+    },
+    {
+      "name": "eletronicos",
+      "color": "#00FF8C"
+    },
+    {
+      "name": "viagem",
+      "color": "#00A1FF"
+    },
+    {
+      "name": "roupas",
+      "color": "#FF00A1"
+    },
+    {
+      "name": "streams",
+      "color": "#A100FF"
+    },
+    {
+      "name": "educação",
+      "color": "#00FF00"
+    },
+    {
+      "name": "saúde",
+      "color": "#00FF33"
+    },
+    {
+      "name": "transporte",
+      "color": "#FF3300"
     }
   ]
 }

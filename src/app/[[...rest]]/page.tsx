@@ -16,30 +16,28 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { WelcomeUserNotification } from '@/components/NotificationBanner'
 import { UserButton } from '@clerk/nextjs'
+import { Category, Transaction } from '@/@types/transactions'
 
-type Transaction = {
-  id: number
-  valor: number
-  dataVencimento: string
-  descricao: string
-  categoria: string
-  repeteMensalmente: boolean
-  tipo: 'payment' | 'receipt'
+
+
+// Função para capitalizar a primeira letra de cada palavra
+const capitalize = (str: string) => {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
 }
-
-const categories = [
-  'emprestimo', 'cartoes', 'terreno', 'agua', 'energia', 'moradia',
-  'outros', 'evento', 'eletronicos', 'viagem', 'roupas', 'streams',
-  'educação', 'saúde', 'transporte'
-]
 
 export default function Page() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [selectedMonth, setSelectedMonth] = useState<string>("10")
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [categoryFilter, setCategoryFilter] = useState<string>('')
+  const [formattedValue, setFormattedValue] = useState('')
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -52,7 +50,18 @@ export default function Page() {
       setTransactions(data)
     }
 
+    const fetchCategories = async () => {
+      const res = await fetch('http://localhost:3001/categories', {
+        cache: 'no-store',
+        next: { tags: ['categories'] }
+      })
+      if (!res.ok) throw new Error('Failed to fetch categories')
+      const data = await res.json()
+      setCategories(data)
+    }
+
     fetchTransactions()
+    fetchCategories()
   }, [])
 
   useEffect(() => {
@@ -101,6 +110,7 @@ export default function Page() {
 
   const handleTransactionClick = (transaction: Transaction) => {
     setSelectedTransaction(transaction)
+    setFormattedValue(formatCurrency(Math.abs(transaction.valor)))
     setIsDrawerOpen(true)
   }
 
@@ -132,6 +142,24 @@ export default function Page() {
     } else {
       console.error('Failed to delete transaction')
     }
+  }
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '')
+    value = (Number(value) / 100).toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    })
+    setFormattedValue(value)
+
+    // Atualiza o valor real na transação (removendo formatação)
+    const numericValue = Number(value.replace(/\D/g, '')) / 100
+    setSelectedTransaction(prev =>
+      prev ? {
+        ...prev,
+        valor: numericValue * (prev.tipo === 'payment' ? -1 : 1)
+      } : null
+    )
   }
 
   return (
@@ -216,6 +244,7 @@ export default function Page() {
         <div className="mt-8">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Transações</h2>
+            {/* Header Transactions Section */}
             <div className="flex items-center space-x-2">
               <Popover>
                 <PopoverTrigger asChild>
@@ -232,8 +261,8 @@ export default function Page() {
                       <CommandGroup>
                         {categories.map((category) => (
                           <CommandItem
-                            key={category}
-                            value={category}
+                            key={category.name}
+                            value={category.name}
                             onSelect={(currentValue) => {
                               setCategoryFilter(currentValue === categoryFilter ? "" : currentValue)
                             }}
@@ -241,10 +270,10 @@ export default function Page() {
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                categoryFilter === category ? "opacity-100" : "opacity-0"
+                                categoryFilter === category.name ? "opacity-100" : "opacity-0"
                               )}
                             />
-                            {category}
+                            {category.name}
                           </CommandItem>
                         ))}
                       </CommandGroup>
@@ -252,7 +281,7 @@ export default function Page() {
                   </Command>
                 </PopoverContent>
               </Popover>
-              <AddTransactionDialog />
+              <AddTransactionDialog categories={categories} />
             </div>
           </div>
 
@@ -260,31 +289,34 @@ export default function Page() {
           <Card className="h-[300px]">
             <ScrollArea className="h-full">
               <div className="p-4 space-y-3">
-                {filteredTransactions.map((transaction) => (
-                  <div
-                    key={transaction.id}
-                    className="flex items-center justify-between p-3 bg-slate-200 rounded-lg cursor-pointer hover:bg-slate-300"
-                    onClick={() => handleTransactionClick(transaction)}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div>
-                        <p className="font-semibold">{transaction.descricao}</p>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <span>{new Date(transaction.dataVencimento).toLocaleDateString('pt-BR')}</span>
-                          <span className="mx-1">-</span>
-                          <Tag className="w-4 h-4 mr-1" />
-                          <span>{transaction.categoria}</span>
+                {filteredTransactions.map((transaction) => {
+                  const category = categories.find(cat => cat.name === transaction.categoria);
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="flex items-center justify-between p-3 bg-slate-200 rounded-lg cursor-pointer hover:bg-slate-300"
+                      onClick={() => handleTransactionClick(transaction)}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div>
+                          <p className="font-semibold">{transaction.descricao}</p>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Tag className="w-4 h-4 mr-1" fill={category?.color} color='black' />
+                            <span>{capitalize(transaction.categoria)}</span>
+                            <span className="mx-1">-</span>
+                            <span>{new Date(transaction.dataVencimento).toLocaleDateString('pt-BR')}</span>
+                          </div>
                         </div>
                       </div>
+                      <div className="text-right">
+                        <p className={`font-bold ${transaction.tipo === 'receipt' ? 'text-green-600' : 'text-red-600'}`}>
+                          {formatCurrency(Math.abs(transaction.valor))}
+                        </p>
+                        <p className="text-xs text-gray-500">{transaction.repeteMensalmente ? 'Mensal' : 'Única'}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <p className={`font-bold ${transaction.tipo === 'receipt' ? 'text-green-600' : 'text-red-600'}`}>
-                        {formatCurrency(Math.abs(transaction.valor))}
-                      </p>
-                      <p className="text-xs text-gray-500">{transaction.repeteMensalmente ? 'Mensal' : 'Única'}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </ScrollArea>
           </Card>
@@ -293,7 +325,7 @@ export default function Page() {
 
       {/* Transaction Details Drawer */}
       <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
-        <DrawerContent>
+        <DrawerContent className='w-3/4 mx-auto'>
           <DrawerHeader>
             <DrawerTitle>Detalhes da Transação</DrawerTitle>
             <Button
@@ -302,7 +334,7 @@ export default function Page() {
               className="absolute right-4 top-4"
               onClick={() => handleDeleteTransaction(selectedTransaction?.id ?? 0)}
             >
-              <Trash2 className="h-5 w-5" />
+              <Trash2 color='red' className="h-5 w-5" />
             </Button>
           </DrawerHeader>
           {selectedTransaction && (
@@ -319,8 +351,8 @@ export default function Page() {
                 <Label htmlFor="valor">Valor</Label>
                 <Input
                   id="valor"
-                  value={Math.abs(selectedTransaction.valor)}
-                  onChange={(e) => setSelectedTransaction({ ...selectedTransaction, valor: Number(e.target.value) * (selectedTransaction.tipo === 'payment' ? -1 : 1) })}
+                  value={formattedValue || formatCurrency(Math.abs(selectedTransaction?.valor || 0))}
+                  onChange={handleValueChange}
                 />
               </div>
               <div>
@@ -343,8 +375,8 @@ export default function Page() {
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { X, Menu, HelpCircle, Tag, Trash2, Check, ChevronsUpDown } from 'lucide-react'
+import { X, Menu, HelpCircle, Tag, Trash2, Check, ChevronsUpDown, Bookmark } from 'lucide-react'
 import Image from "next/image"
 import AddTransactionDialog from '@/components/AddTransactionDialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -267,13 +267,14 @@ export default function Page() {
                               setCategoryFilter(currentValue === categoryFilter ? "" : currentValue)
                             }}
                           >
+                            <Bookmark rotate={90} fill='#181818' color={category.color} fillOpacity={categoryFilter === category.name ? 100 : 0} />
+                            {capitalize(category.name)}
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
                                 categoryFilter === category.name ? "opacity-100" : "opacity-0"
                               )}
                             />
-                            {category.name}
                           </CommandItem>
                         ))}
                       </CommandGroup>

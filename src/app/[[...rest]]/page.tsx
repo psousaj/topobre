@@ -6,6 +6,8 @@ import { X, Menu, Plus, HelpCircle } from 'lucide-react'
 import Image from "next/image"
 import AddTransactionDialog from '@/components/addTransaction'
 import { WelcomeUserNotification } from '@/components/NotificationBanner'
+import Header from '@/components/layouts/Header'
+import { UserButton } from '@clerk/nextjs'
 
 type Transaction = {
   id: number
@@ -50,8 +52,9 @@ export default function Page() {
   const balance = receipts - payments;
 
   return (
-    <div className="min-h-screen min-w-full flex flex-col justify-between gap-4">
-      <div className="mx-auto max-w-4xl rounded-xl bg-white bg-opacity-80 p-4 shadow-sm">
+    <div className="min-h-screen w-full flex flex-col justify-between gap-4">
+      {/* Body */}
+      <div className="mx-auto min-w-4xl w-[90%] rounded-xl bg-white bg-opacity-50 p-4 shadow-sm">
         {/* Header */}
         <header className="flex items-center justify-between bg-[#32CD32] p-4 rounded-lg">
           <div className="flex items-center gap-2">
@@ -64,9 +67,8 @@ export default function Page() {
             />
             <span className="text-xl font-bold text-white">Pocket Flow</span>
           </div>
-          <Button variant="ghost" size="icon" className="text-white">
-            <Menu className="h-6 w-6" />
-          </Button>
+          {/* UserButton */}
+          <UserButton />
         </header>
 
         <WelcomeUserNotification />
@@ -127,7 +129,8 @@ export default function Page() {
             <ScrollArea className="h-full">
               <div className="p-4 space-y-3">
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  // <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={transaction.id} className="flex items-center justify-between p-3 bg-slate-200 rounded-lg">
                     <div>
                       <p className="font-semibold">{transaction.descricao}</p>
                       <p className="text-sm text-gray-500">

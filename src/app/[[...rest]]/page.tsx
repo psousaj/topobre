@@ -1,12 +1,20 @@
-import { use } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { X, Menu, Plus, HelpCircle } from 'lucide-react'
+import { X, Menu, HelpCircle, Tag, Trash2, Check, ChevronsUpDown } from 'lucide-react'
 import Image from "next/image"
-import AddTransactionDialog from '@/components/addTransaction'
+import AddTransactionDialog from '@/components/AddTransactionDialog'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerFooter } from "@/components/ui/drawer"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 import { WelcomeUserNotification } from '@/components/NotificationBanner'
-import Header from '@/components/layouts/Header'
 import { UserButton } from '@clerk/nextjs'
 
 type Transaction = {
@@ -16,45 +24,120 @@ type Transaction = {
   descricao: string
   categoria: string
   repeteMensalmente: boolean
+  tipo: 'payment' | 'receipt'
 }
 
-// Currency formatting helper function
-const formatCurrency = (value: number): string => {
-  return value.toLocaleString('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
-
-async function fetchTransactions(): Promise<Transaction[]> {
-  const res = await fetch('http://localhost:3001/transactions', {
-    cache: 'no-store',
-    next: { tags: ['transactions'] }
-  })
-  if (!res.ok) throw new Error('Failed to fetch transactions')
-  return res.json()
-}
+const categories = [
+  'emprestimo', 'cartoes', 'terreno', 'agua', 'energia', 'moradia',
+  'outros', 'evento', 'eletronicos', 'viagem', 'roupas', 'streams',
+  'educação', 'saúde', 'transporte'
+]
 
 export default function Page() {
-  const transactions = use(fetchTransactions())
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [selectedMonth, setSelectedMonth] = useState<string>("10")
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [categoryFilter, setCategoryFilter] = useState<string>('')
 
-  // Calculate financial summaries
-  const payments = transactions
-    .filter(t => t.valor < 0)
-    .reduce((sum, t) => sum + Math.abs(t.valor), 0);
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const res = await fetch('http://localhost:3001/transactions', {
+        cache: 'no-store',
+        next: { tags: ['transactions'] }
+      })
+      if (!res.ok) throw new Error('Failed to fetch transactions')
+      const data = await res.json()
+      setTransactions(data)
+    }
 
-  const receipts = transactions
-    .filter(t => t.valor > 0)
-    .reduce((sum, t) => sum + t.valor, 0);
+    fetchTransactions()
+  }, [])
 
-  const balance = receipts - payments;
+  useEffect(() => {
+    const filtered = transactions.filter(transaction => {
+      const transactionDate = new Date(transaction.dataVencimento)
+      return (
+        transactionDate.getMonth() + 1 === parseInt(selectedMonth) &&
+        (categoryFilter === '' || transaction.categoria === categoryFilter)
+      )
+    })
+    setFilteredTransactions(filtered)
+  }, [selectedMonth, transactions, categoryFilter])
+
+  const calculateSummary = () => {
+    const filtered = filteredTransactions.filter(transaction => {
+      const transactionDate = new Date(transaction.dataVencimento);
+      return (
+        transactionDate.getMonth() + 1 === parseInt(selectedMonth) &&
+        (categoryFilter === '' || transaction.categoria === categoryFilter)
+      );
+    });
+
+    const payments = filtered
+      .filter(t => t.tipo === 'payment')
+      .reduce((sum, t) => sum + Math.abs(t.valor), 0);
+
+    const receipts = filtered
+      .filter(t => t.tipo === 'receipt')
+      .reduce((sum, t) => sum + t.valor, 0);
+
+    const balance = receipts - payments;
+
+    return { payments, receipts, balance };
+  }
+
+  const { payments, receipts, balance } = calculateSummary()
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value)
+  }
+
+  const monthNames = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ]
+
+  const handleTransactionClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction)
+    setIsDrawerOpen(true)
+  }
+
+  const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
+    const res = await fetch(`http://localhost:3001/transactions/${updatedTransaction.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTransaction),
+    })
+
+    if (res.ok) {
+      setTransactions(prevTransactions =>
+        prevTransactions.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
+      )
+      setIsDrawerOpen(false)
+    } else {
+      console.error('Failed to update transaction')
+    }
+  }
+
+  const handleDeleteTransaction = async (id: number) => {
+    const res = await fetch(`http://localhost:3001/transactions/${id}`, {
+      method: 'DELETE',
+    })
+
+    if (res.ok) {
+      setTransactions(prevTransactions => prevTransactions.filter(t => t.id !== id))
+      setIsDrawerOpen(false)
+    } else {
+      console.error('Failed to delete transaction')
+    }
+  }
 
   return (
-    <div className="min-h-screen w-full flex flex-col justify-between gap-4">
-      {/* Body */}
-      <div className="mx-auto min-w-4xl w-[90%] rounded-xl bg-white bg-opacity-50 p-4 shadow-sm">
+    // <div className="min-h-screen bg-[#eeeef3] bg-opacity-50 p-4">
+    <div className="min-h-scree w-full bg-opacity-50 p-4">
+      <div className="mx-auto min-w-4xl w-[90%] rounded-xl bg-white bg-opacity-75 p-4 shadow-sm">
         {/* Header */}
         <header className="flex items-center justify-between bg-[#32CD32] p-4 rounded-lg">
           <div className="flex items-center gap-2">
@@ -67,19 +150,31 @@ export default function Page() {
             />
             <span className="text-xl font-bold text-white">Pocket Flow</span>
           </div>
-          {/* UserButton */}
           <UserButton />
+          {/* <Button variant="ghost" size="icon" className="text-white">
+            <Menu className="h-6 w-6" />
+          </Button> */}
         </header>
 
+        {/* Notification Banner */}
         <WelcomeUserNotification />
 
         {/* Summary Section */}
         <div className="mt-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Resumo de outubro/2024</h2>
-            <Button variant="outline" size="sm" className="text-yellow-600">
-              mês anterior <span className="ml-1">↓</span>
-            </Button>
+            <h2 className="text-lg font-semibold">Resumo de {monthNames[parseInt(selectedMonth) - 1]}/{new Date().getFullYear()}</h2>
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Selecione o mês" />
+              </SelectTrigger>
+              <SelectContent>
+                {monthNames.map((month, index) => (
+                  <SelectItem key={index + 1} value={(index + 1).toString()}>
+                    {month}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid gap-4 md:grid-cols-3">
@@ -121,25 +216,70 @@ export default function Page() {
         <div className="mt-8">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Transações</h2>
-            <AddTransactionDialog />
+            <div className="flex items-center space-x-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-[200px] justify-between">
+                    {categoryFilter || "Filtrar por categoria"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Pesquisar categoria..." />
+                    <CommandList>
+                      <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
+                      <CommandGroup>
+                        {categories.map((category) => (
+                          <CommandItem
+                            key={category}
+                            value={category}
+                            onSelect={(currentValue) => {
+                              setCategoryFilter(currentValue === categoryFilter ? "" : currentValue)
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                categoryFilter === category ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {category}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+              <AddTransactionDialog />
+            </div>
           </div>
 
           {/* Transaction List */}
           <Card className="h-[300px]">
             <ScrollArea className="h-full">
               <div className="p-4 space-y-3">
-                {transactions.map((transaction) => (
-                  // <div key={transaction.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div key={transaction.id} className="flex items-center justify-between p-3 bg-slate-200 rounded-lg">
-                    <div>
-                      <p className="font-semibold">{transaction.descricao}</p>
-                      <p className="text-sm text-gray-500">
-                        {new Date(transaction.dataVencimento).toLocaleDateString('pt-BR')} - {transaction.categoria}
-                      </p>
+                {filteredTransactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-3 bg-slate-200 rounded-lg cursor-pointer hover:bg-slate-300"
+                    onClick={() => handleTransactionClick(transaction)}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div>
+                        <p className="font-semibold">{transaction.descricao}</p>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <span>{new Date(transaction.dataVencimento).toLocaleDateString('pt-BR')}</span>
+                          <span className="mx-1">-</span>
+                          <Tag className="w-4 h-4 mr-1" />
+                          <span>{transaction.categoria}</span>
+                        </div>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className={`font-bold ${transaction.valor > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {formatCurrency(transaction.valor)}
+                      <p className={`font-bold ${transaction.tipo === 'receipt' ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatCurrency(Math.abs(transaction.valor))}
                       </p>
                       <p className="text-xs text-gray-500">{transaction.repeteMensalmente ? 'Mensal' : 'Única'}</p>
                     </div>
@@ -150,6 +290,91 @@ export default function Page() {
           </Card>
         </div>
       </div>
+
+      {/* Transaction Details Drawer */}
+      <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Detalhes da Transação</DrawerTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-4 top-4"
+              onClick={() => handleDeleteTransaction(selectedTransaction?.id ?? 0)}
+            >
+              <Trash2 className="h-5 w-5" />
+            </Button>
+          </DrawerHeader>
+          {selectedTransaction && (
+            <div className="p-4 space-y-4">
+              <div>
+                <Label htmlFor="descricao">Descrição</Label>
+                <Input
+                  id="descricao"
+                  value={selectedTransaction.descricao}
+                  onChange={(e) => setSelectedTransaction({ ...selectedTransaction, descricao: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="valor">Valor</Label>
+                <Input
+                  id="valor"
+                  value={Math.abs(selectedTransaction.valor)}
+                  onChange={(e) => setSelectedTransaction({ ...selectedTransaction, valor: Number(e.target.value) * (selectedTransaction.tipo === 'payment' ? -1 : 1) })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="dataVencimento">Data de Vencimento</Label>
+                <Input
+                  id="dataVencimento"
+                  type="date"
+                  value={selectedTransaction.dataVencimento}
+                  onChange={(e) => setSelectedTransaction({ ...selectedTransaction, dataVencimento: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="categoria">Categoria</Label>
+                <Select
+                  value={selectedTransaction.categoria}
+                  onValueChange={(value) => setSelectedTransaction({ ...selectedTransaction, categoria: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="tipo">Tipo</Label>
+                <Select
+                  value={selectedTransaction.tipo}
+                  onValueChange={(value: 'payment' | 'receipt') => setSelectedTransaction({ ...selectedTransaction, tipo: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="payment">Pagamento</SelectItem>
+                    <SelectItem value="receipt">Recebimento</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          )}
+          <DrawerFooter>
+            <div className="flex justify-between w-full">
+              <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>Cancelar</Button>
+              <Button onClick={() => selectedTransaction && handleUpdateTransaction(selectedTransaction)}>Salvar</Button>
+            </div>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }

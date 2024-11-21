@@ -1,36 +1,13 @@
 {
   "transactions": [
     {
-      "id": "1",
-      "valor": 1500,
-      "dataVencimento": "2024-10-05",
-      "descricao": "Aluguel",
-      "categoria": "moradia",
-      "repeteMensalmente": true
-    },
-    {
-      "id": "2",
-      "valor": 200,
-      "dataVencimento": "2024-10-10",
-      "descricao": "Conta de luz",
-      "categoria": "energia",
-      "repeteMensalmente": true
-    },
-    {
-      "id": "3",
-      "valor": 100,
-      "dataVencimento": "2024-10-15",
-      "descricao": "Conta de água",
-      "categoria": "agua",
-      "repeteMensalmente": true
-    },
-    {
       "id": "4",
       "valor": 500,
       "dataVencimento": "2024-10-20",
       "descricao": "Parcela do carro",
       "categoria": "transporte",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "5",
@@ -38,7 +15,8 @@
       "dataVencimento": "2024-10-25",
       "descricao": "Plano de saúde",
       "categoria": "saúde",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "6",
@@ -46,7 +24,8 @@
       "dataVencimento": "2024-10-01",
       "descricao": "Netflix e Spotify",
       "categoria": "streams",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "7",
@@ -54,7 +33,8 @@
       "dataVencimento": "2024-10-12",
       "descricao": "Curso de inglês",
       "categoria": "educação",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "8",
@@ -62,7 +42,8 @@
       "dataVencimento": "2024-10-30",
       "descricao": "Parcela do terreno",
       "categoria": "terreno",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "9",
@@ -70,7 +51,8 @@
       "dataVencimento": "2024-10-18",
       "descricao": "Roupas de inverno",
       "categoria": "roupas",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "10",
@@ -78,7 +60,8 @@
       "dataVencimento": "2024-10-22",
       "descricao": "Novo smartphone",
       "categoria": "eletronicos",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "11",
@@ -86,7 +69,8 @@
       "dataVencimento": "2024-10-28",
       "descricao": "Viagem de fim de semana",
       "categoria": "viagem",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "12",
@@ -94,7 +78,8 @@
       "dataVencimento": "2024-10-08",
       "descricao": "Presente de aniversário",
       "categoria": "outros",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "13",
@@ -102,7 +87,8 @@
       "dataVencimento": "2024-10-16",
       "descricao": "Fatura do cartão de crédito",
       "categoria": "cartoes",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
     },
     {
       "id": "14",
@@ -110,7 +96,8 @@
       "dataVencimento": "2024-10-03",
       "descricao": "Ingresso para show",
       "categoria": "evento",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "15",
@@ -118,7 +105,8 @@
       "dataVencimento": "2024-10-14",
       "descricao": "Empréstimo para amigo",
       "categoria": "emprestimo",
-      "repeteMensalmente": false
+      "repeteMensalmente": false,
+      "tipo": "receipt"
     },
     {
       "id": "2c4a",
@@ -126,7 +114,17 @@
       "valor": 2500,
       "dataVencimento": "1999-03-29",
       "categoria": "cartoes",
-      "repeteMensalmente": true
+      "repeteMensalmente": true,
+      "tipo": "payment"
+    },
+    {
+      "id": "cc3a",
+      "descricao": "Conta de água",
+      "valor": -41,
+      "dataVencimento": "2024-11-21",
+      "categoria": "agua",
+      "repeteMensalmente": false,
+      "tipo": "payment"
     }
   ]
 }

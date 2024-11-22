@@ -18,8 +18,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build -t psousaj/topobre-web:latest ./web
-          docker buildx build -t psousaj/topobre-api:latest ./api
+          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-web:latest ./web
+          docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-api:latest ./api
 
       - name: Push Docker images
         run: |

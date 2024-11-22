@@ -1,5 +1,5 @@
 # Usar a imagem base do Node.js
-FROM node:18
+FROM node:18 as ApiBuilder
 
 # Definir o diretório de trabalho
 WORKDIR /app

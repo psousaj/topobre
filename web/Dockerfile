@@ -1,11 +1,16 @@
 # Usar a imagem base do Node.js
-FROM node:18
+FROM node:18 as WebBuilder
 
 # Definir o diretório de trabalho
 WORKDIR /app
 
-ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ARG CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY
+
+# Verificar se o argumento está vazio
+RUN if [ -z "$CLERK_PUBLISHABLE_KEY" ]; then \
+      echo "Erro: CLERK_PUBLISHABLE_KEY não pode ser vazio." && exit 1; \
+    fi
 
 # Copiar os arquivos de package.json e package-lock.json
 COPY package*.json ./

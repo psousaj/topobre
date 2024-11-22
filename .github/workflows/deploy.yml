@@ -23,20 +23,20 @@ jobs:
       - name: Build Docker image
         run: |
           docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-web,push=true,compression=gzip ./web
-          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-api:latest,push=true,compression=gzip ./api
-          # docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --builder=container -t psousaj/topobre-api:latest --push ./api
+          # docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-api:latest,push=true,compression=gzip ./api
+          docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-api:latest --load ./api
 
-      # - name: Push Docker images
-      #   run: |
-      #     docker push psousaj/topobre-web:latest 
-      #     docker push psousaj/topobre-api:latest 
+      - name: Push Docker images
+        run: |
+          # docker push psousaj/topobre-web:latest 
+          docker push psousaj/topobre-api:latest 
           
       # - name: Stop Docker Compose
       #   run: docker-compose -f docker-compose.yml down
 
       - name: Run Docker Compose
         run: |
-          docker-compose -f docker-compose.yml up -d
+          docker compose -f docker-compose.yml up -d
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}

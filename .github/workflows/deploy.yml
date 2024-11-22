@@ -18,15 +18,15 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t psousaj/topobre-web:latest ./web
-          docker build -t psousaj/topobre-api:latest ./api
+          docker buildx build -t psousaj/topobre-web:latest ./web
+          docker buildx build -t psousaj/topobre-api:latest ./api
 
       - name: Push Docker images
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push psousaj/topobre-web:latest
-          docker push psousaj/topobre-api:latest
+          # echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin \
           docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+          docker push psousaj/topobre-web:latest \
+          docker push psousaj/topobre-api:latest \
 
       - name: Run Docker Compose
         run: |

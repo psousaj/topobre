@@ -2,11 +2,7 @@ version: '3.8'
 
 services:
   web:
-    build:
-      context: ./web
-      target: WebBuilder
-      args:
-        CLERK_PUBLISHABLE_KEY: ${CLERK_PUBLISHABLE_KEY}
+    image: psousaj/topobre-web:latest
     container_name: topobre-web
     ports:
       - "3000:3000"
@@ -17,11 +13,8 @@ services:
       - NODE_ENV=production
 
   api:
-    # image: psousaj/topobre-api:latest
-    # container_name: topobre-api
-    build:
-      context: ./api
-      target: ApiBuilder
+    image: psousaj/topobre-api:latest
+    container_name: topobre-api
     ports:
       - "3001:3001"
     environment:

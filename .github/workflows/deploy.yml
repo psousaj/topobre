@@ -22,8 +22,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-web:latest,push=true,compression=gzip -f ./web .
-          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-api:latest,push=true,compression=gzip -f ./api .
+          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-web:latest,push=true,compression=gzip -f ./web
+          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-api:latest,push=true,compression=gzip -f ./api
           # docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --builder=container -t psousaj/topobre-api:latest --push ./api
 
       # - name: Push Docker images

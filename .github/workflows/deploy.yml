@@ -24,12 +24,23 @@ jobs:
           docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-web:latest,push=true,compression=gzip ./web
           docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} --output type=image,name=psousaj/topobre-api:latest,push=true,compression=gzip ./api
 
+      - name: Upload docker-compose.yml
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-compose
+          path: docker-compose.yml
+
   deploy:
     runs-on: self-hosted
 
     needs: build
 
     steps:
+      - name: Download docker-compose.yml
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-compose
+
       - name: Run Docker Compose
         run: |
           docker compose -f docker-compose.yml up -d

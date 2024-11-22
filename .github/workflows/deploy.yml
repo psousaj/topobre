@@ -22,17 +22,17 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-web:latest --load ./web 
-          docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-api:latest --load ./api
+          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-web:latest --push ./web 
+          docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-api:latest --push ./api
 
-          - name: Push Docker images
-          run: |
-          docker push psousaj/topobre-web:latest 
-          docker push psousaj/topobre-api:latest 
+      # - name: Push Docker images
+      #   run: |
+      #     docker push psousaj/topobre-web:latest 
+      #     docker push psousaj/topobre-api:latest 
           
       - name: Stop Docker Compose
         run: docker-compose -f docker-compose.yml down
-        
+
       - name: Run Docker Compose
         run: |
           docker-compose -f docker-compose.yml up -d

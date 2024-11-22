@@ -16,16 +16,19 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Login Docker
+        run: | 
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin \
+
       - name: Build Docker image
         run: |
-          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-web:latest ./web
+          docker buildx build --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-web:latest ./web 
           docker buildx build --build-arg CLERK_PUBLISHABLE_KEY=${{ secrets.CLERK_PUBLISHABLE_KEY }} -t psousaj/topobre-api:latest ./api
 
       - name: Push Docker images
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin \
-          && docker push psousaj/topobre-web:latest \
-          && docker push psousaj/topobre-api:latest \
+          docker push psousaj/topobre-web:latest 
+          docker push psousaj/topobre-api:latest 
 
       - name: Run Docker Compose
         run: |

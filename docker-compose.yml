@@ -2,10 +2,11 @@ version: '3.8'
 
 services:
   web:
+    image: psousaj/topobre-web:latest
     container_name: topobre-web
-    build:
-      context: ./web
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./web
+    #   dockerfile: Dockerfile
     ports:
       - "3000:3000"
     environment:
@@ -19,10 +20,11 @@ services:
       - CLERK_PUBLISHABLE_KEY
 
   api:
+    image: psousaj/topobre-api:latest
     container_name: topobre-api
-    build:
-      context: ./api
-      dockerfile: Dockerfile
+    # build:
+    #   context: ./api
+    #   dockerfile: Dockerfile
     ports:
       - "3001:3001"
     environment:

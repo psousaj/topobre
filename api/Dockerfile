@@ -1,0 +1,22 @@
+# Usar a imagem base do Node.js
+FROM node:18
+
+# Definir o diretório de trabalho
+WORKDIR /app
+
+# Copiar os arquivos de package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar as dependências
+RUN npm install -g pnpm
+
+RUN pnpm install
+
+# Copiar o restante dos arquivos do projeto
+COPY . .
+
+# Expor a porta que a API irá rodar
+EXPOSE 3001
+
+# Comando para iniciar a API
+CMD ["pnpm", "run", "start"]

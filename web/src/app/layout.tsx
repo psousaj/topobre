@@ -4,8 +4,7 @@ import { ClerkProvider, } from '@clerk/nextjs'
 
 import "./globals.css";
 
-
-export const montserrat = Montserrat_Alternates({
+const montserrat = Montserrat_Alternates({
   weight: ["200", "400", "600", "700", "900"],
   variable: "--montserrat-font",
   subsets: ["latin"]

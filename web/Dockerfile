@@ -4,6 +4,9 @@ FROM node:18
 # Definir o diretório de trabalho
 WORKDIR /app
 
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
 # Copiar os arquivos de package.json e package-lock.json
 COPY package*.json ./
 

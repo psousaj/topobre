@@ -1,42 +1,81 @@
 import { FastifyInstance } from 'fastify'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
+import { protectRoutes } from '../lib/clerk'
+import { ZodTypeProvider } from 'fastify-type-provider-zod'
+
+const categorySchema = z.object({
+    name: z.string().min(4),
+    color: z.string().regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, "Deve ser uma cor HEX válida"),
+    isDefault: z.boolean().optional()
+})
 
 export async function categoriesRoutes(app: FastifyInstance) {
-    app.addHook('preHandler', async (request) => {
-        if (!request.auth.userId) {
-            throw new Error('Unauthorized')
+    // Listagem
+    app.withTypeProvider<ZodTypeProvider>().get(
+        '/',
+        async (request, reply) => {
+            const { userId } = await protectRoutes(request, reply)
+
+            const categories = await prisma.category.findMany({
+                where: {
+                    OR: [
+                        { userId },
+                        { isDefault: true },
+                    ],
+                },
+            })
+
+            return categories
+        })
+    //  Criar
+    app.withTypeProvider<ZodTypeProvider>().post(
+        '/',
+        {
+            schema: {
+                body: categorySchema
+            }
+        },
+        async (request, reply) => {
+            const { userId } = await protectRoutes(request, reply)
+            const { name, color } = request.body
+
+            const category = await prisma.category.create({
+                data: {
+                    name,
+                    color,
+                    userId,
+                }
+            })
+
+            return category
         }
-    })
+    )
+    // Atualizar
+    app.withTypeProvider<ZodTypeProvider>().patch(
+        '/',
+        {
+            schema: {
+                body: z.object({
+                    categoryId: z.string(),
+                }).merge(categorySchema.pick({ color: true }))
+            }
+        },
+        async (request, reply) => {
+            const { userId } = await protectRoutes(request, reply)
+            const { categoryId, color } = request.body
 
-    app.get('/', async (request) => {
-        const categories = await prisma.category.findMany({
-            where: {
-                OR: [
-                    { userId: request.auth.userId },
-                    { isDefault: true },
-                ],
-            },
-        })
+            const updatedCategory = await prisma.category.update({
+                where: {
+                    id: categoryId,
+                    userId
+                },
+                data: {
+                    color
+                }
+            })
 
-        return categories
-    })
-
-    app.post('/', async (request) => {
-        const createCategorySchema = z.object({
-            name: z.string(),
-            color: z.string(),
-        })
-
-        const data = createCategorySchema.parse(request.body)
-
-        const category = await prisma.category.create({
-            data: {
-                ...data,
-                userId: request.auth.userId,
-            },
-        })
-
-        return category
-    })
+            return updatedCategory
+        }
+    )
 } 

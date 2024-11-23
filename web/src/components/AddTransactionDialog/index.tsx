@@ -12,11 +12,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
+import { useUser } from '@clerk/nextjs'
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Category } from '@/@types/transactions'
-
+import { API_URL } from '@/env'
+import { toast } from 'sonner'
 
 export default function AddTransactionDialog({ categories }: { categories: Category[] }) {
     const [selectedCategory, setSelectedCategory] = useState<Category>({} as Category)
@@ -24,7 +26,7 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
     const [numberOfRepetitions, setNumberOfRepetitions] = useState(1)
     const [transactionType, setTransactionType] = useState<'payment' | 'receipt'>('payment')
     const [date, setDate] = useState<Date>()
-    const [value, setValue] = useState('')
+    const [currentValue, setCurrentValue] = useState('')
     const [open, setOpen] = useState(false)
     const router = useRouter()
     const [formattedDate, setFormattedDate] = useState<string>('')
@@ -34,35 +36,37 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
         const formData = new FormData(e.currentTarget)
 
         const baseTransaction = {
-            descricao: formData.get('descricao') as string,
-            valor: Number(value.replace('R$ ', '').replace(',', '.')) * (transactionType === 'payment' ? -1 : 1),
-            dataVencimento: date?.toISOString().split('T')[0] || '',
-            categoria: selectedCategory,
-            repeteMensalmente: isRecurring,
-            tipo: transactionType
+            description: formData.get('description') as string,
+            // transactionValue: Number(currentValue.replace('R$', '').replace('.', '').replace(',', '.')) * (transactionType === 'payment' ? -1 : 1),
+            transactionValue: Number(currentValue.replace('R$', '').replace('.', '').replace(',', '.')),
+            dueDate: date?.toISOString().split('T')[0] || new Date().toISOString(),
+            categoryId: selectedCategory.id,
+            transactionType
         }
 
         const transactions = []
 
         for (let i = 0; i < (isRecurring ? numberOfRepetitions : 1); i++) {
-            const transactionDate = new Date(baseTransaction.dataVencimento)
-            transactionDate.setMonth(transactionDate.getMonth() + i)
+            const transactionDate = new Date(baseTransaction.dueDate)
+            transactionDate.setMonth(transactionDate.getMonth() + (i + 1))
 
             transactions.push({
                 ...baseTransaction,
-                dataVencimento: transactionDate.toISOString().split('T')[0],
+                dueDate: transactionDate.toISOString().split('T')[0],
             })
         }
 
         for (const transaction of transactions) {
-            const res = await fetch('http://localhost:3001/transactions', {
+            const res = await fetch(`${API_URL}/transactions`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(transaction),
             })
 
             if (!res.ok) {
-                console.error('Failed to add transaction')
+                const r = await res.json()
+                toast.error(`Erro ao salvar Transações: ${r.message}`, { closeButton: true })
                 return
             }
         }
@@ -76,7 +80,7 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
             style: 'currency',
             currency: 'BRL',
         })
-        setValue(value)
+        setCurrentValue(value)
     }
 
     const handleDateChange = (selectedDate: Date | undefined) => {
@@ -108,16 +112,16 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Nome */}
                     <div className="space-y-2">
-                        <Label htmlFor="descricao">Nome da transação</Label>
-                        <Input id="descricao" name="descricao" required />
+                        <Label htmlFor="description">Nome da transação</Label>
+                        <Input id="description" name="description" required />
                     </div>
                     {/* Valor */}
                     <div className="space-y-2">
-                        <Label htmlFor="valor">Valor da transação</Label>
+                        <Label htmlFor="value">Valor da transação</Label>
                         <Input
-                            id="valor"
-                            name="valor"
-                            value={value}
+                            id="value"
+                            name="value"
+                            value={currentValue}
                             onChange={handleValueChange}
                             required
                         />
@@ -184,7 +188,7 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
                                         <CommandGroup>
                                             {categories.map((category) => (
                                                 <CommandItem
-                                                    key={category.name}
+                                                    key={category.id}
                                                     onSelect={currentValue => handleCategorySelect(currentValue)}
                                                 >
                                                     <Check
@@ -220,7 +224,7 @@ export default function AddTransactionDialog({ categories }: { categories: Categ
                                 type="number"
                                 min="1"
                                 value={numberOfRepetitions}
-                                onChange={(e) => setNumberOfRepetitions(parseInt(e.target.value))}
+                                onChange={(e) => setNumberOfRepetitions(Number(e.target.value))}
                             />
                         </div>
                     )}

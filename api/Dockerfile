@@ -14,7 +14,7 @@ COPY prisma ./prisma/
 RUN pnpm install
 
 # Gerar o cliente Prisma
-RUN pnpm prisma generate
+RUN pnpm dlx prisma generate
 
 # Copiar código fonte e arquivos de configuração
 COPY . .
@@ -41,7 +41,7 @@ COPY --from=builder /usr/src/app/node_modules/.pnpm/@prisma+client@5.22.0_prisma
 RUN pnpm install --prod
 
 # Gerar o cliente Prisma novamente no ambiente de produção
-RUN pnpm prisma generate
+RUN pnpm dlx prisma generate
 
 ARG CLERK_PUBLISHABLE_KEY
 ENV CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY

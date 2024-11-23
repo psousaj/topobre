@@ -29,7 +29,7 @@ app.register(transactionsRoutes, { prefix: '/transactions' })
 app.register(categoriesRoutes, { prefix: '/categories' })
 
 app.listen({
-    port: env.PORT,
+    port: Number(env.PORT),
     host: env.HOST,
 }).then(() => {
     console.log(`🚀 HTTP Server running on port ${env.PORT}`)

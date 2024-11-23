@@ -2,7 +2,10 @@ import { z } from 'zod'
 import * as dotenv from 'dotenv'
 
 let env: any
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "production") {
+    process.env.PORT = '3001'
+    process.env.HOST = '0.0.0.0'
+    // 
     env = process.env
 } else {
     const result = dotenv.config()

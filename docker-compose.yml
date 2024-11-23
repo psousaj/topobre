@@ -1,9 +1,8 @@
-version: '3.8'
-
 services:
   web:
     image: psousaj/topobre-web:latest
     container_name: topobre-web
+    pull_policy: always
     ports:
       - "3000:3000"
     environment:
@@ -15,6 +14,7 @@ services:
   api:
     image: psousaj/topobre-api:latest
     container_name: topobre-api
+    pull_policy: always
     ports:
       - "3001:3001"
     environment:

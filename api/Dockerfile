@@ -2,13 +2,13 @@
 FROM node:18 as ApiBuilder
 
 # Definir o diretório de trabalho
-WORKDIR /app
+WORKDIR /usr/src/app
 
 ARG CLERK_PUBLISHABLE_KEY
 ENV CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY
 
 # Copiar os arquivos de package.json e package-lock.json
-COPY package*.json ./
+COPY package.json ./
 
 # Instalar as dependências
 RUN npm install -g pnpm

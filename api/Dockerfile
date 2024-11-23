@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 3001
 
 # Comando para iniciar a API
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "start"]

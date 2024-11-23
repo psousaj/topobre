@@ -2,7 +2,7 @@ import { z } from 'zod'
 import * as dotenv from 'dotenv'
 import path from 'path'
 
-const result = dotenv.config({ path: path.resolve(__dirname, '../.env') })
+const result = dotenv.config()
 
 if (result.error) {
     console.error('❌ Erro ao carregar o arquivo .env:', result.error)

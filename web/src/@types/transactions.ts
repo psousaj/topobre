@@ -1,16 +1,18 @@
 type Transaction = {
     id: number
-    valor: number
-    dataVencimento: string
-    descricao: string
-    categoria: string
-    repeteMensalmente: boolean
-    tipo: 'payment' | 'receipt'
+    dueDate: string
+    description: string
+    categoryId: string
+    category: Category
+    transactionValue: number
+    transactionType: 'payment' | 'receipt'
 }
 
 type Category = {
+    id: string
     name: string
     color: string
+    isDefault: boolean
 }
 
 export type { Transaction, Category }

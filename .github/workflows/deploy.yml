@@ -43,7 +43,7 @@ jobs:
 
       - name: Run Docker Compose
         run: |
-          docker compose -f docker-compose.yml up --pull -d
+          docker compose -f docker-compose.yml up -d
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXT_PUBLIC_API_URL: ${{ secrets.API_URL }}

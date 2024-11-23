@@ -1,7 +1,10 @@
 import { z } from 'zod'
 import * as dotenv from 'dotenv'
 
-function env() {
+let env: any
+if (process.env.NODE_ENV !== "production") {
+    env = process.env
+} else {
     const result = dotenv.config()
 
     if (result.error) {
@@ -25,9 +28,7 @@ function env() {
         throw new Error('Variáveis de ambiente inválidas.')
     }
 
-    return _env.data
+    env = _env.data
 }
 
-if (process.env.NODE_ENV !== "production") {
-    env()
-}
+export { env }

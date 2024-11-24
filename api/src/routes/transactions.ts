@@ -1,29 +1,45 @@
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
-import { z } from 'zod'
+import { string, z } from 'zod'
 import { prisma } from '../lib/prisma'
 import { protectRoutes } from '../lib/clerk'
 import { clerkPreHandler } from '../auth/clerkHandler'
+import { categorySchema } from './categories'
+
+enum paymentType {
+    PAYMENT = 'payment',
+    RECEIPT = 'receipt'
+}
 
 const transactionSchema = z.object({
-    transactionId: z.string().uuid().optional(), // Transaction ID
+    id: z.string().cuid(), // Transaction ID
     transactionValue: z.number().positive('Valor deve ser positivo'),
     dueDate: z.string().refine(date => new Date(date) < new Date(), {
         message: 'Vencimento deve ser uma data futura',
-    }),
+    }).or(z.date()),
     description: z.string().min(3, 'Descrição deve ter ao menos 3 caracteres'),
-    transactionType: z.enum(['payment', 'receipt'], {
-        errorMap: () => ({ message: 'Tipo deve ser payment ou receipt' })
+    transactionType: z.nativeEnum(paymentType, {
+        errorMap: () => ({ message: 'Tipo deve ser payment ou receipt' }),
     }),
-    categoryId: z.string(),
     userId: z.string().uuid().optional(),
-});
+    categoryId: z.string(),
+    category: categorySchema.optional(),
+})
 
 export async function transactionsRoutes(app: FastifyInstance) {
     // Listar transações
     app.withTypeProvider<ZodTypeProvider>().get(
         '/',
-        // { preHandler: clerkPreHandler },
+        {
+            preHandler: clerkPreHandler,
+            schema: {
+                tags: ['Transactions'],
+                description: 'Lista todas as transações do usuário',
+                response: {
+                    200: z.array(transactionSchema)
+                }
+            }
+        },
         async (request, reply) => {
             const { userId } = await protectRoutes(request, reply)
 
@@ -36,14 +52,22 @@ export async function transactionsRoutes(app: FastifyInstance) {
                 },
             })
 
-            return transactions
+            return reply.status(200).send(
+                z.array(transactionSchema).parse(transactions)
+            )
         })
     // Criar transação
     app.withTypeProvider<ZodTypeProvider>().post(
         '/',
         {
             schema: {
-                body: transactionSchema
+                tags: ['Transactions'],
+                description: 'Cria uma nova transação',
+                body: transactionSchema.omit({ id: true, userId: true }),
+                response: {
+                    201: transactionSchema,
+                    404: z.object({ message: z.string().default('Category not found') })
+                }
             }
         },
         async (request, reply) => {
@@ -71,7 +95,9 @@ export async function transactionsRoutes(app: FastifyInstance) {
                 }
             })
 
-            return reply.status(201).send(transaction)
+            return reply.status(201).send(
+                transactionSchema.parse(transaction)
+            )
         }
     )
     // Atualizar transação
@@ -79,21 +105,44 @@ export async function transactionsRoutes(app: FastifyInstance) {
         '/',
         {
             schema: {
-                body: transactionSchema.partial()
+                tags: ['Transactions'],
+                description: 'Atualiza uma transação existente',
+                body: transactionSchema
+                    .omit({ category: true })
+                    .partial()
+                    .refine((data) => data.id !== undefined, {
+                        message: 'O campo "id" é obrigatório',
+                        path: ['id'],
+                    }),
+                response: {
+                    200: transactionSchema,
+                    404: z.object({ message: z.string().default('Transaction not found') })
+                }
             }
         },
         async (request, reply) => {
             const { userId } = await protectRoutes(request, reply)
             const data = request.body
 
+            const transactionExists = await prisma.transaction.findUnique({
+                where: { id: data.id, userId }
+            })
+
+            if (!transactionExists) {
+                return reply.status(404).send({
+                    message: 'Transaction not found'
+                })
+            }
+
             const updatedTransaction = await prisma.transaction.update({
                 where: {
-                    id: data.transactionId
+                    id: data.id,
+                    userId
                 },
                 data
             })
 
-            return updatedTransaction
+            return transactionSchema.parse(updatedTransaction)
         }
     )
 }

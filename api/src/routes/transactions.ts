@@ -21,8 +21,8 @@ const transactionSchema = z.object({
     transactionType: z.nativeEnum(paymentType, {
         errorMap: () => ({ message: 'Tipo deve ser payment ou receipt' }),
     }),
-    userId: z.string().uuid().optional(),
-    categoryId: z.string(),
+    userId: z.string().optional(),
+    categoryId: z.string().cuid(),
     category: categorySchema.optional(),
 })
 

@@ -49,8 +49,8 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 app.setErrorHandler(errorHandler)
 
-app.register(transactionsRoutes, { prefix: '/transactions' })
-app.register(categoriesRoutes, { prefix: '/categories' })
+app.register(transactionsRoutes, { prefix: 'transactions' })
+app.register(categoriesRoutes, { prefix: 'categories' })
 
 app.listen({
     port: Number(env.PORT),

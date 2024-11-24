@@ -3,6 +3,12 @@ FROM node:18-slim as builder
 
 WORKDIR /usr/src/app
 
+# Instalar dependências necessárias para o build
+RUN apt-get update && apt-get install -y \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 # Instalar pnpm
 RUN npm install -g pnpm
 
@@ -26,6 +32,12 @@ RUN pnpm build
 FROM node:18-slim as runner
 
 WORKDIR /usr/src/app
+
+# Instalar dependências necessárias para produção
+RUN apt-get update && apt-get install -y \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
 # Instalar pnpm
 RUN npm install -g pnpm

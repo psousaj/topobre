@@ -16,7 +16,7 @@ import { useUser } from '@clerk/nextjs'
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from 'lucide-react'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Category } from '@/@types/transactions'
+import { Category } from '@/types/transactions'
 import { API_URL } from '@/env'
 import { toast } from 'sonner'
 

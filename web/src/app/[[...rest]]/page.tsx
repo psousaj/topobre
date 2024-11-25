@@ -16,9 +16,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { WelcomeUserNotification } from '@/components/NotificationBanner'
 import { UserButton } from '@clerk/nextjs'
-import { Category, Transaction } from '@/@types/transactions'
+import { Category, Transaction } from '@/types/transactions'
 import { API_URL } from '@/env'
 import { toast } from 'sonner'
+import { getTransactions, getCategories, updateTransaction, deleteTransaction } from '@/api/actions'
 
 // Função para capitalizar a primeira letra de cada palavra
 const capitalize = (str: string) => {
@@ -40,38 +41,27 @@ export default function Page() {
   const [formattedValue, setFormattedValue] = useState('')
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      const res = await fetch(`${API_URL}/transactions`, {
-        cache: 'no-store',
-        next: { tags: ['transactions'] },
-        credentials: 'include'
-      })
-      if (!res.ok) {
-        const r = await res.json()
-        toast.error(`Erro ao buscar Transações: ${r.message}`, { closeButton: true })
-        throw new Error(`Failed to fetch transactions: ${JSON.stringify(r)}`)
+    const fetchData = async () => {
+      const [transactionsResponse, categoriesResponse] = await Promise.all([
+        getTransactions(),
+        getCategories()
+      ])
+
+      if (transactionsResponse.error) {
+        toast.error(`Erro ao buscar Transações: ${transactionsResponse.error.message}`, { closeButton: true })
+        return
       }
-      const data = await res.json()
-      setTransactions(data)
+
+      if (categoriesResponse.error) {
+        toast.error(`Erro ao buscar Categorias: ${categoriesResponse.error.message}`, { closeButton: true })
+        return
+      }
+
+      setTransactions(transactionsResponse.result || [])
+      setCategories(categoriesResponse.result || [])
     }
 
-    const fetchCategories = async () => {
-      const res = await fetch(`${API_URL}/categories`, {
-        cache: 'no-store',
-        next: { tags: ['categories'] },
-        credentials: 'include'
-      })
-      if (!res.ok) {
-        const r = await res.json()
-        toast.error(`Erro ao buscar categorias salvas: ${r.message}`, { closeButton: true })
-        throw new Error(`Failed to fetch categories ${JSON.stringify(r)}`)
-      }
-      const data = await res.json()
-      setCategories(data)
-    }
-
-    fetchTransactions()
-    fetchCategories()
+    fetchData()
   }, [])
 
   useEffect(() => {
@@ -125,40 +115,29 @@ export default function Page() {
   }
 
   const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
-    const res = await fetch(`${API_URL} / transactions / ${updatedTransaction.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedTransaction),
-    })
+    const { result, error } = await updateTransaction(updatedTransaction)
 
-    if (!res.ok) {
-      const r = await res.json()
-      toast.error(`Erro ao atualizar: ${r.message}`, { closeButton: true })
-      return
-    }
-
-    if (res.ok) {
+    if (!error) {
       setTransactions(prevTransactions =>
         prevTransactions.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
       )
       setIsDrawerOpen(false)
     } else {
       console.error('Failed to update transaction')
+      toast.error(`Erro ao atualizar: ${error.message}`, { closeButton: true })
     }
   }
 
   const handleDeleteTransaction = async (id: number) => {
-    const res = await fetch(`${API_URL} / transactions / ${id}`, {
-      method: 'DELETE',
-    })
+    const { result, error } = await deleteTransaction(id)
 
-    if (!res.ok) {
-      const r = await res.json()
-      toast.error(`Erro ao deletar: ${r.message}`, { closeButton: true })
+    if (error) {
+      toast.error(`Erro ao deletar: ${error.message}`, { closeButton: true })
+      console.error('Failed to delete transaction')
       return
     }
 
-    if (res.ok) {
+    if (result) {
       setTransactions(prevTransactions => prevTransactions.filter(t => t.id !== id))
       setIsDrawerOpen(false)
     } else {

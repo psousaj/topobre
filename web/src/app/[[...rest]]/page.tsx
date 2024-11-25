@@ -49,7 +49,7 @@ export default function Page() {
       if (!res.ok) {
         const r = await res.json()
         toast.error(`Erro ao buscar Transações: ${r.message}`, { closeButton: true })
-        throw new Error(`Failed to fetch transactions: ${r.message}`)
+        throw new Error(`Failed to fetch transactions: ${JSON.stringify(r)}`)
       }
       const data = await res.json()
       setTransactions(data)
@@ -64,7 +64,7 @@ export default function Page() {
       if (!res.ok) {
         const r = await res.json()
         toast.error(`Erro ao buscar categorias salvas: ${r.message}`, { closeButton: true })
-        throw new Error(`Failed to fetch categories ${r.message}`)
+        throw new Error(`Failed to fetch categories ${JSON.stringify(r)}`)
       }
       const data = await res.json()
       setCategories(data)

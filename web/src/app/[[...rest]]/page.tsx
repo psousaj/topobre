@@ -46,11 +46,10 @@ export default function Page() {
         next: { tags: ['transactions'] },
         credentials: 'include'
       })
-      if (!res.ok) throw new Error('Failed to fetch transactions')
       if (!res.ok) {
         const r = await res.json()
         toast.error(`Erro ao buscar Transações: ${r.message}`, { closeButton: true })
-        return
+        throw new Error(`Failed to fetch transactions: ${r.message}`)
       }
       const data = await res.json()
       setTransactions(data)
@@ -62,11 +61,10 @@ export default function Page() {
         next: { tags: ['categories'] },
         credentials: 'include'
       })
-      if (!res.ok) throw new Error('Failed to fetch categories')
       if (!res.ok) {
         const r = await res.json()
         toast.error(`Erro ao buscar categorias salvas: ${r.message}`, { closeButton: true })
-        return
+        throw new Error(`Failed to fetch categories ${r.message}`)
       }
       const data = await res.json()
       setCategories(data)
@@ -127,7 +125,7 @@ export default function Page() {
   }
 
   const handleUpdateTransaction = async (updatedTransaction: Transaction) => {
-    const res = await fetch(`${API_URL}/transactions/${updatedTransaction.id}`, {
+    const res = await fetch(`${API_URL} / transactions / ${updatedTransaction.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedTransaction),
@@ -150,7 +148,7 @@ export default function Page() {
   }
 
   const handleDeleteTransaction = async (id: number) => {
-    const res = await fetch(`${API_URL}/transactions/${id}`, {
+    const res = await fetch(`${API_URL} / transactions / ${id}`, {
       method: 'DELETE',
     })
 
@@ -254,7 +252,7 @@ export default function Page() {
               <div className="flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Saldo</p>
-                  <p className={`text-2xl font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                  <p className={`text - 2xl font - bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'} `}>
                     {formatCurrency(balance)}
                   </p>
                 </div>
@@ -333,7 +331,7 @@ export default function Page() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className={`font-bold ${transaction.transactionType === 'receipt' ? 'text-green-600' : 'text-red-600'}`}>
+                        <p className={`font - bold ${transaction.transactionType === 'receipt' ? 'text-green-600' : 'text-red-600'} `}>
                           {formatCurrency(Math.abs(transaction.transactionValue))}
                         </p>
                       </div>

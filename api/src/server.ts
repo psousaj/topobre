@@ -19,7 +19,7 @@ const app = fastify({ logger: false }).withTypeProvider<ZodTypeProvider>();
 
 app.register(clerkPlugin)
 app.register(fastifyCors, {
-    origin: ['http://localhost:3000', 'http://topobre.crudbox.com.br'],
+    origin: ['http://localhost:3000', 'https://topobre.crudbox.com.br'],
     allowedHeaders: ["Authorization", "Content-Type"],
     credentials: true,
 })

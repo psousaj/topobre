@@ -1,6 +1,6 @@
 import z from "zod";
-import { TransactionType } from "../../shared/enum";
 import { categorySchema } from "../category/category.schema";
+import { TransactionType } from "../../types";
 
 export const transactionSchema = z.object({
     id: z.string().uuid(),

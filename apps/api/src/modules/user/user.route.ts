@@ -1,8 +1,10 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { createUserResponseSchema, createUserSchema } from "./user.schema";
+import { FastifyZodApp } from "../../types";
+import { REPOSITORIES } from "../../shared/constant";
+import { badRequestResponseSchema, conflictErrorResponseSchema } from "../../shared/schemas";
 
 
-export async function userRoutes(app: FastifyInstance) {
+export async function userRoutes(app: FastifyZodApp) {
     app.get("/:id", async (request, reply) => {
         const { id } = request.params as { id: string };
         return { message: `Hello from user route with ID: ${id}` };
@@ -15,11 +17,30 @@ export async function userRoutes(app: FastifyInstance) {
                 body: createUserSchema,
                 response: {
                     201: createUserResponseSchema,
+                    409: conflictErrorResponseSchema,
+                    400: badRequestResponseSchema
                 },
             },
         },
-        async (req, rep) => {
-            const { } = req.body
+        async (request, reply) => {
+            const { name, email, password, phoneNumber } = request.body
+            const userRepository = app.db.getRepository(REPOSITORIES.USER)
+            const user = userRepository.findBy({ email })
+
+            if (user) {
+                return reply.status(409).send({ message: "User already exists" });
+            }
+
+            const newUser = await userRepository.create({
+                name,
+                email,
+                password,
+                phoneNumber,
+            });
+
+            await userRepository.save(newUser);
+            return reply.status(201).send(newUser);
+
         },
     )
 

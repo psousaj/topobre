@@ -13,7 +13,6 @@ const createUserResponseSchema = z.object({
     email: z.string().email(),
     phoneNumber: z.string().nullable(),
     isActive: z.boolean(),
-    createdAt: z.string(),
 })
 
 type CreateUserInput = z.infer<typeof createUserSchema>

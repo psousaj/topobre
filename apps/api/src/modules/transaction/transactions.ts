@@ -1,12 +1,15 @@
 import { z } from 'zod'
-import { transactionSchema } from '../../schemas'
 import { FastifyZodApp } from '../../types'
+import { transactionSchema } from './transaction.schema'
+import { REPOSITORIES } from '../../shared/constant'
+import { notFoundErrorResponseSchema } from '../../shared/schemas'
 
 export async function transactionsRoutes(app: FastifyZodApp) {
     // Listar transações
     app.get(
         '/',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Lista todas as transações do usuário',
@@ -16,15 +19,10 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            // const { userId } = await protectRoutes(request, reply)
 
-            const transactions = await prisma.transaction.findMany({
-                // where: {
-                //     userId,
-                // },
-                include: {
-                    category: true,
-                },
+            const transactions = await app.db.getRepository(REPOSITORIES.TRANSACTION).find({
+                where: { user: request.user },
+                relations: ['category'],
             })
 
             return reply.status(200).send(
@@ -35,22 +33,22 @@ export async function transactionsRoutes(app: FastifyZodApp) {
     app.post(
         '/',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Cria uma nova transação',
                 body: transactionSchema.omit({ id: true, userId: true }),
                 response: {
                     201: transactionSchema,
-                    404: z.object({ message: z.string().default('Category not found') })
+                    404: notFoundErrorResponseSchema
                 }
             }
         },
         async (request, reply) => {
-            // const { userId } = await protectRoutes(request, reply)
             const { categoryId, description, dueDate, transactionType, transactionValue } = request.body
 
-            const categoryExists = await prisma.category.findUnique({
-                // where: { id: categoryId }
+            const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
+                where: { id: categoryId }
             })
 
             if (!categoryExists) {
@@ -59,15 +57,13 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const transaction = await prisma.transaction.create({
-                data: {
-                    description,
-                    dueDate: new Date(dueDate),
-                    transactionType,
-                    // userId,
-                    transactionValue,
-                    category: { connect: { id: categoryId } }
-                }
+            const transaction = await app.db.getRepository(REPOSITORIES.TRANSACTION).save({
+                description,
+                dueDate: new Date(dueDate),
+                transactionType,
+                userId: request.user.id,
+                transactionValue,
+                category: categoryExists
             })
 
             return reply.status(201).send(
@@ -79,6 +75,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
     app.patch(
         '/',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Atualiza uma transação existente',
@@ -91,18 +88,17 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                     }),
                 response: {
                     200: transactionSchema,
-                    404: z.object({ message: z.string().default('Transaction not found') })
+                    404: notFoundErrorResponseSchema
                 }
             }
         },
         async (request, reply) => {
-            // const { userId } = await protectRoutes(request, reply)
-            const data = request.body
+            const { id, ...data } = request.body
 
-            const transactionExists = await prisma.transaction.findUnique({
+            const transactionExists = await app.db.getRepository(REPOSITORIES.TRANSACTION).findOne({
                 where: {
-                    id: data.id,
-                    // userId
+                    id,
+                    user: request.user
                 }
             })
 
@@ -112,12 +108,11 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const updatedTransaction = await prisma.transaction.update({
-                where: {
-                    id: data.id,
-                    // userId
-                },
-                data
+            const updatedTransaction = await app.db.getRepository(REPOSITORIES.TRANSACTION).update({
+                id,
+            }, {
+                ...data,
+                dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
             })
 
             return transactionSchema.parse(updatedTransaction)

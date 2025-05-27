@@ -9,6 +9,9 @@ const envSchema = z.object({
     PGPASSWORD: z.string({ message: "Provides PGPASSWORD env. *hint: check .env file for set" }),
     PORT: z.string().transform((val) => Number(val)).default('3001'),
     HOST: z.string().default('0.0.0.0'),
+    JWT_SECRET: z.string().min(1, { message: "JWT_SECRET is required" }),
+    JWT_EXPIRES_IN: z.string().default('1d'),
+    COOKIE_SECRET: z.string().min(1, { message: "COOKIE_SECRET is required" }),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })
 

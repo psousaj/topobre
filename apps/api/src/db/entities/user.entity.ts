@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Transaction } from './transaction.entity';
+import { Session } from './session.entity';
 
 @Entity('users')
 @Index('idx_user_email', ['email'], { unique: true })
@@ -30,4 +31,7 @@ export class User {
 
     @OneToMany(() => Transaction, (transaction) => transaction.user)
     transactions: Transaction[];
+
+    @OneToMany(() => Session, (session) => session.user)
+    sessions: Session[];
 }

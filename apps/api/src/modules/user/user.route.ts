@@ -1,8 +1,8 @@
 import { createUserResponseSchema, createUserSchema } from "./user.schema";
 import { FastifyZodApp } from "../../types";
-import { REPOSITORIES } from "../../shared/constant";
+import { REPOSITORIES, SALT_ROUNDS } from "../../shared/constant";
 import { badRequestResponseSchema, conflictErrorResponseSchema } from "../../shared/schemas";
-
+import bcrypt from "bcrypt";
 
 export async function userRoutes(app: FastifyZodApp) {
     app.get("/:id", async (request, reply) => {
@@ -31,11 +31,13 @@ export async function userRoutes(app: FastifyZodApp) {
                 return reply.status(409).send({ message: "User already exists" });
             }
 
-            const newUser = await userRepository.create({
+            const hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+            const newUser = userRepository.create({
                 name,
                 email,
-                password,
                 phoneNumber,
+                password: hash,
             });
 
             await userRepository.save(newUser);
@@ -44,11 +46,20 @@ export async function userRoutes(app: FastifyZodApp) {
         },
     )
 
-    app.patch("/:id", async (request, reply) => {
-        const { id } = request.params as { id: string };
-        const user = request.body;
-        return { message: `User with ID: ${id} updated successfully!`, user };
-    });
+    app.patch("/:id",
+        {
+            schema: {
+                body: createUserSchema,
+                response: {
+                    200: createUserResponseSchema,
+                },
+            },
+        },
+        async (request, reply) => {
+            const { id } = request.params as { id: string };
+            const user = request.body;
+            return reply.status(200).send({});
+        });
 
     app.delete("/:id", async (request, reply) => {
         const { id } = request.params as { id: string };

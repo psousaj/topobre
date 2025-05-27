@@ -1,13 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 
-@Entity('sessions')
+@Entity()
 export class Session {
     @PrimaryGeneratedColumn('uuid')
     id: string; // usado como jti no JWT
 
-    @Column({ default: true })
-    isActive: boolean;
+    // @Column({ default: true })
+    // isActive: boolean;
 
     @CreateDateColumn()
     createdAt: Date;

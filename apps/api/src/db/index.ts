@@ -9,6 +9,6 @@ export const AppDataSource = new DataSource({
     password: env.PGPASSWORD,
     database: env.PGDATABASE,
     port: 5432,
-    entities: [path.join(__dirname, '../models/*.entity{.ts,.js}')],
+    entities: [path.join(__dirname, '../entities/*.entity{.ts,.js}')],
     synchronize: true,
 })

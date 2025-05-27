@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { createUserSchema } from '../user/user.schema'
 
 
 const loginSchema = z.object({
@@ -12,6 +13,7 @@ const loginSchema = z.object({
 })
 
 const loginResponseSchema = z.object({
+    user: createUserSchema.partial().extend({ userId: z.string() }).optional(),
     accessToken: z.string(),
 })
 

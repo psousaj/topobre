@@ -1,8 +1,9 @@
 import { z } from 'zod'
 import { FastifyZodApp } from '../../types'
-import { Category } from '../../db/models/category.entity.'
+import { Category } from '../../db/entities/category.entity.'
 import { REPOSITORIES } from '../../shared/constant'
 import { categorySchema } from './category.schema'
+import { notFoundErrorResponseSchema } from '../../shared/schemas'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
     // Listagem
@@ -34,6 +35,7 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     app.post(
         '/',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Cria uma nova categoria',
@@ -48,15 +50,15 @@ export async function categoriesRoutes(app: FastifyZodApp) {
         async (request, reply) => {
             const { name, color } = request.body
 
-            const category = await prisma.category.create({
-                data: {
-                    name,
-                    color,
-                    // userId,
-                }
+            const category = await app.db.getRepository(REPOSITORIES.CATEGORY).save({
+                name,
+                color,
+                userId: request.user.id,
             })
 
-            return category
+            return reply.status(201).send(
+                categorySchema.parse(category)
+            )
         }
     )
     // Atualizar
@@ -71,20 +73,20 @@ export async function categoriesRoutes(app: FastifyZodApp) {
                 }).merge(categorySchema.pick({ color: true })),
                 response: {
                     200: categorySchema,
-                    404: z.object({ message: z.string().default('Category not found') })
+                    404: notFoundErrorResponseSchema
                 },
                 consumes: ['application/json'],
                 produces: ['application/json'],
             }
         },
         async (request, reply) => {
-            // const { userId } = await protectRoutes(request, reply)
+            const { id: userId } = request.user
             const { categoryId, color } = request.body
 
-            const categoryExists = await prisma.category.findUnique({
+            const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
                 where: {
                     id: categoryId,
-                    // userId
+                    userId
                 }
             })
 
@@ -92,17 +94,17 @@ export async function categoriesRoutes(app: FastifyZodApp) {
                 return reply.status(404).send({ message: "Category not found" })
             }
 
-            const updatedCategory = await prisma.category.update({
-                where: {
-                    id: categoryId,
-                    // userId
-                },
-                data: {
-                    color
-                }
-            })
+            const updatedCategory = await app.db.getRepository(REPOSITORIES.CATEGORY).update(
+                { id: categoryId, },
+                { color }
+            )
 
-            return updatedCategory
+            return reply.status(200).send(
+                categorySchema.parse({
+                    ...categoryExists,
+                    color
+                })
+            )
         }
     )
 } 

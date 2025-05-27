@@ -1,10 +1,11 @@
+import 'reflect-metadata';
+
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastify, { FastifyInstance } from "fastify";
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
 import fastifySwaggerUi from "@fastify/swagger-ui";
-import fjwt, { FastifyJWT } from "@fastify/jwt";
-import fCookie from "@fastify/cookie";
+import fjwt from "@fastify/jwt";
 
 import datasourcePlugin from "./plugins/datasource";
 import { errorHandler } from "./shared/error-handlers";
@@ -13,6 +14,7 @@ import { authRoutes } from "./modules/auth/auth.route";
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { env } from "./shared/env";
 import { authHandler } from "./plugins/authenticate";
+// import { connectToDatabase } from './db';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
@@ -27,6 +29,7 @@ export const buildApp = async () => {
 
     // Plugins
     app.register(datasourcePlugin);
+    // connectToDatabase(app);
     //  Cors
     app.register(fastifyCors, {
         origin: [`http://localhost:${env.PORT}`, 'https://topobre.crudbox.com.br'],
@@ -35,10 +38,10 @@ export const buildApp = async () => {
     })
     // JWT
     app.register(fjwt, { secret: env.JWT_SECRET, sign: { expiresIn: env.JWT_EXPIRES_IN } });
-    app.addHook('preHandler', (req, res, next) => {
-        req.jwt = app.jwt;
-        return next();
-    })
+    // app.addHook('preHandler', (req, res, next) => {
+    //     req.jwt = app.jwt;
+    //     return next();
+    // })
 
     app.decorate('authenticate', authHandler);
 

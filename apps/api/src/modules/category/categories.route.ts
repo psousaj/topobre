@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FastifyZodApp } from '../../types'
-import { Category } from '../../db/entities/category.entity.'
+import { Category } from '../../db/entities/category.entity'
 import { REPOSITORIES } from '../../shared/constant'
 import { categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
@@ -8,11 +8,12 @@ import { notFoundErrorResponseSchema } from '../../shared/schemas'
 export async function categoriesRoutes(app: FastifyZodApp) {
     // Listagem
     app.get(
-        '/',
+        '',
         {
             schema: {
                 tags: ['Categories'],
                 description: 'Lista todas as categorias disponíveis para o usuário',
+                summary: 'Lista todas as categorias',
                 produces: ['application/json'],
                 response: {
                     200: z.array(categorySchema)
@@ -33,12 +34,13 @@ export async function categoriesRoutes(app: FastifyZodApp) {
         })
     //  Criar
     app.post(
-        '/',
+        '',
         {
             preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Cria uma nova categoria',
+                summary: 'Cria uma nova categoria',
                 body: categorySchema,
                 response: {
                     200: categorySchema,
@@ -63,11 +65,12 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     )
     // Atualizar
     app.patch(
-        '/',
+        '',
         {
             schema: {
                 tags: ['Categories'],
                 description: 'Atualiza a cor de uma categoria existente',
+                summary: 'Atualiza a cor de uma categoria',
                 body: z.object({
                     categoryId: z.string().cuid(),
                 }).merge(categorySchema.pick({ color: true })),

@@ -13,15 +13,34 @@ const loginSchema = z.object({
 })
 
 const loginResponseSchema = z.object({
-    user: createUserSchema.partial().extend({ userId: z.string() }).optional(),
+    user: z.object({
+        userId: z.string(),
+        name: z.string(),
+        email: z.string(),
+    }),
     accessToken: z.string(),
 })
 
 
 type LoginUserInput = z.infer<typeof loginSchema>
 
+const meResponseSchema = {
+    type: 'object',
+    properties: {
+        user: {
+            type: 'object',
+            properties: {
+                userId: { type: 'string' },
+                name: { type: 'string' },
+                email: { type: 'string' }
+            }
+        }
+    }
+} as const;
+
 export {
     loginSchema,
+    meResponseSchema,
     loginResponseSchema,
     LoginUserInput,
 }

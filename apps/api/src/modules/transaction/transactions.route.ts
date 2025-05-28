@@ -7,12 +7,13 @@ import { notFoundErrorResponseSchema } from '../../shared/schemas'
 export async function transactionsRoutes(app: FastifyZodApp) {
     // Listar transações
     app.get(
-        '/',
+        '',
         {
             preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Lista todas as transações do usuário',
+                summary: 'Lista todas as transações',
                 response: {
                     200: z.array(transactionSchema)
                 }
@@ -31,12 +32,13 @@ export async function transactionsRoutes(app: FastifyZodApp) {
         })
     // Criar transação
     app.post(
-        '/',
+        '',
         {
             preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Cria uma nova transação',
+                summary: 'Cria uma nova transação',
                 body: transactionSchema.omit({ id: true, userId: true }),
                 response: {
                     201: transactionSchema,
@@ -73,12 +75,13 @@ export async function transactionsRoutes(app: FastifyZodApp) {
     )
     // Atualizar transação
     app.patch(
-        '/',
+        '',
         {
             preHandler: app.authenticate,
             schema: {
                 tags: ['Transactions'],
                 description: 'Atualiza uma transação existente',
+                summary: 'Atualiza uma transação',
                 body: transactionSchema
                     .omit({ category: true })
                     .partial()

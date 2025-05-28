@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import 'dotenv/config'
 import { env } from './shared/env'
 import { buildApp } from "./app";

@@ -1,17 +1,17 @@
-import { Category } from "../db/entities/category.entity."
+import { Category } from "../db/entities/category.entity"
 import { Session } from "../db/entities/session.entity"
 import { Transaction } from "../db/entities/transaction.entity"
 import { User } from "../db/entities/user.entity"
 
 export const TAGS = {
     DB: 'DB',
-}
+};
 
 export const REPOSITORIES = {
     USER: User,
-    CATEGORY: Category,
+    SESSION: Session,
     TRANSACTION: Transaction,
-    SESSION: Session
-}
+    CATEGORY: Category,
+} as const;
 
-export const SALT_ROUNDS = 10
+export const SALT_ROUNDS = 10;

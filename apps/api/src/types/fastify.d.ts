@@ -2,21 +2,30 @@
 import "fastify";
 import { DataSource } from "typeorm";
 import { User } from "../db/entities/user.entity";
+import { DatabaseService } from '../types'
+import { JWT } from '@fastify/jwt';
 
 declare module "fastify" {
-    interface FastifyInstance {
-        db: DataSource;
-        authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    interface FastifyRequest {
+        user?: User;
+        jwt?: FastifyJWT
     }
 
-    interface FastifyRequest {
-        jwt: JWT
+    interface FastifyInstance {
+        db: DatabaseService;
+        authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     }
 }
 
 declare module '@fastify/jwt' {
     interface FastifyJWT {
-        payload: { userId: string; email: string, jti: string };
-        user: User
+        payload: {
+            userId: string;
+            email: string;
+            jti: string;
+            iat?: number;
+            exp?: number;
+        };
+        user: User;
     }
 }

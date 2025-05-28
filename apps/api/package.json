@@ -1,11 +1,12 @@
 {
   "name": "topobre-api",
-  "version": "1.0.0",
-  "description": "",
+  "description": "Documentação da API para gerenciamento de finanças pessoais",
+  "version": "1.1.2",
   "scripts": {
-    "dev": "tsx -r dotenv/config -r reflect-metadata src/server.ts",
+    "dev": "nodemon --exec ts-node -r reflect-metadata src/server.ts",
+    "dev:watch": "tsx watch --require reflect-metadata src/server.ts",
     "build": "rimraf dist && tsc",
-    "start": "node dist/server.js",
+    "start": "node -r reflect-metadata dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,13 +25,15 @@
     "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.24",
+    "uuid": "^11.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.9.1",
+    "nodemon": "^3.1.10",
     "rimraf": "^5.0.0",
-    "tsx": "^4.19.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }
 }

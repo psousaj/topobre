@@ -1,68 +1,145 @@
-import { loginSchema, loginResponseSchema } from "./auth.schema"
+import bcrypt from "bcrypt"
+import { v4 as uuidv4 } from 'uuid';
+
+import { loginSchema, loginResponseSchema, meResponseSchema } from "./auth.schema"
 import { FastifyZodApp } from "../../types"
 import { forbiddenErrorResponseSchema, unauthorizedErrorResponseSchema } from "../../shared/schemas"
-import bcrypt from "bcrypt"
 import { REPOSITORIES } from "../../shared/constant"
+import { z } from "zod";
 
 export async function authRoutes(app: FastifyZodApp) {
     app.post(
         '/login',
         {
             schema: {
+                tags: ['Auth'],
+                description: 'Login do usuário',
+                summary: 'Realiza o login do usuário e retorna um token de acesso',
                 body: loginSchema,
                 response: {
-                    201: loginResponseSchema,
+                    200: loginResponseSchema,
                     401: unauthorizedErrorResponseSchema,
                     403: forbiddenErrorResponseSchema
                 },
             },
         },
-        async (req, rep) => {
-            const { email, password } = req.body
+        async (req, reply) => {
+            const { email, password } = req.body;
 
-            const user = await app.db.getRepository(REPOSITORIES.USER).findOneBy({ email })
-            const isMatch = await bcrypt.compare(password, user.password)
+            // Busca o usuário por email
+            const userRepo = app.db.getRepository(REPOSITORIES.USER);
+            const user = await userRepo.findOneBy({ email });
 
-            if (!user || !isMatch) {
-                return rep.status(401).send({ message: "Invalid email or password" })
+            if (!user) {
+                return reply.status(401).send({
+                    error: 'Unauthorized',
+                    message: "Email ou senha inválidos"
+                });
             }
 
+            // Verifica a senha
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (!isPasswordValid) {
+                return reply.status(401).send({
+                    error: 'Unauthorized',
+                    message: "Email ou senha inválidos"
+                });
+            }
+
+            // Verifica se o usuário está ativo
             if (!user.isActive) {
-                return rep.code(403).send({ message: 'Usuário desativado' });
+                return reply.code(403).send({
+                    error: 'Forbidden',
+                    message: 'Usuário desativado'
+                });
             }
 
-            const jti = `${user.id}:-:${Date.now()}`;
-            const expiresIn = 60 * 60 * 24; // 1 dia
+            // Gera um JTI único
+            const jti = uuidv4();
+            const expiresIn = 24 * 60 * 60; // 24 horas em segundos
+            const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
-            await app.db.getRepository(REPOSITORIES.SESSION).save({
-                user,
+            // Salva a sessão no banco
+            const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
+            await sessionRepo.save({
                 jti,
+                userId: user.id,
+                user,
                 ip: req.ip,
                 userAgent: req.headers['user-agent'] || '',
-                expiresAt: new Date(Date.now() + expiresIn * 1000)
+                expiresAt,
+                isActive: true
             });
 
-            const token = app.jwt.sign(
-                { userId: user.id, email: user.email, jti },
-                { expiresIn }
-            );
+            // Gera o token JWT
+            const token = app.jwt.sign({
+                userId: user.id,
+                email: user.email,
+                jti
+            }, {
+                expiresIn: '24h'
+            });
 
-            return rep.status(201).send({
+            return reply.status(200).send({
                 user: {
                     userId: user.id,
                     name: user.name,
                     email: user.email,
-                    phoneNumber: user.phoneNumber,
                 },
                 accessToken: token,
-            })
-        },
-    )
+            });
+        }
+    );
 
-    app.post('/logout', { preHandler: [app.authenticate] }, async (req, reply) => {
-        const jti = req.jwt.payload.jti;
-        await app.db.getRepository(REPOSITORIES.SESSION).update({ id: jti }, { isActive: false });
-        return reply.send({ message: 'Logout realizado' });
+    app.post('/logout', {
+        preHandler: [app.authenticate],
+        schema: {
+            tags: ['Auth'],
+            description: 'Logout do usuário',
+            summary: 'Realiza o logout do usuário e invalida o token de acesso',
+            response: {
+                200: z.object({}),
+                401: unauthorizedErrorResponseSchema
+            }
+        }
+    }, async (req, reply) => {
+        try {
+            const jti = req.jwt!.payload.jti;
+
+            // Marca a sessão como inativa
+            const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
+            await sessionRepo.update({ jti }, { isActive: false });
+
+            return reply.send({ message: 'Logout realizado com sucesso' });
+        } catch (error) {
+            app.log.error('Erro no logout:', error);
+            return reply.status(500).send({
+                error: 'Internal Server Error',
+                message: 'Erro interno do servidor'
+            });
+        }
+    });
+
+    // Rota para verificar token
+    app.get('/me', {
+        preHandler: [app.authenticate],
+        schema: {
+            tags: ['Auth'],
+            description: 'Informações do usuário logado',
+            summary: 'Retorna as informações do usuário autenticado',
+            response: {
+                200: meResponseSchema,
+                401: unauthorizedErrorResponseSchema
+            }
+        }
+    }, async (req, reply) => {
+        return reply.send({
+            user: {
+                userId: req.user!.id,
+                name: req.user!.name,
+                email: req.user!.email
+            }
+        });
     });
 
     // 

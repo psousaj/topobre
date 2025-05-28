@@ -1,6 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Category } from "./category.entity.";
+import { Category } from "./category.entity";
 import { User } from "./user.entity";
+import { TransactionStatus, TransactionType } from '../../types'
 
 @Entity()
 export class Transaction {
@@ -20,10 +21,18 @@ export class Transaction {
     @Column({ nullable: true })
     paymentDate: Date;
 
-    @Column({ nullable: true, enum: TransactionStatus, default: TransactionStatus.PENDING })
+    @Column({
+        type: 'enum',
+        enum: TransactionStatus,
+        default: TransactionStatus.PENDING,
+        nullable: true,
+    })
     status: TransactionStatus;
 
-    @Column({ enum: TransactionType })
+    @Column({
+        type: 'enum',
+        enum: TransactionType
+    })
     type: TransactionType;
 
     // isRecurrent: boolean;

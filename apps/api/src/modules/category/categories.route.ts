@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { FastifyZodApp } from '../../types'
 import { Category } from '../../db/entities/category.entity'
 import { REPOSITORIES } from '../../shared/constant'
-import { categorySchema } from './category.schema'
+import { categoryResponseSchema, categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
@@ -10,27 +10,28 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     app.get(
         '',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Lista todas as categorias disponíveis para o usuário',
                 summary: 'Lista todas as categorias',
                 produces: ['application/json'],
                 response: {
-                    200: z.array(categorySchema)
+                    200: z.array(categoryResponseSchema)
                 }
             }
         },
         async (request, reply) => {
             const categoryRepo = app.db.getRepository<Category>(REPOSITORIES.CATEGORY)
-
+            const { userId } = request.user
+            console.log(userId)
             const categories = await categoryRepo
                 .createQueryBuilder("item")
-                // .where("item.userId = :userId", { userId })
+                .where("item.userId = :userId", { userId: userId })
                 .orWhere("item.isDefault = :isDefault", { isDefault: true })
                 .getMany();
 
-
-            return categories
+            return reply.status(200).send(categories)
         })
     //  Criar
     app.post(
@@ -43,7 +44,7 @@ export async function categoriesRoutes(app: FastifyZodApp) {
                 summary: 'Cria uma nova categoria',
                 body: categorySchema,
                 response: {
-                    200: categorySchema,
+                    200: categoryResponseSchema,
                 },
                 consumes: ['application/json'],
                 produces: ['application/json'],
@@ -54,19 +55,19 @@ export async function categoriesRoutes(app: FastifyZodApp) {
 
             const category = await app.db.getRepository(REPOSITORIES.CATEGORY).save({
                 name,
+                displayName: name,
                 color,
-                userId: request.user.id,
+                userId: request.user.userId,
             })
 
-            return reply.status(201).send(
-                categorySchema.parse(category)
-            )
+            return reply.status(201).send(category)
         }
     )
     // Atualizar
     app.patch(
         '',
         {
+            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Atualiza a cor de uma categoria existente',
@@ -83,7 +84,7 @@ export async function categoriesRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            const { id: userId } = request.user
+            const { userId } = request.user
             const { categoryId, color } = request.body
 
             const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
@@ -110,4 +111,6 @@ export async function categoriesRoutes(app: FastifyZodApp) {
             )
         }
     )
+
+    app.log.info('categories routes registered')
 } 

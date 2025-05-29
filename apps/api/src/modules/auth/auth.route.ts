@@ -237,5 +237,5 @@ export async function authRoutes(app: FastifyZodApp) {
     });
 
     // 
-    app.log.info('user routes registered')
+    app.log.info('auth routes registered')
 }

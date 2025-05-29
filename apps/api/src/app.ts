@@ -13,11 +13,12 @@ import { errorHandler } from "./shared/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
-import { transactionsRoutes } from './modules/transaction/transactions.route';
+import { transactionsRoutes } from './modules/transaction/transaction.route';
 import { env } from "./shared/env";
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
 import { logger } from './shared/logger';
+import { hostname } from 'os';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
@@ -52,7 +53,16 @@ export const buildApp = async () => {
         logger: {
             level: 'info',
             stream: {
-                write: (message: string) => logger.info(message.trim())
+                write: (message: string) => {
+                    try {
+                        const parsed = JSON.parse(message)
+                        const msg = parsed.msg || parsed.message || message
+                        const hostname = parsed.hostname || 'server';
+                        logger.info(`${hostname} -> ${msg}`)
+                    } catch {
+                        logger.info(`${hostname} -> ${message.trim()}`)
+                    }
+                }
             }
         }
     }).withTypeProvider<ZodTypeProvider>();

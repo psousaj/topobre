@@ -18,7 +18,16 @@ export const AppDataSource = new DataSource({
     synchronize: true,
     // logging: true,
     ssl: true,
-    cache: false, // Desabilita cache para desenvolvimento
+    cache: {
+        type: "ioredis",
+        alwaysEnabled: true,
+        options: {
+            host: env.REDIS_HOST,
+            port: env.REDIS_PORT,
+            password: env.REDIS_PASSWORD,
+        },
+        duration: 60000 * 15 // 15 minutos
+    },
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação
     migrationsRun: false,
 

@@ -5,20 +5,21 @@ import { env } from "../shared/env";
 
 async function authHandler(request: FastifyRequest, reply: FastifyReply) {
     try {
-        // Verifica se o token JWT é válido
         await request.jwtVerify();
 
         const { jti, userId } = request.user
 
-        // Busca a sessão no banco usando a instância do Fastify
         const sessionRepo = request.server.db.getRepository(REPOSITORIES.SESSION);
-
         const session = await sessionRepo.findOne({
             where: {
                 jti,
                 isActive: true
             },
-            relations: ['user']
+            relations: ['user'],
+            cache: {
+                id: `session:${jti}`,
+                milliseconds: 1000 * 60 * 15 // 15 minutos
+            }
         });
 
         if (!session) {
@@ -31,17 +32,19 @@ async function authHandler(request: FastifyRequest, reply: FastifyReply) {
         // Verifica se a sessão não expirou
         const now = new Date();
         if (session.expiresAt < now) {
-            // Marca a sessão como inativa
             await sessionRepo.update({ id: session.id }, { isActive: false });
+            await request.server.db.dataSource.queryResultCache?.remove([`session:${jti}`]);
+
             return reply.code(401).send({
+                statusCode: 401,
                 error: 'Unauthorized',
                 message: 'Sessão expirada'
             });
         }
 
-        // Verifica se o usuário ainda está ativo
         if (!session.user || !session.user.isActive) {
             return reply.code(403).send({
+                statusCode: 403,
                 error: 'Forbidden',
                 message: 'Usuário desativado'
             });
@@ -50,7 +53,6 @@ async function authHandler(request: FastifyRequest, reply: FastifyReply) {
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
 
-        // Log apenas em desenvolvimento
         if (env.NODE_ENV === 'development') {
             console.error('❌ Erro na autenticação:', errorMessage);
         }

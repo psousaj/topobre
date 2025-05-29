@@ -62,7 +62,7 @@ export async function authRoutes(app: FastifyZodApp) {
                     userAgent: req.headers['user-agent'] || '',
                     isActive: true,
                     userId: user.id,
-                }
+                },
             });
 
             let jti: string;
@@ -130,6 +130,7 @@ export async function authRoutes(app: FastifyZodApp) {
         // Marca a sessão como inativa
         const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
         await sessionRepo.update({ jti }, { isActive: false });
+        await app.db.dataSource.queryResultCache?.remove([`session:${jti}`]);
 
         return reply.send({ message: 'Logout realizado com sucesso' });
     });

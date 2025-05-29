@@ -7,7 +7,5 @@ export const categorySchema = z.object({
 })
 
 export const categoryResponseSchema = categorySchema.extend({
-    id: z.string().cuid(),
     displayName: z.string(),
-    userId: z.string().cuid().optional(),
 })

@@ -15,12 +15,34 @@ import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { transactionsRoutes } from './modules/transaction/transactions.route';
 import { env } from "./shared/env";
+import { z } from 'zod';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
     await app.register(authRoutes, { prefix: 'auth' })
     await app.register(categoriesRoutes, { prefix: 'categories' })
     await app.register(userRoutes, { prefix: 'users' })
+    app.get('/health', {
+        schema: {
+            tags: ['Health check'],
+            description: 'Health check',
+            response: {
+                200: z.object({
+                    status: z.string(),
+                    database: z.string(),
+                    timestamp: z.string(),
+                })
+            }
+        }
+    }, async (req, rep) => {
+        const isDbConnected = app.db.isConnected ? app.db.isConnected() : app.db.dataSource.isInitialized;
+
+        return rep.send({
+            status: 'ok',
+            database: isDbConnected ? 'connected' : 'disconnected',
+            timestamp: new Date().toISOString()
+        });
+    });
 }
 
 export const buildApp = async () => {
@@ -31,10 +53,6 @@ export const buildApp = async () => {
 
     // 2. SEGUNDO: Plugin JWT (precisa estar antes do auth)
     await app.register(jwtPlugin);
-    app.addHook('preHandler', (req, res, next) => {
-        req.jwt = app.jwt
-        return next()
-    })
 
     // 3. TERCEIRO: Plugin de autenticação (depende do JWT e DB)
     await app.register(authPlugin);
@@ -71,17 +89,6 @@ export const buildApp = async () => {
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
     app.setErrorHandler(errorHandler);
-
-    // Health check que usa o decorator
-    app.get('/health', async (req, rep) => {
-        const isDbConnected = app.db.isConnected ? app.db.isConnected() : app.db.dataSource.isInitialized;
-
-        return rep.send({
-            status: 'ok',
-            database: isDbConnected ? 'connected' : 'disconnected',
-            timestamp: new Date().toISOString()
-        });
-    });
 
     // ROTAS
     app.register(appRoutes, { prefix: 'api/v1' });

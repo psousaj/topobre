@@ -54,40 +54,62 @@ export async function authRoutes(app: FastifyZodApp) {
                 });
             }
 
-            // Gera um JTI único
-            const jti = uuidv4();
-            const expiresIn = 24 * 60 * 60; // 24 horas em segundos
-            const expiresAt = new Date(Date.now() + expiresIn * 1000);
-
-            // Salva a sessão no banco
+            // Verifica se existe uma sessão ativa para o IP e User-Agent que está logando
             const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
-            await sessionRepo.save({
-                jti,
-                userId: user.id,
-                user,
-                ip: req.ip,
-                userAgent: req.headers['user-agent'] || '',
-                expiresAt,
-                isActive: true
-            });
-
-            // Gera o token JWT
-            const token = app.jwt.sign({
-                userId: user.id,
-                email: user.email,
-                jti
-            }, {
-                expiresIn: '24h'
-            });
-
-            return reply.status(200).send({
-                user: {
+            const existingSession = await sessionRepo.findOne({
+                where: {
+                    ip: req.ip,
+                    userAgent: req.headers['user-agent'] || '',
+                    isActive: true,
                     userId: user.id,
-                    name: user.name,
-                    email: user.email,
-                },
-                accessToken: token,
+                }
             });
+
+            let jti: string;
+            let refreshToken: string;
+
+            if (!existingSession) {
+                jti = uuidv4();
+                const refreshToken = uuidv4();
+
+                const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 dias
+
+                await sessionRepo.save({
+                    userId: user.id,
+                    jti,
+                    refreshToken: refreshToken,
+                    ip: req.ip,
+                    userAgent: req.headers['user-agent'],
+                    isActive: true,
+                    expiresAt,
+                });
+
+            } else {
+                jti = existingSession.jti;
+                refreshToken = existingSession.refreshToken;
+            }
+
+            const accessToken = app.jwt.sign(
+                { userId: user.id, email: user.email, jti },
+                { expiresIn: '24h' }
+            );
+
+            return reply
+                .setCookie('refresh_token', refreshToken, {
+                    httpOnly: true,
+                    path: '/auth/refresh',
+                    sameSite: 'strict',
+                    secure: true,
+                    maxAge: 7 * 24 * 60 * 60,
+                })
+                .send({
+                    user: {
+                        userId: user.id,
+                        name: user.name,
+                        email: user.email,
+                    },
+                    accessToken: accessToken,
+                });
         }
     );
 
@@ -119,6 +141,83 @@ export async function authRoutes(app: FastifyZodApp) {
             });
         }
     });
+
+    app.post('/auth/refresh', {
+        schema: {
+            tags: ['Auth'],
+            description: 'Renova o token de acesso usando o refresh_token',
+            summary: 'Gera novo accessToken e atualiza sessão',
+            response: {
+                200: loginResponseSchema,
+                401: unauthorizedErrorResponseSchema
+            }
+        }
+    }, async (req, reply) => {
+        const refreshToken = req.cookies?.refresh_token;
+
+        if (!refreshToken) {
+            return reply.status(401).send({
+                error: 'Unauthorized',
+                message: 'Refresh token ausente'
+            });
+        }
+
+        const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
+        const session = await sessionRepo.findOne({
+            where: { refreshToken, isActive: true },
+            relations: ['user']
+        });
+
+        if (!session || !session.user || !session.user.isActive) {
+            return reply.status(401).send({
+                error: 'Unauthorized',
+                message: 'Sessão inválida ou usuário desativado'
+            });
+        }
+
+        const now = new Date();
+        if (session.expiresAt < now) {
+            await sessionRepo.update({ id: session.id }, { isActive: false });
+            return reply.status(401).send({
+                error: 'Unauthorized',
+                message: 'Sessão expirada'
+            });
+        }
+
+        // Atualiza sessão com novo jti e refreshToken
+        const newJti = uuidv4();
+        const newRefreshToken = uuidv4();
+        const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+        session.jti = newJti;
+        session.refreshToken = newRefreshToken;
+        session.expiresAt = newExpiresAt;
+        await sessionRepo.save(session);
+
+        const accessToken = app.jwt.sign({
+            userId: session.user.id,
+            email: session.user.email,
+            jti: newJti
+        }, { expiresIn: '24h' });
+
+        return reply
+            .setCookie('refresh_token', newRefreshToken, {
+                httpOnly: true,
+                path: '/auth/refresh',
+                sameSite: 'strict',
+                secure: true,
+                maxAge: 7 * 24 * 60 * 60,
+            })
+            .send({
+                user: {
+                    userId: session.user.id,
+                    name: session.user.name,
+                    email: session.user.email,
+                },
+                accessToken
+            });
+    });
+
 
     // Rota para verificar token
     app.get('/me', {

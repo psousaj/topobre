@@ -16,6 +16,7 @@ import { categoriesRoutes } from "./modules/category/categories.route";
 import { transactionsRoutes } from './modules/transaction/transactions.route';
 import { env } from "./shared/env";
 import { z } from 'zod';
+import fastifyCookie from '@fastify/cookie';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
@@ -56,6 +57,11 @@ export const buildApp = async () => {
 
     // 3. TERCEIRO: Plugin de autenticação (depende do JWT e DB)
     await app.register(authPlugin);
+
+    // 4. QUARTO: Cookie
+    await app.register(fastifyCookie, {
+        secret: env.COOKIE_SECRET
+    });
 
     // Cors
     app.register(fastifyCors, {

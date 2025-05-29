@@ -24,6 +24,10 @@
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false
   },
+  "typeRoots": [
+    "./types",
+    "./node_modules/@types"
+  ],
   "ts-node": {
     "require": [
       "reflect-metadata"

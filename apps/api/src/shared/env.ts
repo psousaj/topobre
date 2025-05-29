@@ -10,6 +10,7 @@ const envSchema = z.object({
     PORT: z.string().transform((val) => Number(val)).default('3001'),
     HOST: z.string().default('0.0.0.0'),
     JWT_SECRET: z.string().min(1, { message: "JWT_SECRET is required" }),
+    COOKIE_SECRET: z.string().min(1, { message: "COOKIE_SECRET is required" }),
     JWT_EXPIRES_IN: z.string().default('1d'),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })

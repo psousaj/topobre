@@ -104,7 +104,7 @@ export async function authRoutes(app: FastifyZodApp) {
         }
     }, async (req, reply) => {
         try {
-            const jti = req.jwt!.payload.jti;
+            const jti = req.user.jti
 
             // Marca a sessão como inativa
             const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
@@ -133,11 +133,14 @@ export async function authRoutes(app: FastifyZodApp) {
             }
         }
     }, async (req, reply) => {
+        const userRepo = app.db.getRepository(REPOSITORIES.USER);
+        const user = await userRepo.findOneBy({ id: req.user.userId });
+
         return reply.send({
             user: {
-                userId: req.user!.id,
-                name: req.user!.name,
-                email: req.user!.email
+                userId: user.id,
+                name: user.name,
+                email: user.email
             }
         });
     });

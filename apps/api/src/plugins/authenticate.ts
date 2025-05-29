@@ -8,7 +8,7 @@ async function authHandler(request: FastifyRequest, reply: FastifyReply) {
         // Verifica se o token JWT é válido
         await request.jwtVerify();
 
-        const { jti, userId } = request.jwt!.verify(request.headers.authorization || '');
+        const { jti, userId } = request.user
 
         // Busca a sessão no banco usando a instância do Fastify
         const sessionRepo = request.server.db.getRepository(REPOSITORIES.SESSION);
@@ -46,9 +46,6 @@ async function authHandler(request: FastifyRequest, reply: FastifyReply) {
                 message: 'Usuário desativado'
             });
         }
-
-        // Adiciona o usuário ao request
-        request.user = session.user;
 
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';

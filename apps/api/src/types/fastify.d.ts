@@ -8,7 +8,7 @@ import { JWT } from '@fastify/jwt';
 declare module "fastify" {
     interface FastifyRequest {
         user?: User;
-        jwt?: FastifyJWT
+        jwt?: JWT
     }
 
     interface FastifyInstance {
@@ -26,6 +26,12 @@ declare module '@fastify/jwt' {
             iat?: number;
             exp?: number;
         };
-        user: User;
+        user: {
+            userId: string;
+            email: string;
+            jti: string;
+            iat?: number;
+            exp?: number;
+        };
     }
 }

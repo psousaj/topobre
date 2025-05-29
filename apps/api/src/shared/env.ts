@@ -11,7 +11,6 @@ const envSchema = z.object({
     HOST: z.string().default('0.0.0.0'),
     JWT_SECRET: z.string().min(1, { message: "JWT_SECRET is required" }),
     JWT_EXPIRES_IN: z.string().default('1d'),
-    COOKIE_SECRET: z.string().min(1, { message: "COOKIE_SECRET is required" }),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
 })
 

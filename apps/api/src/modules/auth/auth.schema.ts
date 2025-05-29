@@ -24,19 +24,13 @@ const loginResponseSchema = z.object({
 
 type LoginUserInput = z.infer<typeof loginSchema>
 
-const meResponseSchema = {
-    type: 'object',
-    properties: {
-        user: {
-            type: 'object',
-            properties: {
-                userId: { type: 'string' },
-                name: { type: 'string' },
-                email: { type: 'string' }
-            }
-        }
-    }
-} as const;
+const meResponseSchema = z.object({
+    user: z.object({
+        userId: z.string(),
+        name: z.string(),
+        email: z.string(),
+    }),
+})
 
 export {
     loginSchema,

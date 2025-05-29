@@ -4,7 +4,7 @@
   "version": "1.1.2",
   "scripts": {
     "dev": "nodemon --exec ts-node -r reflect-metadata src/server.ts",
-    "dev:watch": "tsx watch --require reflect-metadata src/server.ts",
+    "db:seed": "pnpm -dlx ts-node scripts/seedDB.ts",
     "build": "rimraf dist && tsc",
     "start": "node -r reflect-metadata dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +26,7 @@
     "reflect-metadata": "^0.2.2",
     "typeorm": "^0.3.24",
     "uuid": "^11.1.0",
+    "winston": "^3.17.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

@@ -17,6 +17,7 @@ import { transactionsRoutes } from './modules/transaction/transactions.route';
 import { env } from "./shared/env";
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
+import { logger } from './shared/logger';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
@@ -47,7 +48,14 @@ const appRoutes = async (app: FastifyInstance, opts: any) => {
 }
 
 export const buildApp = async () => {
-    const app = fastify({ logger: false }).withTypeProvider<ZodTypeProvider>();
+    const app = fastify({
+        logger: {
+            level: 'info',
+            stream: {
+                write: (message: string) => logger.info(message.trim())
+            }
+        }
+    }).withTypeProvider<ZodTypeProvider>();
 
     // 1. PRIMEIRO: Plugin do banco de dados
     await app.register(datasourcePlugin);

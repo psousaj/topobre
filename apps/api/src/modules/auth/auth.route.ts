@@ -68,7 +68,7 @@ export async function authRoutes(app: FastifyZodApp) {
             let jti: string;
             let refreshToken: string;
 
-            if (!existingSession) {
+            if (!existingSession || !existingSession.isActive) {
                 jti = uuidv4();
                 const refreshToken = uuidv4();
 
@@ -113,7 +113,7 @@ export async function authRoutes(app: FastifyZodApp) {
         }
     );
 
-    app.post('/logout', {
+    app.delete('/logout', {
         preHandler: [app.authenticate],
         schema: {
             tags: ['Auth'],
@@ -125,21 +125,13 @@ export async function authRoutes(app: FastifyZodApp) {
             }
         }
     }, async (req, reply) => {
-        try {
-            const jti = req.user.jti
+        const jti = req.user.jti
 
-            // Marca a sessão como inativa
-            const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
-            await sessionRepo.update({ jti }, { isActive: false });
+        // Marca a sessão como inativa
+        const sessionRepo = app.db.getRepository(REPOSITORIES.SESSION);
+        await sessionRepo.update({ jti }, { isActive: false });
 
-            return reply.send({ message: 'Logout realizado com sucesso' });
-        } catch (error) {
-            app.log.error('Erro no logout:', error);
-            return reply.status(500).send({
-                error: 'Internal Server Error',
-                message: 'Erro interno do servidor'
-            });
-        }
+        return reply.send({ message: 'Logout realizado com sucesso' });
     });
 
     app.post('/auth/refresh', {

@@ -56,6 +56,7 @@ async function authHandler(request: FastifyRequest, reply: FastifyReply) {
         }
 
         return reply.code(401).send({
+            status: 401,
             error: 'Unauthorized',
             message: 'Token inválido'
         });

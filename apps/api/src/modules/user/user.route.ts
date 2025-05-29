@@ -128,4 +128,6 @@ export async function userRoutes(app: FastifyZodApp) {
 
         return reply.status(202).send(user);
     });
+
+    app.log.info('user routes registered')
 }

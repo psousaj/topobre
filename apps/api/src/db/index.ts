@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
         path.resolve(__dirname, '../db/entities/*.entity.{js,ts}'),
     ],
     synchronize: true,
-    logging: true,
+    // logging: true,
     ssl: true,
     cache: false, // Desabilita cache para desenvolvimento
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação

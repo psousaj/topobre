@@ -121,4 +121,6 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             return transactionSchema.parse(updatedTransaction)
         }
     )
+
+    app.log.info('transaction routes registered')
 }

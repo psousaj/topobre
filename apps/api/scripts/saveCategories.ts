@@ -32,7 +32,7 @@ export async function saveCategories() {
             if (exists) {
                 logger.debug(`Categoria '${category.name}' já existe. Pulando...`);
             } else {
-                const cat = categoryRepo.create({ ...category, isDefault: true });
+                const cat = categoryRepo.create({ ...category, displayName: category.displayName, isDefault: true });
                 await categoryRepo.save(cat);
                 logger.info(`Categoria '${category.name}' criada.`);
             }

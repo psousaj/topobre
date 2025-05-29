@@ -7,7 +7,7 @@ const start = async () => {
 
     try {
         await app.listen({ port: env.PORT, host: env.HOST });
-        console.log(`🚀 Servidor rodando em http://${env.HOST}:${env.PORT}`);
+        app.log.info(`🚀 Servidor rodando em http://${env.HOST}:${env.PORT}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);

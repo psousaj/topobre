@@ -24,11 +24,11 @@ export async function categoriesRoutes(app: FastifyZodApp) {
         async (request, reply) => {
             const categoryRepo = app.db.getRepository<Category>(REPOSITORIES.CATEGORY)
             const { userId } = request.user
-            console.log(userId)
             const categories = await categoryRepo
                 .createQueryBuilder("item")
                 .where("item.userId = :userId", { userId: userId })
                 .orWhere("item.isDefault = :isDefault", { isDefault: true })
+                .select(["item.name", "item.displayName", "item.color", "item.isDefault"])
                 .getMany();
 
             return reply.status(200).send(categories)

@@ -20,9 +20,15 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
+            const { userId } = request.user
+            const userRepository = app.db.getRepository(REPOSITORIES.USER)
+            const userExists = await userRepository.findOne({
+                where: { id: userId }
+            })
 
             const transactions = await app.db.getRepository(REPOSITORIES.TRANSACTION).find({
-                where: { user: request.user },
+                where: { user: userExists },
+                order: { dueDate: 'ASC' },
                 relations: ['category'],
             })
 
@@ -63,7 +69,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 description,
                 dueDate: new Date(dueDate),
                 transactionType,
-                userId: request.user.id,
+                userId: request.user.userId,
                 transactionValue,
                 category: categoryExists
             })

@@ -8,4 +8,5 @@ export const categorySchema = z.object({
 
 export const categoryResponseSchema = categorySchema.extend({
     displayName: z.string(),
+    id: z.string().uuid(),
 })

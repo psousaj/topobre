@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm";
 import { Category } from "./category.entity";
 import { User } from "./user.entity";
 import { TransactionStatus, TransactionType } from '../../types'
@@ -49,9 +49,9 @@ export class Transaction {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => User, (user) => user.transactions)
+    @ManyToOne(() => User, (user) => user.transactions)
     user: User;
 
-    @OneToMany(() => Category, (category) => category.transactions)
+    @ManyToOne(() => Category, (category) => category.transactions)
     category: Category;
 }

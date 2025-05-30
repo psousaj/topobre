@@ -17,19 +17,21 @@ export async function categoriesRoutes(app: FastifyZodApp) {
                 summary: 'Lista todas as categorias',
                 produces: ['application/json'],
                 response: {
-                    200: z.array(categoryResponseSchema)
+                    // 200: z.array(categoryResponseSchema)
                 }
             }
         },
         async (request, reply) => {
             const categoryRepo = app.db.getRepository<Category>(REPOSITORIES.CATEGORY)
             const { userId } = request.user
-            const categories = await categoryRepo
+            const [categories, total] = await categoryRepo
                 .createQueryBuilder("item")
                 .where("item.userId = :userId", { userId: userId })
                 .orWhere("item.isDefault = :isDefault", { isDefault: true })
-                .select(["item.name", "item.displayName", "item.color", "item.isDefault"])
-                .getMany();
+                .select(["item.name", "item.displayName", "item.color", "item.isDefault", "item.id"])
+                .getManyAndCount()
+            // .addSelect("item.id", "categoryId")
+            // .getRawMany();
 
             return reply.status(200).send(categories)
         })

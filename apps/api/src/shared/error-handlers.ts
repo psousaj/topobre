@@ -47,7 +47,7 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
         return reply.status(500).send({
             statusCode: 500,
             error: 'Internal Server Error',
-            message: error.message
+            message: error.message.replaceAll("\\", "'")
         });
     }
 

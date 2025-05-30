@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FastifyZodApp } from '../../types'
+import { FastifyZodApp, TransactionStatus } from '../../types'
 import { transactionSchema } from './transaction.schema'
 import { REPOSITORIES } from '../../shared/constant'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
@@ -53,11 +53,16 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            const { categoryId, description, dueDate, transactionType, transactionValue } = request.body
+            const { categoryId, description, dueDate, type, valueInCents } = request.body
 
             const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
                 where: { id: categoryId }
             })
+            const userRepository = app.db.getRepository(REPOSITORIES.USER)
+            const userExists = await userRepository.findOne({
+                where: { id: request.user.userId }
+            })
+
 
             if (!categoryExists) {
                 return reply.status(404).send({
@@ -68,14 +73,15 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             const transaction = await app.db.getRepository(REPOSITORIES.TRANSACTION).save({
                 description,
                 dueDate: new Date(dueDate),
-                transactionType,
-                userId: request.user.userId,
-                transactionValue,
-                category: categoryExists
+                type,
+                valueInCents,
+                category: categoryExists,
+                user: userExists,
+                status: TransactionStatus.PENDING
             })
 
             return reply.status(201).send(
-                transactionSchema.parse(transaction)
+                transactionSchema.parse(transaction),
             )
         }
     )
@@ -89,7 +95,6 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 description: 'Atualiza uma transação existente',
                 summary: 'Atualiza uma transação',
                 body: transactionSchema
-                    .omit({ category: true })
                     .partial()
                     .refine((data) => data.id !== undefined, {
                         message: 'O campo "id" é obrigatório',

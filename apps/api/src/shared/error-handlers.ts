@@ -16,6 +16,20 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
         });
     }
 
+    const fastifyValidationMatch = error.message?.match(/^(params|body|querystring|headers)\/(\w+)\s(.+)$/);
+    if (fastifyValidationMatch) {
+        const [, location, field, message] = fastifyValidationMatch;
+        return reply.status(400).send({
+            statusCode: 400,
+            message: 'Validation failed',
+            errors: {
+                [location]: {
+                    [field]: message
+                }
+            }
+        });
+    }
+
     if (
         error instanceof Error &&
         "code" in error &&

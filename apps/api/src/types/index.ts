@@ -7,9 +7,20 @@ import { REPOSITORIES } from "../shared/constant";
 
 type FastifyZodApp = FastifyInstance<Server<typeof IncomingMessage, typeof ServerResponse>, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, ZodTypeProvider>
 
+
+type TemplateParams = Record<string, any>;
+
+interface SendEmailOptions {
+    to: string;
+    subject: string;
+    templateName: string;
+    params: TemplateParams;
+}
+
 interface Mailer {
     sendPasswordResetEmail(to: string, resetLink: string): Promise<void>;
 }
+
 
 enum TransactionStatus {
     PENDING = 'pending',
@@ -46,5 +57,7 @@ export {
     RepositoryKey,
     RepositoryType,
     DatabaseService,
-    Mailer
+    Mailer,
+    SendEmailOptions,
+    TemplateParams
 }

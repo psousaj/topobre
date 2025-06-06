@@ -10,7 +10,7 @@
 **/!.yarn/releases
 **/!.yarn/versions
 
-**/errors.json
+apps/api/errors.json
 
 # testing
 **/coverage

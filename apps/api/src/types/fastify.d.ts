@@ -2,7 +2,7 @@
 import "fastify";
 import { DataSource } from "typeorm";
 import { User } from "../db/entities/user.entity";
-import { DatabaseService } from '../types'
+import { DatabaseService, Mailer } from '../types'
 import { JWT } from '@fastify/jwt';
 
 declare module "fastify" {
@@ -14,6 +14,7 @@ declare module "fastify" {
     interface FastifyInstance {
         db: DatabaseService;
         authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+        mailer: Mailer;
     }
 }
 

@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import { v4 as uuidv4 } from 'uuid';
 
-import { loginSchema, loginResponseSchema, meResponseSchema } from "./auth.schema"
+import { loginSchema, loginResponseSchema, meResponseSchema, forgottenPasswordSchema } from "./auth.schema"
 import { FastifyZodApp } from "../../types"
 import { forbiddenErrorResponseSchema, unauthorizedErrorResponseSchema } from "../../shared/schemas"
 import { REPOSITORIES } from "../../shared/constant"
@@ -209,6 +209,77 @@ export async function authRoutes(app: FastifyZodApp) {
                 },
                 accessToken
             });
+    });
+
+    app.post('/password/forgot', {
+        schema: {
+            body: z.object({ email: z.string().email() }),
+            response: {
+                200: z.object({ message: z.string() }),
+            }
+        }
+    }, async (req, reply) => {
+        const { email } = req.body;
+
+        const userRepo = app.db.getRepository(REPOSITORIES.USER);
+        const resetTokenRepo = app.db.getRepository(REPOSITORIES.PASSWORD_RESET_TOKEN);
+
+        const user = await userRepo.findOneBy({ email });
+
+        if (user) {
+            const token = uuidv4();
+            const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1h
+
+            await resetTokenRepo.save({
+                userId: user.id,
+                token,
+                expiresAt,
+                used: false,
+            });
+
+            // Envie o e-mail com o link: `https://seusite.com/reset-password?token=${token}`
+            const resetLink = `https://seusite.com/reset-password?token=${token}`;
+            await app.mailer.sendPasswordResetEmail(email, resetLink);
+
+            // Você pode usar alguma lib como nodemailer
+            app.log.info(`Reset token for ${email}: ${token}`);
+        }
+
+        // Nunca diga se o email existe ou não (para evitar enumeração)
+        return reply.send({ message: 'Se o e-mail estiver cadastrado, você receberá instruções para redefinir a senha.' });
+    });
+
+    app.post('/password/reset', {
+        schema: {
+            tags: ['Auth'],
+            description: 'Redefinição de senha',
+            summary: 'Redefine a senha do usuário usando um token de redefinição',
+            body: forgottenPasswordSchema,
+            response: {
+                200: z.object({ message: z.string() }),
+            }
+        }
+    }, async (req, reply) => {
+        const { token, newPassword } = req.body;
+
+        const resetTokenRepo = app.db.getRepository(REPOSITORIES.PASSWORD_RESET_TOKEN);
+        const userRepo = app.db.getRepository(REPOSITORIES.USER);
+
+        const resetToken = await resetTokenRepo.findOne({
+            where: { token, used: false },
+            relations: ['user'],
+        });
+
+        if (!resetToken || resetToken.expiresAt < new Date()) {
+            return reply.status(400).send({ message: 'Token inválido ou expirado' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await userRepo.update({ id: resetToken.userId }, { password: hashedPassword });
+        await resetTokenRepo.update({ token }, { used: true });
+
+        return reply.send({ message: 'Senha redefinida com sucesso' });
     });
 
 

@@ -12,6 +12,7 @@ const envSchema = z.object({
     REDIS_HOST: z.string().ip(),
     REDIS_PORT: z.string().transform((val) => Number(val)).default('6379'),
     REDIS_PASSWORD: z.string(),
+    RESEND_API_KEY: z.string(),
     JWT_SECRET: z.string().min(1, { message: "JWT_SECRET is required" }),
     COOKIE_SECRET: z.string().min(1, { message: "COOKIE_SECRET is required" }),
     JWT_EXPIRES_IN: z.string().default('1d'),

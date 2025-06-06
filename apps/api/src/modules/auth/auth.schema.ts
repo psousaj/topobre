@@ -12,6 +12,11 @@ const loginSchema = z.object({
     password: z.string().min(6),
 })
 
+const forgottenPasswordSchema = z.object({
+    token: z.string().uuid(),
+    newPassword: z.string().min(8),
+})
+
 const loginResponseSchema = z.object({
     user: z.object({
         userId: z.string(),
@@ -37,4 +42,5 @@ export {
     meResponseSchema,
     loginResponseSchema,
     LoginUserInput,
+    forgottenPasswordSchema
 }

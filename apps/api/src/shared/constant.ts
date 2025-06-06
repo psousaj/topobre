@@ -1,3 +1,4 @@
+import { PasswordResetToken } from "../db/entities/password-reset.entity";
 import { Category } from "../db/entities/category.entity"
 import { Session } from "../db/entities/session.entity"
 import { Transaction } from "../db/entities/transaction.entity"
@@ -12,6 +13,7 @@ export const REPOSITORIES = {
     SESSION: Session,
     TRANSACTION: Transaction,
     CATEGORY: Category,
+    PASSWORD_RESET_TOKEN: PasswordResetToken,
 } as const;
 
 export const SALT_ROUNDS = 10;

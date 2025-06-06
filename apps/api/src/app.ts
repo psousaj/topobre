@@ -9,6 +9,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import datasourcePlugin from "./plugins/datasource";
 import authPlugin from './plugins/authenticate';
 import jwtPlugin from './plugins/jwt';
+import mailerPlugin from './plugins/mailer';
 import { errorHandler } from "./shared/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
@@ -80,6 +81,9 @@ export const buildApp = async () => {
     await app.register(fastifyCookie, {
         secret: env.COOKIE_SECRET
     });
+
+    // 5. QUINTO: Mailer
+    await app.register(mailerPlugin);
 
     // Cors
     app.register(fastifyCors, {

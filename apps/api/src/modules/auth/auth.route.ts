@@ -213,6 +213,8 @@ export async function authRoutes(app: FastifyZodApp) {
 
     app.post('/password/forgot', {
         schema: {
+            tags: ['Auth'],
+            description: 'Envia um link de redefinição de senha para o usuário',
             body: z.object({ email: z.string().email() }),
             response: {
                 200: z.object({ message: z.string() }),
@@ -237,15 +239,12 @@ export async function authRoutes(app: FastifyZodApp) {
                 used: false,
             });
 
-            // Envie o e-mail com o link: `https://seusite.com/reset-password?token=${token}`
-            const resetLink = `https://seusite.com/reset-password?token=${token}`;
+            const resetLink = `https://topobre.crudbox.com.br/auth/reset-password?token=${token}&mail=${email}`;
             await app.mailer.sendPasswordResetEmail(email, resetLink);
 
-            // Você pode usar alguma lib como nodemailer
             app.log.info(`Reset token for ${email}: ${token}`);
         }
 
-        // Nunca diga se o email existe ou não (para evitar enumeração)
         return reply.send({ message: 'Se o e-mail estiver cadastrado, você receberá instruções para redefinir a senha.' });
     });
 
@@ -255,12 +254,13 @@ export async function authRoutes(app: FastifyZodApp) {
             description: 'Redefinição de senha',
             summary: 'Redefine a senha do usuário usando um token de redefinição',
             body: forgottenPasswordSchema,
+            // querystring: z.object({ token: z.string({ invalid_type_error: 'Token deve ser uma string', required_error: 'Token de reset obrigatório' }) }),
             response: {
                 200: z.object({ message: z.string() }),
             }
         }
     }, async (req, reply) => {
-        const { token, newPassword } = req.body;
+        const { newPassword, token } = req.body;
 
         const resetTokenRepo = app.db.getRepository(REPOSITORIES.PASSWORD_RESET_TOKEN);
         const userRepo = app.db.getRepository(REPOSITORIES.USER);
@@ -281,7 +281,6 @@ export async function authRoutes(app: FastifyZodApp) {
 
         return reply.send({ message: 'Senha redefinida com sucesso' });
     });
-
 
     // Rota para verificar token
     app.get('/me', {
@@ -308,6 +307,5 @@ export async function authRoutes(app: FastifyZodApp) {
         });
     });
 
-    // 
     app.log.info('auth routes registered')
 }

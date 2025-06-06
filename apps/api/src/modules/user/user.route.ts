@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 
 export async function userRoutes(app: FastifyZodApp) {
-    app.get<{ Params: { id: string } }>(
+    app.get(
         "/:id",
         {
             preHandler: app.authenticate,
@@ -74,13 +74,16 @@ export async function userRoutes(app: FastifyZodApp) {
         },
     )
 
-    app.patch<{ Params: { id: string } }>("/:id",
+    app.patch("/:id",
         {
             schema: {
                 tags: ['User'],
                 description: 'Update user by ID',
                 summary: 'Update user by ID',
                 body: createUserSchema.partial(),
+                params: z.object({
+                    id: z.string().uuid(),
+                }),
                 response: {
                     200: createUserResponseSchema,
                     404: notFoundErrorResponseSchema

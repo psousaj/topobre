@@ -52,7 +52,7 @@ const appRoutes = async (app: FastifyInstance, opts: any) => {
 export const buildApp = async () => {
     const app = fastify({
         logger: {
-            level: 'info',
+            level: env.NODE_ENV === 'production' ? 'info' : 'debug',
             stream: {
                 write: (message: string) => {
                     try {

@@ -1,54 +1,56 @@
-import { FastifyPluginAsync } from "fastify";
+import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { Resend } from "resend";
 import path from "path";
 import fs from "fs/promises";
 import handlebars from "handlebars";
 
-type TemplateParams = Record<string, any>;
+import { Mailer, SendEmailOptions, TemplateParams } from "../types";
+import { env } from "../shared/env";
 
-interface SendEmailOptions {
-    to: string;
-    subject: string;
-    templateName: string;
-    params: TemplateParams;
-}
-
-export interface Mailer {
-    sendPasswordResetEmail(to: string, resetLink: string): Promise<void>;
-}
-
-const renderTemplate = async (templateName: string, params: TemplateParams): Promise<string> => {
+async function renderTemplate(templateName: string, params: TemplateParams): Promise<string> {
     const filePath = path.join(__dirname, "..", "templates", `${templateName}.hbs`);
     const source = await fs.readFile(filePath, "utf8");
     const compiled = handlebars.compile(source);
     return compiled(params);
-};
+}
 
-const mailerPlugin: FastifyPluginAsync = async (app) => {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+async function mailerPlugin(app: FastifyInstance): Promise<void> {
+    const resend = new Resend(env.RESEND_API_KEY);
     const isDev = process.env.NODE_ENV !== "production";
 
-    async function sendEmail({ to, subject, templateName, params }: SendEmailOptions) {
-        const html = await renderTemplate(templateName, params);
+    async function sendEmail(options: SendEmailOptions): Promise<void> {
+        const { to, subject, templateName, params } = options;
 
-        if (isDev) {
-            app.log.info(`[DEV] Email para: ${to}`);
-            app.log.info(`Assunto: ${subject}`);
-            app.log.info(`HTML: ${html}`);
-            return;
+        try {
+            app.log.info(`📧 Gerando email com template: ${templateName} para ${to}`);
+            const html = await renderTemplate(templateName, params);
+
+            const result = await resend.emails.send({
+                from: 'Topobre App <naoresponda@topobre.crudbox.com.br>',
+                to,
+                subject,
+                html
+            });
+
+            app.log.info(`📨 Email enviado para ${to}`);
+            app.log.debug(`Resend response: ${JSON.stringify(result, null, 2)}`);
+
+            if (isDev) {
+                app.log.info(`[DEV MODE] Email enviado com Resend (modo desenvolvimento ativo)`);
+            }
+
+        } catch (err) {
+            app.log.error(`❌ Falha ao enviar email para ${to} com template "${templateName}"`);
+            app.log.error(err);
+            throw err;
         }
-
-        await resend.emails.send({
-            from: 'SuaApp <onboarding@resend.dev>',
-            to,
-            subject,
-            html
-        });
     }
 
+
     const mailer: Mailer = {
-        async sendPasswordResetEmail(to, resetLink) {
+        async sendPasswordResetEmail(to: string, resetLink: string): Promise<void> {
+            app.log.info(`🔐 Enviando email de redefinição de senha para ${to}`);
             return sendEmail({
                 to,
                 subject: "Redefinição de senha",
@@ -59,7 +61,7 @@ const mailerPlugin: FastifyPluginAsync = async (app) => {
     };
 
     app.decorate("mailer", mailer);
-};
+}
 
 export default fp(mailerPlugin, {
     name: "mailer",

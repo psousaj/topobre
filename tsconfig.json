@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "es2021",
+            "dom"
+        ],
+        "target": "es2020",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "declaration": false,
+        "removeComments": false,
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "strict": false,
+        "forceConsistentCasingInFileNames": true,
+        "strictPropertyInitialization": false,
+        "paths": {
+            "@topobre/db": [
+                "packages/db/src"
+            ],
+            "@topobre/queue": [
+                "packages/queue"
+            ],
+            "@topobre/shared": [
+                "packages/shared"
+            ]
+        }
+    },
+    "typeRoots": [
+        "./types",
+        "./node_modules/@types"
+    ],
+    "ts-node": {
+        "require": [
+            "reflect-metadata"
+        ],
+        "transpileOnly": true,
+        "files": true
+    }
+}

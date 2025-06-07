@@ -16,7 +16,7 @@ import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { transactionsRoutes } from './modules/transaction/transaction.route';
-import { env } from "./shared/env";
+import { env } from "../../../libs/shared/env";
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
 import { logger } from './config/logger';

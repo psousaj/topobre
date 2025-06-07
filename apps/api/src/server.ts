@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { env } from './shared/env'
+import { env } from '../../../libs/shared/env'
 import { buildApp } from "./app";
 import { bootstrapLogger } from './config/bootstrapLogger';
 

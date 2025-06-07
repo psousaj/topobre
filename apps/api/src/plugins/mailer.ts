@@ -25,15 +25,16 @@ async function mailerPlugin(app: FastifyInstance): Promise<void> {
         try {
             app.log.info(`📧 Gerando email com template: ${templateName} para ${to}`);
             const html = await renderTemplate(templateName, params);
+            const destiny = isDev ? 'delivered@resend.dev' : to
 
             const result = await resend.emails.send({
                 from: 'Topobre App <naoresponda@topobre.crudbox.com.br>',
-                to,
+                to: destiny,
                 subject,
                 html
             });
 
-            app.log.info(`📨 Email enviado para ${to}`);
+            app.log.info(`📨 Email enviado para ${destiny}`);
             app.log.debug(`Resend response: ${JSON.stringify(result, null, 2)}`);
 
             if (isDev) {

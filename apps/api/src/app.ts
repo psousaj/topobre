@@ -21,6 +21,7 @@ import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
 import { logger } from './config/logger';
 import { hostname } from 'os';
+import pkg from '../package.json'
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })
@@ -104,8 +105,8 @@ export const buildApp = async () => {
         openapi: {
             info: {
                 title: 'ToPobre API de Finanças',
-                description: 'Documentação da API para gerenciamento de finanças pessoais',
-                version: '1.1.2',
+                description: pkg.description,
+                version: pkg.version,
             },
         },
         transform: jsonSchemaTransform

@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FastifyZodApp, TransactionStatus } from '../../types'
-import { transactionSchema } from './transaction.schema'
+import { createTransactionSchema, transactionSchema } from './transaction.schema'
 import { REPOSITORIES } from '../../shared/constant'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 
@@ -21,20 +21,14 @@ export async function transactionsRoutes(app: FastifyZodApp) {
         },
         async (request, reply) => {
             const { userId } = request.user
-            const userRepository = app.db.getRepository(REPOSITORIES.USER)
-            const userExists = await userRepository.findOne({
-                where: { id: userId }
-            })
 
-            const transactions = await app.db.getRepository(REPOSITORIES.TRANSACTION).find({
-                where: { user: userExists },
+            const [transactions, total] = await app.db.getRepository(REPOSITORIES.TRANSACTION).findAndCount({
+                where: { user: { id: userId } },
                 order: { dueDate: 'ASC' },
                 relations: ['category'],
             })
 
-            return reply.status(200).send(
-                z.array(transactionSchema).parse(transactions)
-            )
+            return reply.status(200).send(transactions)
         })
     // Criar transação
     app.post(
@@ -45,7 +39,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 tags: ['Transactions'],
                 description: 'Cria uma nova transação',
                 summary: 'Cria uma nova transação',
-                body: transactionSchema.omit({ id: true, userId: true }),
+                body: createTransactionSchema,
                 response: {
                     201: transactionSchema,
                     404: notFoundErrorResponseSchema
@@ -58,11 +52,6 @@ export async function transactionsRoutes(app: FastifyZodApp) {
             const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
                 where: { id: categoryId }
             })
-            const userRepository = app.db.getRepository(REPOSITORIES.USER)
-            const userExists = await userRepository.findOne({
-                where: { id: request.user.userId }
-            })
-
 
             if (!categoryExists) {
                 return reply.status(404).send({
@@ -76,13 +65,13 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 type,
                 valueInCents,
                 category: categoryExists,
-                user: userExists,
+                user: {
+                    id: request.user.userId
+                },
                 status: TransactionStatus.PENDING
             })
 
-            return reply.status(201).send(
-                transactionSchema.parse(transaction),
-            )
+            return reply.status(201).send(transaction)
         }
     )
     // Atualizar transação

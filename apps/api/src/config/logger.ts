@@ -1,6 +1,6 @@
 import winston from "winston"
 // import { TransformableInfo } from "logform"
-import { env } from "./env"
+import { env } from "../shared/env"
 
 const logger = winston.createLogger({
     format: winston.format.combine(

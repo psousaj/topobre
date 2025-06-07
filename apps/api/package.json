@@ -1,6 +1,6 @@
 {
   "name": "topobre-api",
-  "description": "Documentação da API para gerenciamento de finanças pessoais",
+  "description": "API para gerenciamento de finanças pessoais",
   "version": "1.1.2",
   "scripts": {
     "dev": "nodemon --exec ts-node -r reflect-metadata src/server.ts",

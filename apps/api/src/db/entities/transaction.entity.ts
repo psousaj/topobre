@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { User } from "./user.entity";
 import { TransactionStatus, TransactionType } from '../../types'
@@ -49,9 +49,18 @@ export class Transaction {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
+
+    @Column({ type: 'uuid' })
+    userId: string;
+
+    @Column({ type: 'uuid' })
+    categoryId: string;
+
     @ManyToOne(() => User, (user) => user.transactions)
+    @JoinColumn({ name: 'userId' })
     user: User;
 
     @ManyToOne(() => Category, (category) => category.transactions)
+    @JoinColumn({ name: 'categoryId' })
     category: Category;
 }

@@ -11,7 +11,7 @@ import authPlugin from './plugins/authenticate';
 import jwtPlugin from './plugins/jwt';
 import mailerPlugin from './plugins/mailer';
 import templatePreview from './plugins/templatePreview';
-import { errorHandler } from "./shared/error-handlers";
+import { errorHandler } from "./config/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
@@ -19,7 +19,7 @@ import { transactionsRoutes } from './modules/transaction/transaction.route';
 import { env } from "./shared/env";
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
-import { logger } from './shared/logger';
+import { logger } from './config/logger';
 import { hostname } from 'os';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {

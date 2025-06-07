@@ -1,6 +1,6 @@
 import { REPOSITORIES } from "../src/shared/constant";
 import { AppDataSource } from "../src/db";
-import { logger } from "../src/shared/logger";
+import { logger } from "../src/config/logger";
 
 const categories = [
     { displayName: "Empréstimo", name: "Loan", color: "#FFCC00" },

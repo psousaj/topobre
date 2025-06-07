@@ -10,6 +10,7 @@ import datasourcePlugin from "./plugins/datasource";
 import authPlugin from './plugins/authenticate';
 import jwtPlugin from './plugins/jwt';
 import mailerPlugin from './plugins/mailer';
+import templatePreview from './plugins/templatePreview';
 import { errorHandler } from "./shared/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
@@ -84,6 +85,12 @@ export const buildApp = async () => {
 
     // 5. QUINTO: Mailer
     await app.register(mailerPlugin);
+
+    // 6. SEXTO: Template preview
+    await app.register(templatePreview, {
+        devMode: env.NODE_ENV !== 'production',
+        prefix: '/__dev'
+    });
 
     // Cors
     app.register(fastifyCors, {

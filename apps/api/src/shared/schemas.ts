@@ -26,10 +26,15 @@ const forbiddenErrorResponseSchema = z.object({
     message: z.string()
 })
 
+const previewQuerySchema = z.object({
+    template: z.string().describe('The name of the template to preview'),
+}).passthrough(); // <- permite outros params arbitrários
+
 export {
     badRequestResponseSchema,
     conflictErrorResponseSchema,
     notFoundErrorResponseSchema,
     unauthorizedErrorResponseSchema,
-    forbiddenErrorResponseSchema
+    forbiddenErrorResponseSchema,
+    previewQuerySchema
 }

@@ -6,7 +6,7 @@ import fs from "fs/promises";
 import handlebars from "handlebars";
 
 import { Mailer, SendEmailOptions, TemplateParams } from "../types";
-import { env } from "../shared/env";
+import { env } from "../../../../libs/shared/env";
 
 async function renderTemplate(templateName: string, params: TemplateParams): Promise<string> {
     const filePath = path.join(__dirname, "..", "templates", `${templateName}.hbs`);

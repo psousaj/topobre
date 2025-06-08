@@ -210,7 +210,7 @@ importers:
         specifier: workspace:*
         version: link:../prettier
       eslint-config-next:
-        specifier: ^14.1.0
+        specifier: ^14.2.29
         version: 14.2.29(eslint@8.57.1)(typescript@5.8.3)
       eslint-plugin-simple-import-sort:
         specifier: ^10.0.0
@@ -258,6 +258,15 @@ importers:
         specifier: ^3.25.56
         version: 3.25.56
     devDependencies:
+      '@topobre/eslint':
+        specifier: workspace:*
+        version: link:../../config/eslint
+      '@topobre/prettier':
+        specifier: workspace:*
+        version: link:../../config/prettier
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30

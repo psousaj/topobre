@@ -1,7 +1,7 @@
 import 'dotenv/config'
-import { env } from '../../../libs/shared/env'
 import { buildApp } from "./app";
 import { bootstrapLogger } from './config/bootstrapLogger';
+import { env } from '@topobre/env';
 
 const start = async () => {
     const app = await buildApp();

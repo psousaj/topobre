@@ -1,5 +1,5 @@
 // utils/pagination.ts
-import { FindManyOptions, ILike } from 'typeorm'
+import { FindManyOptions, ILike } from '@topobre/typeorm'
 
 type PaginationParams<T> = {
     offset?: number

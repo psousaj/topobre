@@ -1,9 +1,9 @@
 import { z } from 'zod'
 import { FastifyZodApp } from '../../types'
-import { Category } from '../../db/entities/category.entity'
 import { REPOSITORIES } from '../../shared/constant'
 import { categoryResponseSchema, categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
+import { Category } from '@topobre/typeorm/entities'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
     // Listagem

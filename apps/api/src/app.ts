@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+import '../src/types';
 
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
@@ -16,12 +16,12 @@ import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { transactionsRoutes } from './modules/transaction/transaction.route';
-import { env } from "../../../libs/shared/env";
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
-import { logger } from './config/logger';
 import { hostname } from 'os';
 import pkg from '../package.json'
+import { env } from '@topobre/env';
+import { logger } from '@topobre/winston'
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(transactionsRoutes, { prefix: 'transactions' })

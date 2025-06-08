@@ -1,10 +1,16 @@
 import "reflect-metadata";
 
 import { DataSource } from "typeorm";
-import { env } from "../../../../libs/shared/env";
 import * as path from "path";
+import { env } from "@topobre/env";
 
-export const AppDataSource = new DataSource({
+export * from 'typeorm';
+
+export * from './entities';
+
+export * from './types';
+
+export const TopobreDataSource = new DataSource({
     type: 'postgres',
     host: env.PGHOST,
     username: env.PGUSER,
@@ -13,7 +19,7 @@ export const AppDataSource = new DataSource({
     port: 5432,
 
     entities: [
-        path.resolve(__dirname, '../db/entities/*.entity.{js,ts}'),
+        path.resolve(__dirname, './entities/*.entity.{js,ts}'),
     ],
     synchronize: true,
     // logging: true,

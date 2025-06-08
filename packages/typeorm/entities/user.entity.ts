@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Transaction } from './transaction.entity';
 import { Session } from './session.entity';
+import { FinancialRecord } from './financial-record.entity';
 
 @Entity('users')
 @Index('idx_user_email', ['email'], { unique: true })
@@ -29,8 +29,8 @@ export class User {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => Transaction, (transaction) => transaction.user)
-    transactions: Transaction[];
+    @OneToMany(() => FinancialRecord, (transaction) => transaction.user)
+    transactions: FinancialRecord[];
 
     @OneToMany(() => Session, (session) => session.user)
     sessions: Session[];

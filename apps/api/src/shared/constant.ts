@@ -1,8 +1,4 @@
-import { PasswordResetToken } from "../db/entities/password-reset.entity";
-import { Category } from "../db/entities/category.entity"
-import { Session } from "../db/entities/session.entity"
-import { Transaction } from "../db/entities/transaction.entity"
-import { User } from "../db/entities/user.entity"
+import { Category, PasswordResetToken, Session, FinancialRecord, User } from "@topobre/typeorm/entities";
 
 export const TAGS = {
     DB: 'DB',
@@ -11,7 +7,7 @@ export const TAGS = {
 export const REPOSITORIES = {
     USER: User,
     SESSION: Session,
-    TRANSACTION: Transaction,
+    FINANCIALRECORD: FinancialRecord,
     CATEGORY: Category,
     PASSWORD_RESET_TOKEN: PasswordResetToken,
 } as const;

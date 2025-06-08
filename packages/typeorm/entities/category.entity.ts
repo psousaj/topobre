@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
-import { Transaction } from "./transaction.entity";
+import { FinancialRecord } from "./financial-record.entity";
 
 @Entity()
 @Unique(["displayName", "userId"])
@@ -28,6 +28,6 @@ export class Category {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => Transaction, (transaction) => transaction.category)
-    transactions: Transaction[];
+    @OneToMany(() => FinancialRecord, (transaction) => transaction.category)
+    transactions: FinancialRecord[];
 }

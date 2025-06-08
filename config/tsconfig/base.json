@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "CommonJS",
+        "lib": [
+            "ES2021"
+        ],
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "@topobre/shared": [
+                "packages/shared/src"
+            ],
+            "@topobre/queue": [
+                "packages/queue/src"
+            ],
+            "@topobre/mailer": [
+                "packages/mailer/src"
+            ]
+        },
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    }
+}

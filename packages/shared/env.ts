@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import * as dotenv from 'dotenv'
+// import * as dotenv from 'dotenv'
 
 // Define o schema uma única vez para ser usado em todos os ambientes
 const envSchema = z.object({

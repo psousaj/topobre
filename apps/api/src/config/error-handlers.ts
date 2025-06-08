@@ -1,6 +1,6 @@
+import { logger } from "@topobre/winston";
 import type { FastifyInstance } from "fastify"
 import { ZodError } from "zod"
-import { logger } from "../config/logger";
 
 type FastifyErrorHandler = FastifyInstance['errorHandler']
 

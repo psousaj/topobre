@@ -1,35 +1,33 @@
-import 'reflect-metadata';
 import fp from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
-import { Repository, EntityTarget } from 'typeorm';
-import { AppDataSource } from '../db';
 import { DatabaseService } from '../types'
+import { TopobreDataSource, EntityTarget, Repository, ObjectLiteral } from '@topobre/typeorm'
 
 export default fp(async (app: FastifyInstance, opts) => {
     try {
         // Inicializa o DataSource
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
+        if (!TopobreDataSource.isInitialized) {
+            await TopobreDataSource.initialize();
             app.log.info("📦 Banco de dados conectado");
         }
 
         // Cria o serviço de banco com métodos utilitários
         const databaseService: DatabaseService = {
-            dataSource: AppDataSource,
+            dataSource: TopobreDataSource,
 
             // Método para pegar repositórios
-            getRepository<T>(entity: EntityTarget<T>): Repository<T> {
-                return AppDataSource.getRepository(entity);
+            getRepository<T extends ObjectLiteral>(entity: EntityTarget<T>): Repository<T> {
+                return TopobreDataSource.getRepository(entity);
             },
 
             // Verifica se está conectado
             isConnected(): boolean {
-                return AppDataSource.isInitialized;
+                return TopobreDataSource.isInitialized;
             },
 
             // Método para transações
             async transaction<T>(fn: (manager: any) => Promise<T>): Promise<T> {
-                return await AppDataSource.transaction(fn);
+                return await TopobreDataSource.transaction(fn);
             }
         };
 
@@ -38,8 +36,8 @@ export default fp(async (app: FastifyInstance, opts) => {
 
         // Hook para fechar a conexão
         app.addHook('onClose', async (instance) => {
-            if (AppDataSource.isInitialized) {
-                await AppDataSource.destroy();
+            if (TopobreDataSource.isInitialized) {
+                await TopobreDataSource.destroy();
                 instance.log.info("🔌 Conexão com banco fechada");
             }
         });

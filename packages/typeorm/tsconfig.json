@@ -1,4 +1,5 @@
 {
+    "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
         "lib": [
             "es2021",
@@ -7,7 +8,7 @@
         "target": "es2020",
         "module": "commonjs",
         "moduleResolution": "node",
-        "baseUrl": ".",
+        "baseUrl": "./",
         "outDir": "./dist",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
@@ -23,26 +24,17 @@
         "forceConsistentCasingInFileNames": true,
         "strictPropertyInitialization": false,
         "paths": {
-            "@topobre/db": [
-                "packages/db/src"
-            ],
-            "@topobre/queue": [
-                "packages/queue"
-            ],
-            "@topobre/shared": [
-                "packages/shared"
+            "@topobre/typeorm/types": [
+                "./types"
             ]
         }
     },
-    "typeRoots": [
-        "./types",
-        "./node_modules/@types"
+    "include": [
+        "."
     ],
-    "ts-node": {
-        "require": [
-            "reflect-metadata"
-        ],
-        "transpileOnly": true,
-        "files": true
-    }
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
 }

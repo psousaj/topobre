@@ -70,7 +70,7 @@ export async function authRoutes(app: FastifyZodApp) {
 
             if (!existingSession || !existingSession.isActive) {
                 jti = uuidv4();
-                const refreshToken = uuidv4();
+                refreshToken = uuidv4();
 
                 const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 dias
 
@@ -300,9 +300,9 @@ export async function authRoutes(app: FastifyZodApp) {
 
         return reply.send({
             user: {
-                userId: user.id,
-                name: user.name,
-                email: user.email
+                userId: user!.id,
+                name: user!.name,
+                email: user!.email
             }
         });
     });

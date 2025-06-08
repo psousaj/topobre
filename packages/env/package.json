@@ -1,0 +1,27 @@
+{
+  "name": "@topobre/env",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@t3-oss/env-nextjs": "^0.13.6",
+    "dotenv": "^16.5.0",
+    "zod": "^3.25.56"
+  },
+  "devDependencies": {
+    "@topobre/eslint": "workspace:*",
+    "@topobre/prettier": "workspace:*",
+    "@topobre/tsconfig": "workspace:*",
+    "@types/node": "20.4.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@topobre/eslint/lib"
+    ]
+  },
+  "prettier": "@topobre/prettier"
+}

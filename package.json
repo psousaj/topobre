@@ -1,23 +1,19 @@
 {
-  "name": "topobre-app",
-  "version": "1.0.0",
-  "description": "",
+  "name": "topobre",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
+  "scripts": {
+    "dev": "turbo run dev --parallel --",
+    "build": "turbo run build --",
+    "lint": "turbo run lint --",
+    "db:seed": "turbo run db:seed",
+    "dev:api": "turbo run dev --filter=@topobre/api",
+    "build:api": "turbo run build --filter=@topobre/api",
+    "start:api": "turbo run start --filter=@topobre/api"
+  },
+  "dependencies": {
     "turbo": "^1.13.4"
   },
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
-  },
-  "keywords": [],
-  "author": "Psousaj",
-  "license": "ISC",
-  "packageManager": "pnpm@10.11.0"
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
 }

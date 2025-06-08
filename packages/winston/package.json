@@ -1,7 +1,7 @@
 {
   "name": "@topobre/winston",
   "version": "0.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "dependencies": {
     "winston": "^3.17.0",
     "@topobre/env": "workspace:*"

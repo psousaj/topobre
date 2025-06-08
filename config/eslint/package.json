@@ -10,9 +10,9 @@
     "private": true,
     "devDependencies": {
         "@rocketseat/eslint-config": "2.2.2",
-        "eslint-config-next": "^14.1.0",
-        "eslint-plugin-simple-import-sort": "^10.0.0",
-        "@topobre/prettier": "workspace:*"
+        "@topobre/prettier": "workspace:*",
+        "eslint-config-next": "^14.2.29",
+        "eslint-plugin-simple-import-sort": "^10.0.0"
     },
     "overrides": {
         "@typescript-eslint/eslint-plugin": "^6.21.0",

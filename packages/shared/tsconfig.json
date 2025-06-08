@@ -1,5 +1,5 @@
 {
-    "extends": "@nivo/tsconfig/lib.json",
+    "extends": "@topobre/tsconfig/lib.json",
     "include": [
         "."
     ],

@@ -1,8 +1,8 @@
 import winston from "winston"
 // import { TransformableInfo } from "logform"
-import { env } from "../../../../libs/shared/env"
+import { env } from '@topobre/env'
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.errors({ stack: true }),
         winston.format.timestamp({ format: 'DD-MM-YYYY HH:mm:ss' }),
@@ -40,5 +40,3 @@ const logger = winston.createLogger({
         })
     ]
 })
-
-export { logger }

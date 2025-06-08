@@ -1,0 +1,12 @@
+{
+  "name": "@topobre/shared",
+  "version": "1.0.0",
+  "main": "./index.ts",
+  "private": true,
+  "dependencies": {
+    "zod": "^3.25.56"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30"
+  }
+}

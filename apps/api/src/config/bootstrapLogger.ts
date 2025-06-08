@@ -1,6 +1,6 @@
 import { FastifyZodApp } from "../types";
 import pkg from "../../package.json";
-import { env } from "../../../../libs/shared/env";
+import { env } from "@topobre/env";
 
 export function bootstrapLogger(app: FastifyZodApp) {
     app.log.info(' ');

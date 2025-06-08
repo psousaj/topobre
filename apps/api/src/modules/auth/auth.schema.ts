@@ -1,6 +1,4 @@
 import { z } from 'zod'
-import { createUserSchema } from '../user/user.schema'
-
 
 const loginSchema = z.object({
     email: z

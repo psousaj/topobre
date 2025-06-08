@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import fp from 'fastify-plugin';
 import { REPOSITORIES } from "../shared/constant"
-import { env } from "../../../../libs/shared/env";
+import { env } from "@topobre/env";
 
 async function authHandler(request: FastifyRequest, reply: FastifyReply) {
     try {

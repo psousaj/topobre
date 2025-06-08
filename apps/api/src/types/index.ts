@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyBaseLogger } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { Server, IncomingMessage, ServerResponse } from "http";
-import { DataSource, EntityTarget, Repository } from "typeorm";
+import { DataSource, EntityTarget, ObjectLiteral, Repository, TransactionStatus, TransactionType } from "@topobre/typeorm";
 import { REPOSITORIES } from "../shared/constant";
 
 
@@ -22,21 +22,6 @@ interface Mailer {
 }
 
 
-enum TransactionStatus {
-    PENDING = 'pending',
-    COMPLETED = 'completed',
-    LATE = 'late',
-    FAILED = 'failed',
-}
-
-enum TransactionType {
-    INCOME = 'income',
-    EXPENSE = 'expense',
-    TRANSFER = 'transfer',
-    PAYMENT = 'payment',
-    RECEIPT = 'receipt',
-}
-
 // Tipo para as chaves dos repositórios
 type RepositoryKey = keyof typeof REPOSITORIES;
 
@@ -45,9 +30,9 @@ type RepositoryType<K extends RepositoryKey> = typeof REPOSITORIES[K];
 
 interface DatabaseService {
     dataSource: DataSource;
-    getRepository<T>(entity: EntityTarget<T>): Repository<T>;
+    getRepository<T extends ObjectLiteral>(entity: EntityTarget<T>): Repository<T>;
     isConnected(): boolean;
-    transaction<T>(fn: (manager: any) => Promise<T>): Promise<T>;
+    transaction<T extends ObjectLiteral>(fn: (manager: any) => Promise<T>): Promise<T>;
 }
 
 export {

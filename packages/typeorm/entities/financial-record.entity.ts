@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { User } from "./user.entity";
-import { TransactionStatus, TransactionType } from '../../types'
+import { TransactionStatus, TransactionType } from "@topobre/typeorm/types";
 
 @Entity()
-export class Transaction {
+export class FinancialRecord {
 
     @PrimaryGeneratedColumn('uuid')
     id: string;

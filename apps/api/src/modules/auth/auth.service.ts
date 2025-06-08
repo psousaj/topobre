@@ -1,10 +1,9 @@
-import { AppDataSource } from '../../db';
+import { TopobreDataSource } from '@topobre/typeorm';
 import { REPOSITORIES } from '../../shared/constant';
 import { v4 as uuidv4 } from 'uuid';
 
 export class AuthService {
-    private sessionRepo = AppDataSource.getRepository(REPOSITORIES.SESSION);
-    private userRepo = AppDataSource.getRepository(REPOSITORIES.USER);
+    private sessionRepo = TopobreDataSource.getRepository(REPOSITORIES.SESSION);
 
     async createSession(userId: string, userAgent?: string) {
         const jti = uuidv4();

@@ -22,7 +22,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
         async (request, reply) => {
             const { userId } = request.user
 
-            const [transactions, total] = await app.db.getRepository(REPOSITORIES.TRANSACTION).findAndCount({
+            const [transactions, total] = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findAndCount({
                 where: { user: { id: userId } },
                 order: { dueDate: 'ASC' },
                 relations: ['category'],
@@ -59,7 +59,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const transaction = await app.db.getRepository(REPOSITORIES.TRANSACTION).save({
+            const transaction = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).save({
                 description,
                 dueDate: new Date(dueDate),
                 type,
@@ -98,7 +98,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
         async (request, reply) => {
             const { id, ...data } = request.body
 
-            const transactionExists = await app.db.getRepository(REPOSITORIES.TRANSACTION).findOne({
+            const transactionExists = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findOne({
                 where: {
                     id,
                     user: request.user
@@ -111,7 +111,7 @@ export async function transactionsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const updatedTransaction = await app.db.getRepository(REPOSITORIES.TRANSACTION).update({
+            const updatedTransaction = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).update({
                 id,
             }, {
                 ...data,

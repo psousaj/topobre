@@ -1,11 +1,25 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
+  "extends": "@topobre/tsconfig/base.json",
   "include": [
-    "src"
+    "./src",
+    "./src/types"
   ],
+  "typeRoots": [
+    "./types",
+    "./node_modules/@types"
+  ],
+  "ts-node": {
+    "require": [
+      "reflect-metadata"
+    ],
+    "transpileOnly": true,
+    "files": true
+  },
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./",
+    "skipLibCheck": true,
+  },
   "exclude": [
     "node_modules",
     "dist"

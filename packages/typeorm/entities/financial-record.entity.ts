@@ -56,11 +56,11 @@ export class FinancialRecord {
     @Column({ type: 'uuid' })
     categoryId: string;
 
-    @ManyToOne(() => User, (user) => user.transactions)
+    @ManyToOne(() => User, (user) => user.financialRecords)
     @JoinColumn({ name: 'userId' })
     user: User;
 
-    @ManyToOne(() => Category, (category) => category.transactions)
+    @ManyToOne(() => Category, (category) => category.financialRecords)
     @JoinColumn({ name: 'categoryId' })
     category: Category;
 }

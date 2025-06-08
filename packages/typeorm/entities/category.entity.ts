@@ -28,6 +28,6 @@ export class Category {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => FinancialRecord, (transaction) => transaction.category)
-    transactions: FinancialRecord[];
+    @OneToMany(() => FinancialRecord, (financialRecord) => financialRecord.category)
+    financialRecords: FinancialRecord[];
 }

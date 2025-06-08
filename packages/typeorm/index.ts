@@ -10,6 +10,13 @@ export * from './entities';
 
 export * from './types';
 
+console.log('Redis config:', {
+    host: env.REDIS_HOST,
+    port: env.REDIS_PORT,
+    password: env.REDIS_PASSWORD,
+})
+
+
 export const TopobreDataSource = new DataSource({
     type: 'postgres',
     host: env.PGHOST,
@@ -32,7 +39,7 @@ export const TopobreDataSource = new DataSource({
             port: env.REDIS_PORT,
             password: env.REDIS_PASSWORD,
         },
-        duration: 60000 * 15 // 15 minutos
+        duration: 60000 * 5 // 5 minutos
     },
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação
     migrationsRun: false,

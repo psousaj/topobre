@@ -1,7 +1,7 @@
 import z from "zod";
 import { TransactionType } from "../../types";
 
-export const createTransactionSchema = z.object({
+export const createFinancialRecordSchema = z.object({
     valueInCents: z.number().positive('Valor deve ser positivo'),
     dueDate: z.string().refine(date => new Date(date) < new Date(), {
         message: 'Vencimento deve ser uma data futura',
@@ -13,7 +13,7 @@ export const createTransactionSchema = z.object({
     categoryId: z.string().uuid(),
 })
 
-export const transactionSchema = z.object({
+export const financialRecordSchema = z.object({
     id: z.string().uuid(),
     valueInCents: z.number().positive('Valor deve ser positivo'),
     dueDate: z.string().refine(date => new Date(date) < new Date(), {

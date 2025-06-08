@@ -15,7 +15,7 @@ import { errorHandler } from "./config/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
-import { transactionsRoutes } from './modules/transaction/transaction.route';
+import { financialRecordsRoutes } from './modules/financial-record/financial-record.route';
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
 import { hostname } from 'os';
@@ -24,7 +24,7 @@ import { env } from '@topobre/env';
 import { logger } from '@topobre/winston'
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
-    await app.register(transactionsRoutes, { prefix: 'transactions' })
+    await app.register(financialRecordsRoutes, { prefix: 'transactions' })
     await app.register(authRoutes, { prefix: 'auth' })
     await app.register(categoriesRoutes, { prefix: 'categories' })
     await app.register(userRoutes, { prefix: 'users' })

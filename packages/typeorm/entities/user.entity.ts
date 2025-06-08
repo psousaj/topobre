@@ -29,8 +29,8 @@ export class User {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => FinancialRecord, (transaction) => transaction.user)
-    transactions: FinancialRecord[];
+    @OneToMany(() => FinancialRecord, (financialRecord) => financialRecord.user)
+    financialRecords: FinancialRecord[];
 
     @OneToMany(() => Session, (session) => session.user)
     sessions: Session[];

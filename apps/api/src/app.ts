@@ -24,7 +24,7 @@ import { env } from '@topobre/env';
 import { logger } from '@topobre/winston'
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
-    await app.register(financialRecordsRoutes, { prefix: 'transactions' })
+    await app.register(financialRecordsRoutes, { prefix: 'financial-records' })
     await app.register(authRoutes, { prefix: 'auth' })
     await app.register(categoriesRoutes, { prefix: 'categories' })
     await app.register(userRoutes, { prefix: 'users' })

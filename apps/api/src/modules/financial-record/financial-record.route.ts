@@ -11,7 +11,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
         {
             preHandler: app.authenticate,
             schema: {
-                tags: ['FinancialRecords'],
+                tags: ['Financial Records'],
                 description: 'Lista todas as transações do usuário',
                 summary: 'Lista todas as transações',
                 response: {
@@ -36,7 +36,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
         {
             preHandler: app.authenticate,
             schema: {
-                tags: ['FinancialRecords'],
+                tags: ['Financial Records'],
                 description: 'Cria uma nova transação',
                 summary: 'Cria uma nova transação',
                 body: createFinancialRecordSchema,
@@ -80,7 +80,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
         {
             preHandler: app.authenticate,
             schema: {
-                tags: ['FinancialRecords'],
+                tags: ['Financial Records'],
                 description: 'Atualiza uma transação existente',
                 summary: 'Atualiza uma transação',
                 body: financialRecordSchema

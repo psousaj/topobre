@@ -5,9 +5,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "db:seed": "pnpm env:load -dlx ts-node ./seed.ts",
-    "lint": "eslint .",
-    "env:load": "dotenv -e ../../.env --"
+    "db:seed": "pnpm dlx ts-node ./seed/index.ts",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@topobre/env": "workspace:*",
@@ -22,6 +21,7 @@
     "@topobre/eslint": "workspace:*",
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
+    "@topobre/winston": "workspace:*",
     "@types/node": "^22.15.30",
     "pg": "8.11.3",
     "tsx": "4.7.1"

@@ -30,7 +30,7 @@ export const TopobreDataSource = new DataSource({
     ],
     synchronize: true,
     // logging: true,
-    ssl: true,
+    ssl: false,
     cache: {
         type: "ioredis",
         alwaysEnabled: true,

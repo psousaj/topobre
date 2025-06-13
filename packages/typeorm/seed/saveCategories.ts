@@ -1,6 +1,6 @@
-import { REPOSITORIES } from "../../../apps/api/src/shared/constant";
-import { AppDataSource } from "../../../apps/api/src/db";
-import { logger } from "../../../apps/api/src/config/logger";
+import { TopobreDataSource } from "../index";
+import { Category } from "../entities/category.entity";
+import { logger } from "@topobre/winston"
 
 const categories = [
     { displayName: "Empréstimo", name: "Loan", color: "#FFCC00" },
@@ -23,8 +23,8 @@ const categories = [
 export async function saveCategories() {
     try {
         logger.info("Inicializando datasource...");
-        const dataSource = await AppDataSource.initialize();
-        const categoryRepo = dataSource.getRepository(REPOSITORIES.CATEGORY);
+        const dataSource = await TopobreDataSource.initialize();
+        const categoryRepo = dataSource.getRepository(Category);
         logger.info("Datasource conectado com sucesso.");
 
         for (const category of categories) {
@@ -42,7 +42,7 @@ export async function saveCategories() {
     } catch (error) {
         logger.error("Erro ao salvar categorias:", error);
     } finally {
-        await AppDataSource.destroy();
+        await TopobreDataSource.destroy();
         logger.info("Datasource encerrado.");
     }
 }

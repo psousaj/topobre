@@ -1,6 +1,7 @@
 {
   "name": "topobre",
   "private": true,
+  "packageManager": "pnpm@10.11.1",
   "scripts": {
     "dev": "turbo run dev --parallel --",
     "build": "turbo run build --",
@@ -10,10 +11,14 @@
     "build:api": "turbo run build --filter=@topobre/api",
     "start:api": "turbo run start --filter=@topobre/api"
   },
-  "dependencies": {
-    "turbo": "^1.13.4"
-  },
   "devDependencies": {
+    "@types/node": "^24.0.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "turbo": "^2.5.4",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2"
   }
 }

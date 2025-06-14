@@ -1,8 +1,5 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
-    "compilerOptions": {
-        "moduleResolution": "bundler"
-    },
     "include": [
         "."
     ],

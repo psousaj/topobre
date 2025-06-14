@@ -7,7 +7,6 @@
         ],
         "target": "es2020",
         "module": "commonjs",
-        "moduleResolution": "node",
         "baseUrl": "./",
         "outDir": "./dist",
         "esModuleInterop": true,
@@ -26,7 +25,10 @@
         "paths": {
             "@topobre/typeorm/types": [
                 "./types"
-            ]
+            ],
+            "@t3-oss/env-nextjs": [
+                "../env/node_modules/@t3-oss/env-nextjs"
+            ],
         }
     },
     "include": [

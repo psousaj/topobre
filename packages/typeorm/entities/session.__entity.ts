@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn, Index } from 'typeorm';
-import { User } from './user.entity';
+import { Profile } from './profile.entity';
 
 @Entity('sessions')
 @Index('IDX_SESSIONS_JTI', ['jti'], { unique: true })
-@Index('IDX_SESSIONS_USER_IP_UA_ACTIVE', ['userId', 'ip', 'userAgent', 'isActive'])
+@Index('IDX_SESSIONS_USER_IP_UA_ACTIVE', ['profileId', 'ip', 'userAgent', 'isActive'])
 @Index('IDX_SESSIONS_EXPIRES_AT', ['expiresAt'])
 export class Session {
     @PrimaryGeneratedColumn('uuid')
@@ -30,9 +30,9 @@ export class Session {
     @CreateDateColumn()
     createdAt: Date;
 
-    @ManyToOne(() => User, user => user.sessions, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'userId' })
-    user: User;
+    // @ManyToOne(() => Profile, profile => profile.sessions, { onDelete: 'CASCADE' })
+    // @JoinColumn({ name: 'profileId' })
+    // profile: Profile;
 
     @Column()
     userId: string;

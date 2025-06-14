@@ -1,37 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Session } from './session.entity';
-import { FinancialRecord } from './financial-record.entity';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('users')
-@Index('idx_user_email', ['email'], { unique: true })
-export class User {
+@Entity('users-mapping')
+@Index('IDX_USERS_MAPPING_AUTH_ID', ['authId', 'email'], { unique: true })
+export class UserMapping {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column()
-    name: string;
+    @Column({ nullable: false })
+    authId: string;
 
-    @Column({ unique: true })
+    @Column({ nullable: false })
     email: string;
-
-    @Column()
-    password: string;
-
-    @Column({ nullable: true })
-    phoneNumber: string;
-
-    @Column({ default: true })
-    isActive: boolean;
-
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
-
-    @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
-
-    @OneToMany(() => FinancialRecord, (financialRecord) => financialRecord.user)
-    financialRecords: FinancialRecord[];
-
-    @OneToMany(() => Session, (session) => session.user)
-    sessions: Session[];
 }

@@ -31,7 +31,8 @@
     "@topobre/env": "workspace:*",
     "@topobre/shared": "workspace:*",
     "@topobre/typeorm": "workspace:*",
-    "@topobre/winston": "workspace:*"
+    "@topobre/winston": "workspace:*",
+    "@topobre/supabase": "workspace:*"
   },
   "devDependencies": {
     "@topobre/eslint": "workspace:*",

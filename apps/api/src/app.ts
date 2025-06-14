@@ -18,10 +18,19 @@ import { categoriesRoutes } from "./modules/category/categories.route";
 import { financialRecordsRoutes } from './modules/financial-record/financial-record.route';
 import { z } from 'zod';
 import fastifyCookie from '@fastify/cookie';
-import { hostname } from 'os';
+import { hostname as host } from 'os';
 import pkg from '../package.json'
 import { env } from '@topobre/env';
 import { logger } from '@topobre/winston'
+
+const logLevelMap = {
+    10: 'trace',
+    20: 'debug',
+    30: 'info',
+    40: 'warn',
+    50: 'error',
+    60: 'fatal',
+};
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     await app.register(financialRecordsRoutes, { prefix: 'financial-records' })
@@ -54,20 +63,28 @@ const appRoutes = async (app: FastifyInstance, opts: any) => {
 export const buildApp = async () => {
     const app = fastify({
         logger: {
-            level: env.NODE_ENV === 'production' ? 'info' : 'debug',
+            level: env.NODE_ENV === 'production' ? 'info' : 'trace',
             stream: {
                 write: (message: string) => {
                     try {
-                        const parsed = JSON.parse(message)
-                        const msg = parsed.msg || parsed.message || message
-                        const hostname = parsed.hostname || 'server';
-                        logger.info(`${hostname} -> ${msg}`)
+                        const parsed = JSON.parse(message);
+                        const msg = parsed.msg || parsed.message || message;
+                        const hostname = host || 'server';
+                        const levelName = logLevelMap[parsed.level as keyof typeof logLevelMap] || 'info';
+
+                        const loggerMethods: Record<string, (...args: any[]) => void> = logger as any;
+                        if (typeof loggerMethods[levelName] === 'function') {
+                            loggerMethods[levelName](`${hostname} -> ${msg}`);
+                        } else {
+                            logger.info(`${hostname} -> ${msg}`);
+                        }
                     } catch {
-                        logger.info(`${hostname} -> ${message.trim()}`)
+                        // Fallback em caso de erro no parse
+                        logger.info(`server -> ${message.trim()}`);
                     }
-                }
-            }
-        }
+                },
+            },
+        },
     }).withTypeProvider<ZodTypeProvider>();
 
     // 1. PRIMEIRO: Plugin do banco de dados

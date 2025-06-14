@@ -6,7 +6,6 @@
             "dom"
         ],
         "target": "es2020",
-        "module": "commonjs",
         "baseUrl": "./",
         "outDir": "./dist",
         "esModuleInterop": true,

@@ -6,13 +6,18 @@ import type { DatabaseService, Mailer } from ".";
 
 declare module "fastify" {
     interface FastifyRequest {
-        user?: User;
+        user?: Profile & {
+            supabaseId: string;
+            session?: SupabaseSession;
+        };
         jwt?: JWT;
+        supabase?: SupabaseClient;
     }
 
     interface FastifyInstance {
         db: DatabaseService;
         mailer: Mailer;
+        supabase: SupabaseClient;
         authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     }
 }
@@ -20,7 +25,8 @@ declare module "fastify" {
 declare module "@fastify/jwt" {
     interface FastifyJWT {
         payload: {
-            userId: string;
+            userId: string; // ID do profile no seu banco
+            supabaseId: string; // ID do usuário no Supabase
             email: string;
             jti: string;
             iat?: number;
@@ -28,6 +34,7 @@ declare module "@fastify/jwt" {
         };
         user: {
             userId: string;
+            supabaseId: string;
             email: string;
             jti: string;
             iat?: number;

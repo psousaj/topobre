@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { Category } from "./category.entity";
+import { User } from "./user.entity";
 import { TransactionStatus, TransactionType } from "@topobre/typeorm/types";
-import { Profile } from "./profile.entity";
 
 @Entity()
 export class FinancialRecord {
@@ -51,14 +51,14 @@ export class FinancialRecord {
 
 
     @Column({ type: 'uuid' })
-    profileId: string;
+    userId: string;
 
     @Column({ type: 'uuid' })
     categoryId: string;
 
-    @ManyToOne(() => Profile, (profile) => profile.financialRecords)
-    @JoinColumn({ name: 'profileId' })
-    profile: Profile;
+    @ManyToOne(() => User, (user) => user.financialRecords)
+    @JoinColumn({ name: 'userId' })
+    user: User;
 
     @ManyToOne(() => Category, (category) => category.financialRecords)
     @JoinColumn({ name: 'categoryId' })

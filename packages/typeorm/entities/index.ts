@@ -1,10 +1,8 @@
 import { Category } from "./category.entity";
 import { FinancialRecord } from "./financial-record.entity";
-import { PasswordResetToken } from "./password-reset.__entity";
-import { Profile } from "./profile.entity";
-import { Session } from "./session.__entity";
-import { User } from "./user.__entity";
-import { UserMapping } from "./user.entity";
+import { PasswordResetToken } from "./password-reset.entity";
+import { Session } from "./session.entity";
+import { User } from "./user.entity";
 
 export {
     User,
@@ -12,6 +10,4 @@ export {
     FinancialRecord,
     Category,
     PasswordResetToken,
-    Profile,
-    UserMapping
 }

@@ -11,7 +11,7 @@ import authPlugin from './plugins/authenticate';
 import jwtPlugin from './plugins/jwt';
 import mailerPlugin from './plugins/mailer';
 import templatePreview from './plugins/templatePreview';
-import { errorHandler } from "./config/error-handlers";
+import { errorHandler } from "./handlers/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
 import { categoriesRoutes } from "./modules/category/categories.route";

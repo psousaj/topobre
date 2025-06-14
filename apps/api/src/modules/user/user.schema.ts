@@ -9,17 +9,10 @@ const createUserSchema = z.object({
 
 const createUserResponseSchema = z.object({
     id: z.string().uuid(),
+    name: z.string(),
     email: z.string().email(),
     phone: z.string().nullable(),
-    user_metadata: z.object({
-        name: z.string().optional(),
-        email: z.string().email().optional(),
-        email_verified: z.boolean().optional(),
-        phone_verified: z.boolean().optional(),
-        sub: z.string().uuid().optional()
-    }).nullable(),
-    created_at: z.string(),
-    updated_at: z.string(),
+    isActive: z.boolean(),
 })
 
 type CreateUserInput = z.infer<typeof createUserSchema>

@@ -1,32 +1,11 @@
 import { createUserResponseSchema, createUserSchema } from "./user.schema";
 import { FastifyZodApp } from "../../types";
-import { REPOSITORIES } from "../../shared/constant";
+import { REPOSITORIES, SALT_ROUNDS } from "../../shared/constant";
 import { badRequestResponseSchema, conflictErrorResponseSchema, notFoundErrorResponseSchema } from "../../shared/schemas";
+import bcrypt from "bcrypt";
 import { z } from "zod";
-import { supabaseServer } from "@topobre/supabase";
 
 export async function userRoutes(app: FastifyZodApp) {
-    app.get('/list',
-        {
-            // preHandler: app.authenticate,
-            // onRequest: app.authorize(['admin']),
-            schema: {
-                tags: ['User'],
-                description: 'List all users',
-                summary: 'List all users',
-                response: {
-                    200: z.array(createUserResponseSchema),
-                    401: badRequestResponseSchema,
-                }
-            },
-        },
-        async (request, reply) => {
-            const { data: usersData, error } = await supabaseServer.auth.admin.listUsers();
-            return reply.status(200).send(usersData.users.map(user => createUserResponseSchema.parse(user)));
-            // return reply.status(200).send(usersData.users);
-        }
-    );
-
     app.get("/:id",
         {
             preHandler: app.authenticate,
@@ -72,107 +51,85 @@ export async function userRoutes(app: FastifyZodApp) {
             },
         },
         async (request, reply) => {
-            const { name, email, password, phoneNumber } = request.body;
-            const profileRepository = app.db.getRepository(REPOSITORIES.PROFILE);
-            const userMappingRepository = app.db.getRepository(REPOSITORIES.USER_MAPPING);
-            const existingProfile = await userMappingRepository.findOneBy({ email });
+            const { name, email, password, phone } = request.body
+            const userRepository = app.db.getRepository(REPOSITORIES.USER)
+            const user = await userRepository.findOneBy({ email })
 
-            if (existingProfile) {
-                app.log.warn({ msg: '[API] Usuário já existe', email });
-                return reply.status(409).send({ message: 'User already exists' });
+            if (user) {
+                return reply.status(409).send({ message: "User already exists" });
             }
 
-            const { data: authUser, error: authError } = await supabaseServer.auth.signUp({
+            const hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+            const newUser = userRepository.create({
+                name,
                 email,
-                password,
-                phone: phoneNumber,
-                options: {
-                    data: { name },
-                },
+                phone,
+                password: hash,
             });
 
-            if (authError || !authUser?.user) {
-                app.log.error({ msg: `[SUPABASE] ${authError?.message}`, error: authError });
-                return reply.status(500).send({ message: 'Internal Server Error' });
-            }
+            await userRepository.save(newUser);
+            return reply.status(201).send(newUser);
 
-            const newProfile = profileRepository.create({
-                userId: authUser.user.id,
-            });
-            const userMapping = userMappingRepository.create({
-                authId: authUser.user?.id,
-                email,
-            });
-            await userMappingRepository.save(userMapping);
-            await profileRepository.save(newProfile);
-
-            return reply.status(201).send(createUserResponseSchema.parse(authUser.user));
-        }
-    );
-
+        },
+    )
 
     app.patch("/:id",
         {
-            preHandler: app.authenticate,
             schema: {
                 tags: ['User'],
                 description: 'Update user by ID',
                 summary: 'Update user by ID',
                 body: createUserSchema.partial(),
+                params: z.object({
+                    id: z.string().uuid(),
+                }),
                 response: {
                     200: createUserResponseSchema,
-                    500: badRequestResponseSchema,
+                    404: notFoundErrorResponseSchema
                 },
             },
         },
         async (request, reply) => {
-            const requestUser = request.body;
+            const { id } = request.params as { id: string };
+            const user = request.body;
 
-            const { data, error } = await supabaseServer.auth.updateUser({
-                ...requestUser,
-            })
+            const userRepository = app.db.getRepository(REPOSITORIES.USER);
+            const existingUser = await userRepository.findOneBy({ id });
 
-            if (error) {
-                app.log.error({ msg: `[SUPABASE] ${error.message}`, error });
-                return reply.status(500).send({ message: 'Internal Server Error' });
+            if (!existingUser) {
+                return reply.status(404).send({ message: "User not found" });
             }
 
-            return reply.status(200).send(createUserResponseSchema.parse(data.user));
+            await userRepository.update(id, user);
+
+            return reply.status(200).send({
+                ...existingUser,
+            });
         });
 
-    app.delete("/:userId", {
-        preHandler: app.authenticate,
+    app.delete("/:id", {
         schema: {
             tags: ['User'],
             description: 'Delete user by ID',
             summary: 'Delete user by ID',
-            params: z.object({
-                userId: z.string().uuid(),
-            }),
             response: {
                 202: z.object({}),
+                404: notFoundErrorResponseSchema
             },
         }
     }, async (request, reply) => {
-        const { data } = await supabaseServer.auth.getUser();
-        const userId = data.user?.id!;
+        const { id } = request.params as { id: string };
+        const userRepository = app.db.getRepository(REPOSITORIES.USER);
+        const user = await userRepository.findOneBy({ id });
 
-        const userMapRepository = app.db.getRepository(REPOSITORIES.USER_MAPPING);
-        const userMapping = await userMapRepository.findOneBy({ authId: userId });
-        if (!userMapping) {
-            return reply.status(404).send({ message: 'User not found' });
+        if (!user) {
+            return reply.status(404).send({ message: "User not found" });
         }
 
-        const { error } = await supabaseServer.auth.admin.deleteUser(userId);
-        if (error) {
-            app.log.error({ msg: `[SUPABASE] ${error.message}`, error });
-            return reply.status(500).send({ message: 'Internal Server Error' });
-        }
-        await userMapRepository.delete(userMapping.id);
-        app.log.info({ msg: `[API] User deleted userId: ${userId}`, userId: userId });
+        await userRepository.delete(id);
 
-        return reply.status(202).send({});
-
+        return reply.status(202).send(user);
     });
 
     app.log.info('user routes registered')

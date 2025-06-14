@@ -18,7 +18,7 @@ export const env = createEnv({
         REDIS_HOST: z.string(),
         REDIS_PORT: z.coerce.number(),
         REDIS_PASSWORD: z.string(),
-        SUPABASE_SERVICE_ROLE_KEY: z.string(),
+        // SUPABASE_SERVICE_ROLE_KEY: z.string(),
         NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     },
     client: {
@@ -30,8 +30,8 @@ export const env = createEnv({
         HOST: z.string().default('0.0.0.0'),
         PORT: z.coerce.number().default(3001),
         JWT_EXPIRES_IN: z.string().default('1d'),
-        SUPABASE_URL: z.string().url(),
-        SUPABASE_ANON_KEY: z.string(),
+        // SUPABASE_URL: z.string().url(),
+        // SUPABASE_ANON_KEY: z.string(),
     },
     runtimeEnv: {
         PGHOST: process.env.PGHOST,
@@ -49,9 +49,9 @@ export const env = createEnv({
         HOST: process.env.HOST,
         PORT: process.env.PORT,
         JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
-        SUPABASE_URL: process.env.SUPABASE_URL,
-        SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-        SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        // SUPABASE_URL: process.env.SUPABASE_URL,
+        // SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+        // SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     },
     emptyStringAsUndefined: true,
 })

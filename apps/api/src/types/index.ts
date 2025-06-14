@@ -35,20 +35,6 @@ interface DatabaseService {
     transaction<T extends ObjectLiteral>(fn: (manager: any) => Promise<T>): Promise<T>;
 }
 
-interface SupabaseSession {
-    access_token: string;
-    refresh_token: string;
-    expires_in: number;
-    expires_at?: number;
-    token_type: string;
-    user: {
-        id: string;
-        email?: string;
-        user_metadata?: Record<string, any>;
-        app_metadata?: Record<string, any>;
-    };
-}
-
 export {
     FastifyZodApp,
     TransactionStatus,
@@ -58,6 +44,5 @@ export {
     DatabaseService,
     Mailer,
     SendEmailOptions,
-    TemplateParams,
-    SupabaseSession
+    TemplateParams
 }

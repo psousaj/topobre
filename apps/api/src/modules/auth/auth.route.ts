@@ -8,8 +8,7 @@ import { REPOSITORIES } from "../../shared/constant"
 import { z } from "zod";
 
 export async function authRoutes(app: FastifyZodApp) {
-    app.post(
-        '/login',
+    app.post('/login',
         {
             schema: {
                 tags: ['Auth'],
@@ -29,17 +28,9 @@ export async function authRoutes(app: FastifyZodApp) {
             // Busca o usuário por email
             const userRepo = app.db.getRepository(REPOSITORIES.USER);
             const user = await userRepo.findOneBy({ email });
-
-            if (!user) {
-                return reply.status(401).send({
-                    error: 'Unauthorized',
-                    message: "Email ou senha inválidos"
-                });
-            }
-
             // Verifica a senha
-            const isPasswordValid = await bcrypt.compare(password, user.password);
-            if (!isPasswordValid) {
+            const isPasswordValid = await bcrypt.compare(password, user?.password!);
+            if (!user || !isPasswordValid) {
                 return reply.status(401).send({
                     error: 'Unauthorized',
                     message: "Email ou senha inválidos"
@@ -47,7 +38,7 @@ export async function authRoutes(app: FastifyZodApp) {
             }
 
             // Verifica se o usuário está ativo
-            if (!user.isActive) {
+            if (!user?.isActive) {
                 return reply.code(403).send({
                     error: 'Forbidden',
                     message: 'Usuário desativado'

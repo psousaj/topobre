@@ -39,7 +39,7 @@ export const TopobreDataSource = new DataSource({
             port: env.REDIS_PORT,
             password: env.REDIS_PASSWORD,
         },
-        duration: 60000 * 5 // 5 minutos
+        duration: 60000 * 1 // 5 minutos
     },
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação
     migrationsRun: false,

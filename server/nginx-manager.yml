@@ -1,0 +1,20 @@
+services:
+  app:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: ng-manager
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '81:81'
+    environment:
+      DB_POSTGRES_HOST: ${PGHOST}
+      DB_POSTGRES_PORT: ${PGPORT}
+      DB_POSTGRES_USER: ${PGUSER}
+      DB_POSTGRES_PASSWORD: ${PGPASSWORD}
+      DB_POSTGRES_NAME: ${NG_DB}
+    volumes:
+      - ./ng-manager/data:/data
+      - ./ng-manager/letsencrypt:/etc/letsencrypt
+    networks:
+      - topobre-net

@@ -4,7 +4,7 @@ import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 
-export enum BankType {
+enum BankType {
     NUBANK = 'nubank',
     ITAU = 'itau',
     INTER = 'inter',
@@ -14,7 +14,7 @@ export enum BankType {
     DESCONHECIDO = 'desconhecido',
 }
 
-export interface Transaction {
+interface Transaction {
     date: string;
     description: string;
     amount: number;
@@ -22,7 +22,7 @@ export interface Transaction {
     raw?: any;
 }
 
-export function parseStatement(filePath: string, bank: BankType): Transaction[] {
+function parseStatement(filePath: string, bank: BankType): Transaction[] {
     const ext = filePath.split('.').pop()?.toLowerCase();
     let data: any[] = [];
 
@@ -30,7 +30,7 @@ export function parseStatement(filePath: string, bank: BankType): Transaction[] 
         const file = fs.readFileSync(filePath, 'utf8');
         const parsed = Papa.parse(file, { header: true, skipEmptyLines: true });
         data = parsed.data as any[];
-    } else if (ext === 'xlsx') {
+    } else if (Array.from(['xlsx', 'xls']).includes(String(ext))) {
         const workbook = XLSX.readFile(filePath);
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         data = XLSX.utils.sheet_to_json(sheet);
@@ -78,6 +78,12 @@ function parseRowByBank(row: any, bank: BankType): Transaction {
             };
     }
 }
+
+export {
+    BankType,
+    Transaction,
+    parseStatement,
+};
 
 // Exemplo de uso CLI: node index.js caminho/para/arquivo.csv nubank
 const [, , filePath, bankParam] = process.argv;

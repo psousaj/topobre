@@ -8,28 +8,28 @@
             "runtimeExecutable": "nodemon",
             "runtimeArgs": [
                 "--exec",
-                "ts-node",
-                "-r",
-                "reflect-metadata",
-                "${workspaceFolder}/apps/api/src/server.ts"
+                "pnpm",
+                // "dev:api",
+                "dev:finloader",
+                // "${workspaceFolder}/apps/api/src/server.ts"
             ],
-            "envFile": "${workspaceFolder}/apps/api/.env",
-            "cwd": "${workspaceFolder}/apps/api",
+            // "envFile": "${workspaceFolder}/apps/api/.env",
+            "cwd": "${workspaceFolder}",
             "restart": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Debug Web (Next.js)",
-            "runtimeExecutable": "pnpm",
-            "runtimeArgs": [
-                "dev"
-            ],
-            "cwd": "${workspaceFolder}/apps/web",
-            "envFile": "${workspaceFolder}/apps/web/.env.example",
-            "console": "integratedTerminal"
-        }
+        // {
+        //     "type": "node",
+        //     "request": "launch",
+        //     "name": "Debug Web (Next.js)",
+        //     "runtimeExecutable": "pnpm",
+        //     "runtimeArgs": [
+        //         "dev"
+        //     ],
+        //     "cwd": "${workspaceFolder}/apps/web",
+        //     "envFile": "${workspaceFolder}/apps/web/.env",
+        //     "console": "integratedTerminal"
+        // }
     ]
 }

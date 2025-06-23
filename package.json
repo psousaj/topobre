@@ -8,6 +8,7 @@
     "lint": "turbo run lint --",
     "db:seed": "turbo run db:seed --filter=@topobre/typeorm",
     "dev:api": "turbo run dev --filter=@topobre/api",
+    "dev:finloader": "turbo run dev --filter=@topobre/finloader",
     "build:api": "turbo run build --filter=@topobre/api",
     "start:api": "turbo run start --filter=@topobre/api"
   },

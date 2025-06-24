@@ -12,6 +12,8 @@ enum BankType {
     BRADESCO = 'bradesco',
     BANCO_DO_BRASIL = 'banco_do_brasil',
     CAIXA = 'caixa',
+    WILLBANK = 'willbank',
+    MERCADOPAGO = 'mercado_pago',
     DESCONHECIDO = 'desconhecido',
 }
 
@@ -47,7 +49,7 @@ function parseCurrencyToCents(value: string, locale: string = 'pt-BR'): number {
         .replaceAll(group, '')
         .replace(decimal, '.');
 
-    const amount = currency(normalized, { precision: 2 });
+    const amount = currency(normalized, { precision: 4 });
     return amount.intValue;
 }
 
@@ -58,12 +60,14 @@ function parseSkipLinesByBank(bank: BankType) {
         case BankType.ITAU:
             return 4;
         case BankType.INTER:
-            return 5;
+            return 4;
         case BankType.BRADESCO:
             return 4;
         case BankType.BANCO_DO_BRASIL:
             return 4;
         case BankType.CAIXA:
+            return 4;
+        case BankType.WILLBANK:
             return 4;
         default:
             return 4;
@@ -77,7 +81,7 @@ function parseStatement(filePath: string, bank: BankType): Transaction[] {
 
     if (ext === 'csv') {
         const file = fs.readFileSync(filePath, 'utf8');
-        const parsed = Papa.parse(file, { header: false, skipEmptyLines: true, skipFirstNLines: skipedLines });
+        const parsed = Papa.parse(file, { header: true, skipEmptyLines: true, skipFirstNLines: skipedLines });
         data = parsed.data as any[];
     } else if (Array.from(['xlsx', 'xls']).includes(String(ext))) {
         const workbook = XLSX.readFile(filePath);

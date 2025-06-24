@@ -5,13 +5,13 @@
             "type": "node",
             "request": "launch",
             "name": "Debug API (TypeScript, Nodemon)",
-            "runtimeExecutable": "nodemon",
+            // "runtimeExecutable": "nodemon",
+            "runtimeExecutable": "pnpm",
             "runtimeArgs": [
-                "--exec",
-                "pnpm",
+                // "--exec",
                 // "dev:api",
                 "dev:finloader",
-                // "${workspaceFolder}/apps/api/src/server.ts"
+                // "${workspaceFolder}/apps/finloader/index.ts"
             ],
             // "envFile": "${workspaceFolder}/apps/api/.env",
             "cwd": "${workspaceFolder}",

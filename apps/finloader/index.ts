@@ -37,26 +37,42 @@ function getSeparatorsFromLocale(locale: string) {
     return { group, decimal };
 }
 
+function detectDecimalSeparator(value: string): { decimal: string, group: string } {
+    const lastComma = value.lastIndexOf(',');
+    const lastDot = value.lastIndexOf('.');
+
+    if (lastComma > lastDot) {
+        return { decimal: ',', group: '.' }; // Ex: "1.234,56"
+    } else if (lastDot > lastComma) {
+        return { decimal: '.', group: ',' }; // Ex: "1,234.56"
+    } else {
+        // Fallback: assume padrão do locale
+        return getSeparatorsFromLocale('pt-BR');
+    }
+}
+
 /**
  * Converte uma string monetária para centavos, baseado no locale
  */
-function parseCurrencyToCents(value: string, locale: string = 'pt-BR'): number {
-    const { group, decimal } = getSeparatorsFromLocale(locale);
+function parseCurrencyToCents(value: string): number {
+    if (!value) throw new Error('Valor vazio');
 
-    const cleaned = value.replace(/[^\d\-\.,]/g, '');
+    const cleanedInput = value.replace(/[^\d.,\-]/g, '');
 
-    const normalized = cleaned
+    const { decimal, group } = detectDecimalSeparator(cleanedInput);
+
+    const normalized = cleanedInput
         .replaceAll(group, '')
         .replace(decimal, '.');
 
-    const amount = currency(normalized, { precision: 4 });
+    const amount = currency(normalized, { precision: 2 });
     return amount.intValue;
 }
 
 function parseSkipLinesByBank(bank: BankType) {
     switch (bank) {
         case BankType.NUBANK:
-            return 4;
+            return 0;
         case BankType.ITAU:
             return 4;
         case BankType.INTER:
@@ -98,9 +114,9 @@ function parseRowByBank(row: any, bank: BankType): Transaction {
     switch (bank) {
         case BankType.NUBANK:
             return {
-                date: row['Data'] || row['data'],
-                description: row['Descrição'] || row['descricao'],
-                amount: Number(row['Valor'] || row['valor']),
+                date: row['Data'] || row[0],
+                description: row['Descrição'] || row[3],
+                amount: parseCurrencyToCents(row['Valor'] || row[1]),
                 bank,
                 raw: row,
             };
@@ -138,7 +154,7 @@ export {
     parseStatement,
 };
 
-const transactions = parseStatement('extrato.csv', BankType.INTER);
+const transactions = parseStatement('extrato-nu.csv', BankType.NUBANK);
 console.log(transactions)
 // Exemplo de uso CLI: node index.js caminho/para/arquivo.csv nubank
 // const [, , filePath, bankParam] = process.argv;

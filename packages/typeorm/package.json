@@ -5,8 +5,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "db:seed": "ts-node -r dotenv/config -r reflect-metadata ./seed/index.ts",
-    "lint": "eslint ."
+    "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
+    "lint": "npx eslint ."
   },
   "dependencies": {
     "@topobre/env": "workspace:*",
@@ -21,7 +21,8 @@
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "pg": "8.11.3"
+    "pg": "8.11.3",
+    "tsc": "^2.0.4"
   },
   "peerDependencies": {
     "typeorm": "^0.3.24"

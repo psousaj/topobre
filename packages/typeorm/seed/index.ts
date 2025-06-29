@@ -1,3 +1,1 @@
-import { saveCategories } from "./saveCategories";
-
-saveCategories();
+export * from "./saveCategories";

@@ -4,8 +4,15 @@ import { REPOSITORIES } from '../../shared/constant'
 import { categoryResponseSchema, categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 import { Category } from '@topobre/typeorm/entities'
+import { saveCategories } from '@topobre/typeorm/seed'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
+    app.get('/seed', {},
+        async (req, rep) => {
+            await saveCategories()
+        }
+    )
+
     // Listagem
     app.get(
         '',

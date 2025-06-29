@@ -1,6 +1,6 @@
 import { TopobreDataSource } from "../index";
 import { Category } from "../entities/category.entity";
-import { logger } from "@topobre/winston"
+import { logger } from "@topobre/winston";
 
 const categories = [
     { displayName: "Empréstimo", name: "Loan", color: "#FFCC00" },
@@ -27,20 +27,46 @@ export async function saveCategories() {
         const categoryRepo = dataSource.getRepository(Category);
         logger.info("Datasource conectado com sucesso.");
 
-        for (const category of categories) {
-            const exists = await categoryRepo.findOneBy({ name: category.name });
-            if (exists) {
-                logger.debug(`Categoria '${category.name}' já existe. Pulando...`);
-            } else {
-                const cat = categoryRepo.create({ ...category, displayName: category.displayName, isDefault: true });
-                await categoryRepo.save(cat);
-                logger.info(`Categoria '${category.name}' criada.`);
-            }
+        // Buscar todas as categorias existentes de uma vez
+        const existingCategories = await categoryRepo.find({
+            select: ['name']
+        });
+
+        const existingNames = new Set(existingCategories.map(cat => cat.name));
+
+        // Filtrar apenas as que não existem
+        const newCategories = categories
+            .filter(category => !existingNames.has(category.name))
+            .map(category => ({
+                ...category,
+                displayName: category.displayName,
+                isDefault: true
+            }));
+
+        if (newCategories.length === 0) {
+            logger.info("Todas as categorias já existem. Nenhuma nova categoria para criar.");
+            return;
         }
+
+        // Bulk insert - muito mais rápido
+        await categoryRepo
+            .createQueryBuilder()
+            .insert()
+            .into(Category)
+            .values(newCategories)
+            .execute();
+
+        logger.info(`${newCategories.length} categorias criadas em bulk insert.`);
+
+        // Log das categorias criadas
+        newCategories.forEach(cat => {
+            logger.debug(`Categoria '${cat.name}' criada.`);
+        });
 
         logger.info("Seed finalizado.");
     } catch (error) {
         logger.error("Erro ao salvar categorias:", error);
+        throw error;
     } finally {
         await TopobreDataSource.destroy();
         logger.info("Datasource encerrado.");

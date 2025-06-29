@@ -30,6 +30,7 @@ export async function authRoutes(app: FastifyZodApp) {
             const user = await userRepo.findOneBy({ email });
             // Verifica a senha
             const isPasswordValid = await bcrypt.compare(password, user?.password!);
+            app.log.debug(password, user, user?.password)
             if (!user || !isPasswordValid) {
                 return reply.status(401).send({
                     error: 'Unauthorized',
@@ -105,7 +106,6 @@ export async function authRoutes(app: FastifyZodApp) {
     );
 
     app.delete('/logout', {
-        preHandler: [app.authenticate],
         schema: {
             tags: ['Auth'],
             description: 'Logout do usuário',
@@ -275,7 +275,6 @@ export async function authRoutes(app: FastifyZodApp) {
 
     // Rota para verificar token
     app.get('/me', {
-        preHandler: [app.authenticate],
         schema: {
             tags: ['Auth'],
             description: 'Informações do usuário logado',

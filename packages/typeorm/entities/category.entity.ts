@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Un
 import { FinancialRecord } from "./financial-record.entity";
 
 @Entity()
-@Unique(["displayName", "profileId"])
+@Unique(["displayName", "userId"])
 export class Category {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -17,7 +17,7 @@ export class Category {
     color: string;
 
     @Column({ nullable: true })
-    profileId: string;
+    userId: string;
 
     @Column({ nullable: true, default: false })
     isDefault: boolean;

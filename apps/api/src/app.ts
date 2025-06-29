@@ -45,7 +45,7 @@ const appRoutes = async (app: FastifyInstance, opts: any) => {
     app.register(async (authenticatedApp) => {
         // Aplica o hook de autenticação a todas as rotas neste escopo
         authenticatedApp.addHook('preHandler', authenticatedApp.auth([verifySession]));
-        
+
         await authenticatedApp.register(financialRecordsRoutes, { prefix: 'financial-records' });
         await authenticatedApp.register(categoriesRoutes, { prefix: 'categories' });
         await authenticatedApp.register(userRoutes, { prefix: 'users' });
@@ -79,7 +79,22 @@ export const buildApp = async () => {
             level: env.NODE_ENV === 'production' ? 'info' : 'trace',
             stream: {
                 write: (message: string) => {
-                    // ... (lógica de log)
+                    try {
+                        const parsed = JSON.parse(message);
+                        const msg = parsed.msg || parsed.message || message;
+                        const hostname = host || 'server';
+                        const levelName = logLevelMap[parsed.level as keyof typeof logLevelMap] || 'info';
+
+                        const loggerMethods: Record<string, (...args: any[]) => void> = logger as any;
+                        if (typeof loggerMethods[levelName] === 'function') {
+                            loggerMethods[levelName](`${hostname} -> ${msg}`);
+                        } else {
+                            logger.info(`${hostname} -> ${msg}`);
+                        }
+                    } catch {
+                        // Fallback em caso de erro no parse
+                        logger.info(`server -> ${message.trim()}`);
+                    }
                 },
             },
         },

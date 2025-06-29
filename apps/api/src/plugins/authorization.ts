@@ -13,7 +13,7 @@ export const hasRole = (roles: string[]) => {
 // Função para verificar se o usuário é o dono do recurso
 export const isOwner = (paramName = 'id') => {
   return (request: FastifyRequest, reply: FastifyReply, done: (err?: Error) => void) => {
-    if (!request.user || (request.params as any)[paramName] !== request.user.id) {
+    if (!request.user || (request.params as any)[paramName] !== request.user.userId) {
       return reply.status(403).send({ message: 'Acesso negado: você não é o proprietário deste recurso.' });
     }
     done();

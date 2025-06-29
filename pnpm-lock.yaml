@@ -60,15 +60,24 @@ importers:
       '@fastify/view':
         specifier: ^11.1.0
         version: 11.1.0
+      '@topobre/bullmq':
+        specifier: workspace:*
+        version: link:../../packages/bullmq
       '@topobre/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@topobre/finloader':
+        specifier: workspace:*
+        version: link:../finloader
       '@topobre/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@topobre/supabase':
         specifier: workspace:*
         version: link:../../packages/supabase
+      '@topobre/telemetry':
+        specifier: workspace:*
+        version: link:../../packages/telemetry
       '@topobre/typeorm':
         specifier: workspace:*
         version: link:../../packages/typeorm

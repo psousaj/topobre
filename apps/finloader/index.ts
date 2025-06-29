@@ -1,11 +1,9 @@
 import { logger } from '@topobre/winston';
-import { env } from '@topobre/env';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
-import * as fs from 'fs';
 import currency from 'currency.js';
 
-enum BankType {
+export enum BankType {
     NUBANK = 'nubank',
     ITAU = 'itau',
     INTER = 'inter',
@@ -17,7 +15,7 @@ enum BankType {
     DESCONHECIDO = 'desconhecido',
 }
 
-interface Transaction {
+export interface Transaction {
     date: string;
     description: string;
     amount: number;
@@ -90,23 +88,13 @@ function parseSkipLinesByBank(bank: BankType) {
     }
 }
 
-function parseStatement(filePath: string, bank: BankType): Transaction[] {
-    const ext = filePath.split('.').pop()?.toLowerCase();
+export function processTransactionFile(fileContent: string, bank: BankType): Transaction[] {
     const skipedLines = parseSkipLinesByBank(bank)
     let data: any[] = [];
 
-    if (ext === 'csv') {
-        const file = fs.readFileSync(filePath, 'utf8');
-        const parsed = Papa.parse(file, { header: true, skipEmptyLines: true, skipFirstNLines: skipedLines });
-        data = parsed.data as any[];
-    } else if (Array.from(['xlsx', 'xls']).includes(String(ext))) {
-        const workbook = XLSX.readFile(filePath);
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        data = XLSX.utils.sheet_to_json(sheet);
-    } else {
-        throw new Error('Formato de arquivo não suportado');
-    }
-
+    const parsed = Papa.parse(fileContent, { header: true, skipEmptyLines: true, skipFirstNLines: skipedLines });
+    data = parsed.data as any[];
+    
     return data.map(row => parseRowByBank(row, bank));
 }
 
@@ -147,22 +135,3 @@ function parseRowByBank(row: any, bank: BankType): Transaction {
             };
     }
 }
-
-export {
-    BankType,
-    Transaction,
-    parseStatement,
-};
-
-const transactions = parseStatement('extrato-nu.csv', BankType.NUBANK);
-console.log(transactions)
-// Exemplo de uso CLI: node index.js caminho/para/arquivo.csv nubank
-// const [, , filePath, bankParam] = process.argv;
-// if (!filePath || !bankParam) {
-//     logger.error('Uso: node index.js <arquivo> <banco>');
-//     process.exit(1);
-// }
-// const bank = BankType[bankParam.toUpperCase() as keyof typeof BankType] || BankType.DESCONHECIDO;
-// const transactions = parseStatement(filePath, bank);
-// logger.info(`Transações importadas: ${transactions.length}`);
-// logger.debug(transactions);

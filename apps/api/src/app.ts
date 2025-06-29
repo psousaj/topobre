@@ -11,6 +11,7 @@ import authPlugin from './plugins/authenticate';
 import jwtPlugin from './plugins/jwt';
 import mailerPlugin from './plugins/mailer';
 import templatePreview from './plugins/templatePreview';
+import fastifyMultipart from '@fastify/multipart';
 import { errorHandler } from "./handlers/error-handlers";
 import { authRoutes } from "./modules/auth/auth.route";
 import { userRoutes } from './modules/user/user.route';
@@ -86,6 +87,9 @@ export const buildApp = async () => {
             },
         },
     }).withTypeProvider<ZodTypeProvider>();
+
+    // 0. Multipart
+    await app.register(fastifyMultipart);
 
     // 1. PRIMEIRO: Plugin do banco de dados
     await app.register(datasourcePlugin);

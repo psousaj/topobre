@@ -1,0 +1,20 @@
+{
+  "name": "@topobre/worker",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@topobre/bullmq": "workspace:*",
+    "@topobre/typeorm": "workspace:*",
+    "@topobre/env": "workspace:*",
+    "@topobre/finloader": "workspace:*",
+    "bullmq": "^5.7.13",
+    "dotenv": "^16.4.5",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  }
+}

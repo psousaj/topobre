@@ -1,19 +1,6 @@
 {
-    "name": "@topobre/finloader",
-    "version": "0.0.0",
-    "main": "index.ts",
-    "scripts": {
-        "dev": "ts-node index.ts"
-    },
-    "dependencies": {
-        "@topobre/env": "workspace:*",
-        "@topobre/tsconfig": "workspace:*",
-        "@topobre/winston": "workspace:*",
-        "currency.js": "^2.0.4",
-        "papaparse": "^5.4.1",
-        "xlsx": "^0.18.5"
-    },
-    "devDependencies": {
-        "@types/papaparse": "^5.3.16"
-    }
+  "name": "@topobre/finloader",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts"
 }

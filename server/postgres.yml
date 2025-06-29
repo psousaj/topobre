@@ -1,14 +1,12 @@
 services:
-  portainer:
-    image: portainer/portainer
-    container_name: portainer
-    restart: always
-    privileged: true
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
     ports:
-      - "8000:8000"
-      - "9000:9000"
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
     volumes:
-      - "./portainer/data:/data"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    networks:
-      - topobre-net
+      - postgres_data:/var/lib/postgresql/data

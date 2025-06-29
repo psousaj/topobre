@@ -6,7 +6,10 @@ import type { DatabaseService, Mailer } from ".";
 
 declare module "fastify" {
     interface FastifyRequest {
-        user?: User;
+        user?: {
+            id: string;
+            roles: string[];
+        };
         jwt?: JWT;
     }
 

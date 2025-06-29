@@ -1,0 +1,97 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Loki",
+      "gridPos": { "h": 9, "w": 24, "x": 0, "y": 0 },
+      "id": 2,
+      "options": {
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": "Loki",
+          "expr": "{job=~\".+\"}",
+          "queryType": "range"
+        }
+      ],
+      "title": "Logs",
+      "type": "logs"
+    },
+    {
+      "datasource": "Tempo",
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 9 },
+      "id": 4,
+      "options": {},
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": "Tempo",
+          "query": "traces",
+          "queryType": "traceql"
+        }
+      ],
+      "title": "Traces",
+      "type": "traces"
+    },
+    {
+      "datasource": "Prometheus",
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 9 },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "9.5.3",
+      "targets": [
+        {
+          "datasource": "Prometheus",
+          "expr": "rate(otelcol_receiver_accepted_spans[5m])",
+          "legendFormat": "accepted spans",
+          "range": true
+        }
+      ],
+      "title": "OTel Collector Span Rate",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Visão Geral da Aplicação",
+  "version": 1
+}

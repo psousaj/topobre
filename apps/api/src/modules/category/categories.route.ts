@@ -10,7 +10,6 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     app.get(
         '',
         {
-            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Lista todas as categorias disponíveis para o usuário',
@@ -39,7 +38,6 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     app.post(
         '',
         {
-            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Cria uma nova categoria',
@@ -69,7 +67,6 @@ export async function categoriesRoutes(app: FastifyZodApp) {
     app.patch(
         '',
         {
-            preHandler: app.authenticate,
             schema: {
                 tags: ['Categories'],
                 description: 'Atualiza a cor de uma categoria existente',

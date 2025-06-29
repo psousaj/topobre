@@ -5,13 +5,14 @@ import { REPOSITORIES } from '../../shared/constant'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 import { finloaderQueue } from '@topobre/bullmq'
 import { BankType } from '@topobre/finloader'
+import { isOwner } from '../../plugins/authorization'
 
 export async function financialRecordsRoutes(app: FastifyZodApp) {
     // Upload de arquivo
     app.post(
         '/upload',
         {
-            preHandler: app.authenticate,
+            preHandler: app.auth([isOwner('userId')]),
             schema: {
                 tags: ['Financial Records'],
                 description: 'Faz upload de um extrato bancário para processamento em fila',
@@ -33,7 +34,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             }
 
             const fileContent = (await data.toBuffer()).toString('utf-8')
-            const { userId } = request.user
+            const { id: userId } = request.user
             const bank = (data.fields.bank as any)?.value as BankType || BankType.DESCONHECIDO
 
             await finloaderQueue.add('process-file', {
@@ -50,7 +51,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.get(
         '',
         {
-            preHandler: app.authenticate,
+            preHandler: app.auth([isOwner('userId')]),
             schema: {
                 tags: ['Financial Records'],
                 description: 'Lista todas as transações do usuário',
@@ -61,7 +62,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            const { userId } = request.user
+            const { id: userId } = request.user
 
             const [financialRecords, total] = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findAndCount({
                 where: { user: { id: userId } },
@@ -75,7 +76,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.post(
         '',
         {
-            preHandler: app.authenticate,
+            preHandler: app.auth([isOwner('userId')]),
             schema: {
                 tags: ['Financial Records'],
                 description: 'Cria uma nova transação',
@@ -107,7 +108,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 valueInCents,
                 category: categoryExists,
                 user: {
-                    id: request.user.userId
+                    id: request.user.id
                 },
                 status: TransactionStatus.PENDING
             })
@@ -119,7 +120,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.patch(
         '',
         {
-            preHandler: app.authenticate,
+            preHandler: app.auth([isOwner('userId')]),
             schema: {
                 tags: ['Financial Records'],
                 description: 'Atualiza uma transação existente',

@@ -1,70 +1,57 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import fp from 'fastify-plugin';
-import { REPOSITORIES } from "../shared/constant"
-import { env } from "@topobre/env";
+import { FastifyRequest } from 'fastify';
+import { REPOSITORIES } from '../shared/constant';
+import { Session, User } from '@topobre/typeorm';
 
-async function authHandler(request: FastifyRequest, reply: FastifyReply) {
+/**
+ * Verifica o token JWT, valida a sessão no banco de dados e anexa o usuário à requisição.
+ * Esta função é projetada para ser usada com @fastify/auth.
+ */
+export const verifySession = async (request: FastifyRequest) => {
     try {
-        await request.jwtVerify();
+        // 1. Extrai o token do header
+        const token = request.headers.authorization?.replace('Bearer ', '');
+        if (!token) {
+            throw new Error('Token não fornecido.');
+        }
 
-        const { jti, userId } = request.user
+        // 2. Decodifica o token para obter o JTI (ID da Sessão) e o ID do usuário
+        const decoded = request.server.jwt.verify(token) as { jti: string, userId: string };
+        if (!decoded.jti || !decoded.userId) {
+            throw new Error('Token inválido ou malformado.');
+        }
 
-        const sessionRepo = request.server.db.getRepository(REPOSITORIES.SESSION);
-        const session = await sessionRepo.findOne({
+        // 3. Valida a sessão no banco de dados
+        const sessionRepository = request.server.db.getRepository<Session>(REPOSITORIES.SESSION);
+        const session = await sessionRepository.findOne({
             where: {
-                jti,
-                isActive: true
-            },
-            relations: ['user'],
-            cache: {
-                id: `session:${jti}`,
-                milliseconds: 1000 * 60 * 15 // 15 minutos
+                jti: decoded.jti,
+                userId: decoded.userId,
+                isActive: true,
             }
         });
 
-        if (!session) {
-            return reply.code(401).send({
-                error: 'Unauthorized',
-                message: 'Sessão não encontrada ou inválida'
-            });
+        // Se não houver sessão ou se ela expirou, rejeita a requisição
+        if (!session || session.expiresAt < new Date()) {
+            if (session) {
+                // Inativa a sessão se ela estiver expirada
+                session.isActive = false;
+                await sessionRepository.save(session);
+            }
+            throw new Error('Sessão inválida ou expirada.');
         }
 
-        // Verifica se a sessão não expirou
-        const now = new Date();
-        if (session.expiresAt < now) {
-            await sessionRepo.update({ id: session.id }, { isActive: false });
-            await request.server.db.dataSource.queryResultCache?.remove([`session:${jti}`]);
+        const userRepository = request.server.db.getRepository<User>(REPOSITORIES.USER);
+        const user = await userRepository.findOne({ where: { id: decoded.userId } });
 
-            return reply.code(401).send({
-                statusCode: 401,
-                error: 'Unauthorized',
-                message: 'Sessão expirada'
-            });
+        if (!user) {
+            throw new Error('Usuário não encontrado.');
         }
 
-        if (!session.user || !session.user.isActive) {
-            return reply.code(403).send({
-                statusCode: 403,
-                error: 'Forbidden',
-                message: 'Usuário desativado'
-            });
-        }
+        // 4. Anexa o usuário à requisição para uso posterior nas rotas
+        request.user = { id: user.id, roles: user.roles };
 
-    } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-
-        if (env.NODE_ENV === 'development') {
-            console.error('❌ Erro na autenticação:', errorMessage);
-        }
-
-        return reply.code(401).send({
-            status: 401,
-            error: 'Unauthorized',
-            message: 'Token inválido'
-        });
+    } catch (err: any) {
+        // Lança um erro que o @fastify/auth irá capturar e transformar em uma resposta 401 Unauthorized.
+        throw new Error(err.message || 'Falha na autenticação.');
     }
-}
-
-export default fp(async function (fastify) {
-    fastify.decorate('authenticate', authHandler);
-});
+};

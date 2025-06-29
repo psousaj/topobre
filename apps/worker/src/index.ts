@@ -1,3 +1,7 @@
+import { initTelemetry } from '@topobre/telemetry';
+// Inicializa a telemetria ANTES de qualquer outra coisa
+initTelemetry('worker');
+
 import { Worker } from 'bullmq';
 import { TopobreDataSource } from '@topobre/typeorm';
 import { FinancialRecord, Category } from '@topobre/typeorm/entities';

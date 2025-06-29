@@ -1,6 +1,6 @@
 import winston from "winston"
-// import { TransformableInfo } from "logform"
 import { env } from '@topobre/env'
+import { OpenTelemetryTransport } from './OpenTelemetryTransport';
 
 export const logger = winston.createLogger({
     format: winston.format.combine(
@@ -22,14 +22,6 @@ export const logger = winston.createLogger({
             ),
             level: env.NODE_ENV !== 'production' ? 'debug' : 'info'
         }),
-        // new winston.transports.File({
-        //     filename: 'logs.json',
-        //     level: 'info',
-        //     format: winston.format.combine(
-        //         winston.format.timestamp(),
-        //         winston.format.json()
-        //     )
-        // }),
         new winston.transports.File({
             filename: 'errors.json',
             level: 'error',
@@ -37,6 +29,8 @@ export const logger = winston.createLogger({
                 winston.format.timestamp(),
                 winston.format.json()
             )
-        })
+        }),
+        // Adiciona o transport do OpenTelemetry
+        new OpenTelemetryTransport(),
     ]
 })

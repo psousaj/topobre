@@ -1,0 +1,14 @@
+{
+  "name": "@topobre/telemetry",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.ts",
+  "dependencies": {
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.0",
+    "@opentelemetry/exporter-trace-otlp-grpc": "^0.48.0",
+    "@opentelemetry/resources": "^1.19.0",
+    "@opentelemetry/sdk-node": "^0.48.0",
+    "@opentelemetry/semantic-conventions": "^1.19.0"
+  }
+}

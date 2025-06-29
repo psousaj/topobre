@@ -1,14 +1,15 @@
-services:
-  web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
-    container_name: topobre-web
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
+version: '3.8'
 
+include:
+  - server/postgres.yml
+  - server/redis.yml
+  - server/grafana.yml
+  - server/loki.yml
+  - server/prometheus.yml
+  - server/tempo.yml
+  - server/otel-collector.yml
+
+services:
   api:
     build:
       context: .
@@ -17,8 +18,14 @@ services:
     ports:
       - "3003:3003"
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
       - NODE_ENV=production
+      - OTEL_SERVICE_NAME=api
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     depends_on:
       - postgres
       - redis
@@ -29,9 +36,28 @@ services:
       dockerfile: apps/worker/Dockerfile
     container_name: topobre-worker
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
       - NODE_ENV=production
+      - OTEL_SERVICE_NAME=worker
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     depends_on:
-      - redis
       - postgres
+      - redis
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: topobre-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
+volumes:
+  postgres_data:

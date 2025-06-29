@@ -1,7 +1,11 @@
 import 'dotenv/config'
+import { initTelemetry } from '@topobre/telemetry';
 import { buildApp } from "./app";
 import { bootstrapLogger } from './shared/bootstrapLogger';
 import { env } from '@topobre/env';
+
+// Inicializa a telemetria ANTES de qualquer outra coisa
+initTelemetry('api');
 
 const start = async () => {
     const app = await buildApp();

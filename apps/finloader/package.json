@@ -2,5 +2,15 @@
   "name": "@topobre/finloader",
   "version": "1.0.0",
   "private": true,
-  "main": "index.ts"
+  "main": "index.ts",
+  "dependencies": {
+    "@topobre/tsconfig": "workspace:*",
+    "@topobre/winston": "workspace:*",
+    "currency.js": "^2.0.4",
+    "papaparse": "^5.5.3",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.3.16"
+  }
 }

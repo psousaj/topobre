@@ -1,0 +1,26 @@
+{
+  "name": "@topobre/redis",
+  "version": "0.0.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "npx eslint ."
+  },
+  "dependencies": {
+    "@topobre/env": "workspace:*",
+    "@topobre/winston": "workspace:*",
+    "@topobre/telemetry": "workspace:*"
+  },
+  "devDependencies": {
+    "@topobre/eslint": "workspace:*",
+    "@topobre/prettier": "workspace:*",
+    "@topobre/tsconfig": "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@topobre/eslint/lib"
+    ]
+  },
+  "prettier": "@topobre/prettier"
+}

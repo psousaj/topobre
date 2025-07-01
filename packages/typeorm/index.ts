@@ -3,19 +3,13 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as path from "path";
 import { env } from "@topobre/env";
+import { redis } from "@topobre/redis";
 
 export * from 'typeorm';
 
 export * from './entities';
 
 export * from './types';
-
-console.log('Redis config:', {
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    password: env.REDIS_PASSWORD,
-})
-
 
 export const TopobreDataSource = new DataSource({
     type: 'postgres',
@@ -34,11 +28,7 @@ export const TopobreDataSource = new DataSource({
     cache: {
         type: "ioredis",
         alwaysEnabled: true,
-        options: {
-            host: env.REDIS_HOST,
-            port: env.REDIS_PORT,
-            password: env.REDIS_PASSWORD,
-        },
+        options: redis,
         duration: 60000 * 1 // 5 minutos
     },
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação

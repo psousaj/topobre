@@ -24,6 +24,7 @@
     "@fastify/multipart": "^9.0.3",
     "@opentelemetry/exporter-logs-otlp-grpc": "^0.202.0",
     "@opentelemetry/sdk-logs": "^0.202.0",
+    "ioredis": "^5.6.1",
     "reflect-metadata": "^0.2.2"
   }
 }

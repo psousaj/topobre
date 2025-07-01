@@ -31,7 +31,6 @@
     "@topobre/shared": "workspace:*",
     "@topobre/typeorm": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "@topobre/supabase": "workspace:*",
     "@topobre/telemetry": "workspace:*",
     "@topobre/bullmq": "workspace:*",
     "@topobre/finloader": "workspace:*"

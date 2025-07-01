@@ -5,7 +5,7 @@ import { ZodError } from "zod"
 type FastifyErrorHandler = FastifyInstance['errorHandler']
 
 export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
-    logger.error(error);
+    logger.error(`[API] ${error}`);
 
     // Erros de validação
     if (error instanceof ZodError) {

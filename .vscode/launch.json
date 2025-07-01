@@ -9,8 +9,8 @@
             "runtimeExecutable": "pnpm",
             "runtimeArgs": [
                 // "--exec",
-                // "dev:api",
-                "dev:finloader",
+                "dev:api",
+                // "dev:finloader",
                 // "${workspaceFolder}/apps/finloader/index.ts"
             ],
             // "envFile": "${workspaceFolder}/apps/api/.env",

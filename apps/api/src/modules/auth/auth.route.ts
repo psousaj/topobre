@@ -27,9 +27,13 @@ export async function authRoutes(app: FastifyZodApp) {
 
             // Busca o usuário por email
             const userRepo = app.db.getRepository(REPOSITORIES.USER);
-            const user = await userRepo.findOneBy({ email });
+            const user = await userRepo.createQueryBuilder("user")
+                .where("user.email = :email", { email })
+                .cache({ key: `[LOGIN]::user:${email}`, milliseconds: 1000 * 30 })
+                .getOne();
             // Verifica a senha
-            const isPasswordValid = await bcrypt.compare(password, user?.password!);
+            const userPassword = user?.password ?? '';
+            const isPasswordValid = await bcrypt.compare(password, userPassword);
             app.log.debug(password, user, user?.password)
             if (!user || !isPasswordValid) {
                 return reply.status(401).send({

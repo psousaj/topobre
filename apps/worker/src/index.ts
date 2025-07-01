@@ -11,14 +11,14 @@ import { logger } from '@topobre/winston';
 import { gemini } from '@topobre/gemini';
 
 async function getCategoryFromIA(transactionDescription: string, userCategories: Category[]): Promise<string | null> {
-    if (!userCategories || userCategories.length === 0) {
-        logger.warn('User has no categories, skipping IA categorization.');
-        return null;
-    }
+  if (!userCategories || userCategories.length === 0) {
+    logger.warn('[CSV-WORKER] User has no categories, skipping IA categorization.');
+    return null;
+  }
 
-    const categoryList = userCategories.map(c => `ID: "${c.id}", Nome: "${c.displayName}"`).join('\n');
+  const categoryList = userCategories.map(c => `ID: "${c.id}", Nome: "${c.displayName}"`).join('\n');
 
-    const prompt = `
+  const prompt = `
         Você é um assistente de finanças pessoais. Sua tarefa é categorizar uma transação bancária com base em sua descrição.
         Analise a seguinte descrição de transação:
         "${transactionDescription}"
@@ -32,40 +32,39 @@ async function getCategoryFromIA(transactionDescription: string, userCategories:
         ID da Categoria:
     `;
 
-    try {
-        const result = await gemini.generateContent(prompt);
-        const response = await result.response;
-        const categoryId = response.text().trim().replace(/"/g, '');
-        
-        // Valida se o ID retornado pela IA realmente existe na lista
-        if (userCategories.some(c => c.id === categoryId)) {
-            return categoryId;
-        }
-        logger.warn(`IA returned an invalid category ID: ${categoryId}`);
-        return null;
-    } catch (error) {
-        logger.error('Error calling Gemini API:', error);
-        return null;
+  try {
+    const result = await gemini.generateContent(prompt);
+    const response = await result.response;
+    const categoryId = response.text().trim().replace(/"/g, '');
+
+    // Valida se o ID retornado pela IA realmente existe na lista
+    if (userCategories.some(c => c.id === categoryId)) {
+      return categoryId;
     }
+    logger.warn(`[CSV-WORKER] IA returned an invalid category ID: ${categoryId}`);
+    return null;
+  } catch (error) {
+    logger.error('[CSV-WORKER] Error calling Gemini API:', error);
+    return null;
+  }
 }
 
-
-logger.info('Worker starting...');
+logger.info('[CSV-WORKER] Worker starting...');
 
 TopobreDataSource.initialize()
   .then(() => {
-    logger.info('Database connection established.');
+    logger.info('[TYPEORM] Database connection established.');
 
     const worker = new Worker(
       FINLOADER_QUEUE_NAME,
       async (job) => {
         const { fileContent, userId, bank } = job.data;
-        logger.info(`[JOB ${job.id}] Starting processing for user ${userId}`);
+        logger.info(`[CSV-WORKER]::[JOB ${job.id}] Starting processing for user ${userId}`);
 
         try {
           // 1. Buscar as categorias do usuário
           const categoryRepository = TopobreDataSource.getRepository(Category);
-          const userCategories = await categoryRepository.find({ where: { profileId: userId } }); // ou userId, dependendo do seu modelo
+          const userCategories = await categoryRepository.find({ where: { userId } });
 
           // 2. Processar o arquivo
           const transactions = processTransactionFile(fileContent, bank as BankType);
@@ -86,9 +85,9 @@ TopobreDataSource.initialize()
             await recordRepository.save(newRecord);
           }
 
-          logger.info(`[JOB ${job.id}] Processing complete. ${transactions.length} transactions saved.`);
+          logger.info(`[CSV-WORKER]::[JOB ${job.id}] Processing complete. ${transactions.length} transactions saved.`);
         } catch (error) {
-          logger.error(`[JOB ${job.id}] Processing failed:`, error);
+          logger.error(`[CSV-WORKER]::[JOB ${job.id}] Processing failed:`, error);
           throw error;
         }
       },
@@ -96,11 +95,11 @@ TopobreDataSource.initialize()
     );
 
     worker.on('completed', (job) => {
-      logger.info(`Job ${job.id} has completed!`);
+      logger.info(`[CSV-WORKER] Job ${job.id} has completed!`);
     });
 
     worker.on('failed', (job, err) => {
-      logger.error(`Job ${job?.id} has failed with ${err.message}`);
+      logger.error(`[CSV-WORKER] Job ${job?.id} has failed with ${err.message}`);
     });
   })
-  .catch((error) => logger.error('Error initializing worker:', error));
+  .catch((error) => logger.error('[CSV-WORKER] Error initializing worker:', error));

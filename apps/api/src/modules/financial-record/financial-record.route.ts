@@ -6,6 +6,31 @@ import { notFoundErrorResponseSchema } from '../../shared/schemas'
 import { finloaderQueue } from '@topobre/bullmq'
 import { BankType } from '@topobre/finloader'
 import { isOwner } from '../../plugins/authorization'
+import { addSpanAttributes, addSpanEvent, createCounter, createHistogram, withSpan } from '@topobre/telemetry'
+
+const fileUploadsCounter = createCounter(
+    'financial_file_uploads_total',
+    'Total de uploads de arquivos financeiros',
+    '1'
+);
+
+const transactionOperationsCounter = createCounter(
+    'financial_transactions_operations_total',
+    'Total de operações em transações financeiras',
+    '1'
+);
+
+const fileProcessingDuration = createHistogram(
+    'financial_file_processing_duration_seconds',
+    'Duração do processamento de arquivos financeiros',
+    's'
+);
+
+const databaseOperationDuration = createHistogram(
+    'financial_database_operation_duration_seconds',
+    'Duração das operações de banco de dados financeiras',
+    's'
+);
 
 export async function financialRecordsRoutes(app: FastifyZodApp) {
     // Upload de arquivo
@@ -28,22 +53,100 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            const data = await request.file()
-            if (!data) {
-                return reply.status(400).send({ error: 'Nenhum arquivo enviado.' })
-            }
+            const startTime = Date.now();
 
-            const fileContent = (await data.toBuffer()).toString('utf-8')
-            const { id: userId } = request.user
-            const bank = (data.fields.bank as any)?.value as BankType || BankType.DESCONHECIDO
+            return withSpan('financial-file-upload', async (span) => {
+                try {
+                    const { userId } = request.user;
 
-            await finloaderQueue.add('process-file', {
-                fileContent,
-                userId,
-                bank
+                    // Adicionar informações do usuário ao span
+                    span.setAttributes({
+                        'user.id': userId,
+                        'operation': 'file-upload',
+                        'service': 'financial-records'
+                    });
+
+                    const data = await request.file();
+
+                    if (!data) {
+                        addSpanEvent('file-upload-error', {
+                            'error.type': 'no-file-provided'
+                        });
+
+                        fileUploadsCounter.add(1, {
+                            status: 'error',
+                            error_type: 'no_file'
+                        });
+
+                        return reply.status(400).send({ error: 'Nenhum arquivo enviado.' });
+                    }
+
+                    // Processar arquivo
+                    const fileContent = (await data.toBuffer()).toString('utf-8');
+                    const bank = (data.fields.bank as any)?.value as BankType || BankType.DESCONHECIDO;
+
+                    // Adicionar informações do arquivo
+                    addSpanAttributes({
+                        'file.bank': bank,
+                        'file.size': fileContent.length,
+                        'file.name': data.filename || 'unknown'
+                    });
+
+                    addSpanEvent('file-processed', {
+                        'file.bank': bank,
+                        'file.size': fileContent.length
+                    });
+
+                    // Adicionar à fila
+                    await withSpan('queue-job-add', async (queueSpan) => {
+                        queueSpan.setAttributes({
+                            'queue.name': 'finloader',
+                            'job.type': 'process-file',
+                            'user.id': userId
+                        });
+
+                        await finloaderQueue.add('process-file', {
+                            fileContent,
+                            userId,
+                            bank
+                        });
+
+                        addSpanEvent('job-queued', {
+                            'queue.name': 'finloader',
+                            'job.type': 'process-file'
+                        });
+                    });
+
+                    // Métricas de sucesso
+                    fileUploadsCounter.add(1, {
+                        status: 'success',
+                        bank: bank
+                    });
+
+                    const duration = (Date.now() - startTime) / 1000;
+                    fileProcessingDuration.record(duration, {
+                        operation: 'upload',
+                        bank: bank
+                    });
+
+                    return reply.status(202).send({
+                        message: 'Seu arquivo foi recebido e está sendo processado.'
+                    });
+
+                } catch (error: any) {
+                    addSpanEvent('file-upload-error', {
+                        'error.message': error.message,
+                        'error.type': 'processing_error'
+                    });
+
+                    fileUploadsCounter.add(1, {
+                        status: 'error',
+                        error_type: 'processing'
+                    });
+
+                    throw error;
+                }
             });
-
-            reply.status(202).send({ message: 'Seu arquivo foi recebido e está sendo processado.' })
         }
     )
 
@@ -62,7 +165,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             }
         },
         async (request, reply) => {
-            const { id: userId } = request.user
+            const { userId } = request.user
 
             const [financialRecords, total] = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findAndCount({
                 where: { user: { id: userId } },
@@ -108,7 +211,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 valueInCents,
                 category: categoryExists,
                 user: {
-                    id: request.user.id
+                    id: request.user.userId
                 },
                 status: TransactionStatus.PENDING
             })

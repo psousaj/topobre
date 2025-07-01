@@ -89,11 +89,11 @@ export const buildApp = async () => {
                         if (typeof loggerMethods[levelName] === 'function') {
                             loggerMethods[levelName](`${hostname} -> ${msg}`);
                         } else {
-                            logger.info(`${hostname} -> ${msg}`);
+                            logger.info(`[API] ${hostname} -> ${msg}`);
                         }
                     } catch {
                         // Fallback em caso de erro no parse
-                        logger.info(`server -> ${message.trim()}`);
+                        logger.info(`[API] server -> ${message.trim()}`);
                     }
                 },
             },

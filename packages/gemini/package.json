@@ -5,6 +5,7 @@
   "main": "index.ts",
   "dependencies": {
     "@google/generative-ai": "^0.11.3",
-    "@topobre/env": "workspace:*"
+    "@topobre/env": "workspace:*",
+    "@topobre/winston": "workspace:*"
   }
 }

@@ -22,10 +22,10 @@ const categories = [
 
 export async function saveCategories() {
     try {
-        logger.info("Inicializando datasource...");
+        logger.info("[TYPEORM] Inicializando datasource...");
         const dataSource = await TopobreDataSource.initialize();
         const categoryRepo = dataSource.getRepository(Category);
-        logger.info("Datasource conectado com sucesso.");
+        logger.info("[TYPEORM] Datasource conectado com sucesso.");
 
         // Buscar todas as categorias existentes de uma vez
         const existingCategories = await categoryRepo.find({
@@ -44,7 +44,7 @@ export async function saveCategories() {
             }));
 
         if (newCategories.length === 0) {
-            logger.info("Todas as categorias já existem. Nenhuma nova categoria para criar.");
+            logger.info("[TYPEORM] Todas as categorias já existem. Nenhuma nova categoria para criar.");
             return;
         }
 
@@ -56,19 +56,19 @@ export async function saveCategories() {
             .values(newCategories)
             .execute();
 
-        logger.info(`${newCategories.length} categorias criadas em bulk insert.`);
+        logger.info(`[TYPEORM] ${newCategories.length} categorias criadas em bulk insert.`);
 
         // Log das categorias criadas
         newCategories.forEach(cat => {
-            logger.debug(`Categoria '${cat.name}' criada.`);
+            logger.debug(`[TYPEORM] Categoria '${cat.name}' criada.`);
         });
 
-        logger.info("Seed finalizado.");
+        logger.info("[TYPEORM] Seed finalizado.");
     } catch (error) {
-        logger.error("Erro ao salvar categorias:", error);
+        logger.error("[TYPEORM] Erro ao salvar categorias:", error);
         throw error;
     } finally {
         await TopobreDataSource.destroy();
-        logger.info("Datasource encerrado.");
+        logger.info("[TYPEORM] Datasource encerrado.");
     }
 }

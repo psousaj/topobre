@@ -10,42 +10,54 @@ import { FINLOADER_QUEUE_NAME, redisConnection } from '@topobre/bullmq';
 import { logger } from '@topobre/winston';
 import { gemini } from '@topobre/gemini';
 
-async function getCategoryFromIA(transactionDescription: string, userCategories: Category[]): Promise<string | null> {
+async function getCategoriesFromIA(
+  transactions: { description: string }[],
+  userCategories: Category[]
+): Promise<(string | null)[]> {
   if (!userCategories || userCategories.length === 0) {
     logger.warn('[CSV-WORKER] User has no categories, skipping IA categorization.');
-    return null;
+    return Array(transactions.length).fill(null);
   }
 
   const categoryList = userCategories.map(c => `ID: "${c.id}", Nome: "${c.displayName}"`).join('\n');
 
+  const txList = transactions
+    .map((tx, index) => `${index + 1}. "${tx.description}"`)
+    .join('\n');
+
   const prompt = `
-        Você é um assistente de finanças pessoais. Sua tarefa é categorizar uma transação bancária com base em sua descrição.
-        Analise a seguinte descrição de transação:
-        "${transactionDescription}"
+Você é um assistente de finanças pessoais. Sua tarefa é categorizar múltiplas transações bancárias com base em suas descrições.
+Use **apenas os IDs** das categorias abaixo para classificar.
 
-        Agora, escolha a categoria MAIS apropriada da lista abaixo e retorne APENAS o ID da categoria escolhida.
-        Não retorne nada além do ID.
+Categorias disponíveis:
+${categoryList}
 
-        Categorias disponíveis:
-        ${categoryList}
+Transações:
+${txList}
 
-        ID da Categoria:
-    `;
+Retorne uma lista com apenas os IDs das categorias, uma por linha, na ordem das transações acima.
+Se não houver categoria apropriada, retorne "null" para aquela linha.
+
+Exemplo de resposta:
+categ-id-1
+categ-id-2
+null
+...
+
+Responda agora:
+  `;
 
   try {
     const result = await gemini.generateContent(prompt);
     const response = await result.response;
-    const categoryId = response.text().trim().replace(/"/g, '');
+    const lines = response.text().trim().split('\n').map(l => l.trim().replace(/"/g, ''));
 
-    // Valida se o ID retornado pela IA realmente existe na lista
-    if (userCategories.some(c => c.id === categoryId)) {
-      return categoryId;
-    }
-    logger.warn(`[CSV-WORKER] IA returned an invalid category ID: ${categoryId}`);
-    return null;
+    return lines.map((id) =>
+      userCategories.some(c => c.id === id) ? id : null
+    );
   } catch (error) {
     logger.error('[CSV-WORKER] Error calling Gemini API:', error);
-    return null;
+    return Array(transactions.length).fill(null);
   }
 }
 
@@ -71,17 +83,20 @@ TopobreDataSource.initialize()
           const recordRepository = TopobreDataSource.getRepository(FinancialRecord);
 
           // 3. Processar cada transação com a IA
-          for (const tx of transactions) {
-            const categoryId = await getCategoryFromIA(tx.description, userCategories);
+          const categoryIds = await getCategoriesFromIA(transactions, userCategories);
+
+          for (let i = 0; i < transactions.length; i++) {
+            const tx = transactions[i];
+            const categoryId = categoryIds[i] ?? undefined;
 
             const newRecord = recordRepository.create({
               description: tx.description,
               valueInCents: tx.amount,
               dueDate: new Date(tx.date),
               user: { id: userId },
-              categoryId: categoryId, // Pode ser null se a IA falhar ou não encontrar
-              // Outros campos...
+              category: { id: categoryId },
             });
+
             await recordRepository.save(newRecord);
           }
 

@@ -28,7 +28,6 @@
     "uuid": "^11.1.0",
     "zod": "^3.23.8",
     "@topobre/env": "workspace:*",
-    "@topobre/shared": "workspace:*",
     "@topobre/typeorm": "workspace:*",
     "@topobre/winston": "workspace:*",
     "@topobre/telemetry": "workspace:*",
@@ -41,8 +40,6 @@
     "@topobre/tsconfig": "workspace:*",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.9.1",
-    "rimraf": "^5.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "rimraf": "^5.0.0"
   }
 }

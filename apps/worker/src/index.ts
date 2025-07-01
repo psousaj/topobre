@@ -2,11 +2,10 @@ import { initTelemetry } from '@topobre/telemetry';
 // Inicializa a telemetria ANTES de qualquer outra coisa
 initTelemetry('worker');
 
-import { Worker } from 'bullmq';
 import { TopobreDataSource } from '@topobre/typeorm';
 import { FinancialRecord, Category } from '@topobre/typeorm/entities';
 import { processTransactionFile, BankType } from '@topobre/finloader';
-import { FINLOADER_QUEUE_NAME, redisConnection } from '@topobre/bullmq';
+import { FINLOADER_QUEUE_NAME, redisConnection, Worker } from '@topobre/bullmq';
 import { logger } from '@topobre/winston';
 import { gemini } from '@topobre/gemini';
 

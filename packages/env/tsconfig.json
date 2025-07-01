@@ -1,11 +1,5 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
-    "compilerOptions": {
-        "moduleResolution": "bundler",
-        "module": "ESNext",
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true
-    },
     "include": [
         "."
     ],

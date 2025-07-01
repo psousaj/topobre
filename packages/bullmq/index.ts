@@ -12,3 +12,5 @@ export const redisConnection = {
 
 // Fila para o produtor (API) usar
 export const finloaderQueue = new Queue(FINLOADER_QUEUE_NAME, { connection: redisConnection });
+
+export * from 'bullmq';

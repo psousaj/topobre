@@ -1,6 +1,6 @@
 {
   "name": "@topobre/worker",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "ts-node src/index.ts",
@@ -14,11 +14,7 @@
     "@topobre/finloader": "workspace:*",
     "@topobre/telemetry": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "@topobre/gemini": "workspace:*",
-    "bullmq": "^5.7.13",
-    "dotenv": "^16.4.5",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.4.5"
+    "@topobre/gemini": "workspace:*"
   },
   "devDependencies": {
     "@topobre/tsconfig": "workspace:*"

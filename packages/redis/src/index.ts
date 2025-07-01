@@ -1,7 +1,7 @@
 import Redis from 'ioredis';
 import { env } from '@topobre/env';
 import { logger } from '@topobre/winston';
-import { getTracer, traced } from '@topobre/telemetry';
+import { getTracer, withSpan, addSpanAttributes } from '@topobre/telemetry';
 
 const tracer = getTracer('redis-package', '0.0.0'); // Versão 0.0.0 do pacote redis
 
@@ -23,44 +23,76 @@ export class RedisClient extends Redis {
         });
     }
 
-    @traced(tracer, 'redis.get')
-    async get(key: string): Promise<string | null> {
-        return super.get(key);
+    override get(key: string): Promise<string | null> {
+        return Promise.resolve(
+            withSpan('redis.get', async (span) => {
+                addSpanAttributes({ 'redis.key': key });
+                return super.get(key);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.set')
-    async set(key: string, value: string, expiryMode?: string, time?: number): Promise<string | null> {
-        return super.set(key, value, expiryMode, time);
+    override set(...args: Parameters<Redis['set']>): Promise<string | null> {
+        return Promise.resolve(
+            withSpan('redis.set', async (span) => {
+                addSpanAttributes({ 'redis.key': String(args[0]) });
+                return super.set.apply(this, args);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.del')
-    async del(...keys: string[]): Promise<number> {
-        return super.del(...keys);
+    override del(...args: Parameters<Redis['del']>): Promise<number> {
+        return Promise.resolve(
+            withSpan('redis.del', async (span) => {
+                addSpanAttributes({ 'redis.keys': args.join(',') });
+                return super.del.apply(this, args);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.hgetall')
-    async hgetall(key: string): Promise<Record<string, string>> {
-        return super.hgetall(key);
+    override hgetall(key: string): Promise<Record<string, string>> {
+        return Promise.resolve(
+            withSpan('redis.hgetall', async (span) => {
+                addSpanAttributes({ 'redis.key': key });
+                return super.hgetall(key);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.lpush')
-    async lpush(key: string, ...elements: string[]): Promise<number> {
-        return super.lpush(key, ...elements);
+    override lpush(key: string, ...elements: string[]): Promise<number> {
+        return Promise.resolve(
+            withSpan('redis.lpush', async (span) => {
+                addSpanAttributes({ 'redis.key': key, 'redis.elements.count': elements.length });
+                return super.lpush(key, ...elements);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.rpop')
-    async rpop(key: string): Promise<string | null> {
-        return super.rpop(key);
+    override rpop(key: string): Promise<string | null> {
+        return Promise.resolve(
+            withSpan('redis.rpop', async (span) => {
+                addSpanAttributes({ 'redis.key': key });
+                return super.rpop(key);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.publish')
-    async publish(channel: string, message: string): Promise<number> {
-        return super.publish(channel, message);
+    override publish(channel: string, message: string): Promise<number> {
+        return Promise.resolve(
+            withSpan('redis.publish', async (span) => {
+                addSpanAttributes({ 'redis.channel': channel, 'redis.message.length': message.length });
+                return super.publish(channel, message);
+            }),
+        );
     }
 
-    @traced(tracer, 'redis.subscribe')
-    async subscribe(...channels: string[]): Promise<number> {
-        return super.subscribe(...channels);
+    override subscribe(...channels: string[]): Promise<number> {
+        return Promise.resolve(
+            withSpan('redis.subscribe', async (span) => {
+                addSpanAttributes({ 'redis.channels.count': channels.length });
+                return super.subscribe.apply(this, channels);
+            }),
+        );
     }
 }
 

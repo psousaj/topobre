@@ -4,6 +4,7 @@ import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION, SEMRESATTRS_DEPLOYMENT_ENVIRONMENT, SEMRESATTRS_SERVICE_NAMESPACE } from '@opentelemetry/semantic-conventions';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { IORedisInstrumentation } from '@opentelemetry/instrumentation-ioredis';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { MeterProvider } from '@opentelemetry/sdk-metrics';
 import { metrics, trace } from '@opentelemetry/api';
@@ -83,7 +84,7 @@ export function initTelemetry(config: TelemetryConfig | string) {
                 enabled: false,
             },
             // Habilitar instrumentações importantes
-            '@opentelemetry/instrumentation-express': {
+            '@opentelemetry/instrumentation-fastify': {
                 enabled: true,
             },
             '@opentelemetry/instrumentation-http': {
@@ -105,15 +106,15 @@ export function initTelemetry(config: TelemetryConfig | string) {
             '@opentelemetry/instrumentation-winston': {
                 enabled: true,
             },
-            '@opentelemetry/instrumentation-mysql2': {
-                enabled: true,
-            },
             '@opentelemetry/instrumentation-pg': {
                 enabled: true,
             },
             '@opentelemetry/instrumentation-redis': {
-                enabled: true,
+                enabled: false,
             },
+            '@opentelemetry/instrumentation-ioredis': {
+                enabled: true,
+            }
         })],
     });
 

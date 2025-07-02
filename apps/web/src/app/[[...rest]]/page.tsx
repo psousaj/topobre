@@ -123,7 +123,7 @@ export default function Page() {
       )
       setIsDrawerOpen(false)
     } else {
-      console.error('Failed to update transaction')
+      logger.error('Failed to update transaction')
       toast.error(`Erro ao atualizar: ${error.message}`, { closeButton: true })
     }
   }
@@ -133,7 +133,7 @@ export default function Page() {
 
     if (error) {
       toast.error(`Erro ao deletar: ${error.message}`, { closeButton: true })
-      console.error('Failed to delete transaction')
+      logger.error('Failed to delete transaction')
       return
     }
 
@@ -141,7 +141,7 @@ export default function Page() {
       setTransactions(prevTransactions => prevTransactions.filter(t => t.id !== id))
       setIsDrawerOpen(false)
     } else {
-      console.error('Failed to delete transaction')
+      logger.error('Failed to delete transaction')
     }
   }
 

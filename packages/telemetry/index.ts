@@ -9,6 +9,8 @@ import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { MeterProvider } from '@opentelemetry/sdk-metrics';
 import { metrics, trace } from '@opentelemetry/api';
 import type { IncomingMessage, ServerResponse } from 'http';
+import { logger } from '@topobre/winston';
+import { env } from '@topobre/env';
 
 let sdk: NodeSDK;
 let telemetryInitialized = false;
@@ -23,7 +25,7 @@ interface TelemetryConfig {
 
 export function initTelemetry(config: TelemetryConfig | string) {
     if (telemetryInitialized) {
-        console.warn('[OTEL] Telemetry already initialized');
+        logger.warn('[OTEL] Telemetry already initialized');
         return;
     }
 
@@ -35,9 +37,9 @@ export function initTelemetry(config: TelemetryConfig | string) {
     const {
         serviceName,
         serviceVersion = '1.0.0',
-        environment = process.env.NODE_ENV || 'development',
-        otlpEndpoint = process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
-        prometheusPort = parseInt(process.env.PROMETHEUS_PORT || '9464')
+        environment = env.NODE_ENV || 'development',
+        otlpEndpoint = env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
+        prometheusPort = parseInt(env.PROMETHEUS_PORT || '9464')
     } = telemetryConfig;
 
     // Resource comum  
@@ -122,13 +124,13 @@ export function initTelemetry(config: TelemetryConfig | string) {
         sdk.start();
         telemetryInitialized = true;
 
-        console.log(`[OTEL] ✅ Telemetry initialized`);
-        console.log(`[OTEL] 📊 Service: ${serviceName} (${environment})`);
-        console.log(`[OTEL] 🔍 OTLP Traces: ${otlpEndpoint}`);
-        console.log(`[OTEL] 📈 Prometheus: http://localhost:${prometheusPort}/metrics`);
+        logger.info(`[OTEL] ✅ Telemetry initialized`);
+        logger.info(`[OTEL] 📊 Service: ${serviceName} (${environment})`);
+        logger.info(`[OTEL] 🔍 OTLP Traces: ${otlpEndpoint}`);
+        logger.info(`[OTEL] 📈 Prometheus: http://localhost:${prometheusPort}/metrics`);
 
     } catch (error) {
-        console.error('[OTEL] ❌ Failed to initialize telemetry:', error);
+        logger.error('[OTEL] ❌ Failed to initialize telemetry:', error);
         throw error;
     }
 
@@ -138,9 +140,9 @@ export function initTelemetry(config: TelemetryConfig | string) {
 
         try {
             await sdk.shutdown();
-            console.log('[OTEL] ✅ Telemetry shutdown completed');
+            logger.info('[OTEL] ✅ Telemetry shutdown completed');
         } catch (error) {
-            console.error('[OTEL] ❌ Error during shutdown:', error);
+            logger.error('[OTEL] ❌ Error during shutdown:', error);
         } finally {
             process.exit(0);
         }

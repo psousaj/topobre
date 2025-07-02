@@ -1,4 +1,5 @@
 {
+    "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
         "lib": [
             "es2021",

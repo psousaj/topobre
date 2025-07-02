@@ -17,7 +17,7 @@ async function renderTemplate(templateName: string, params: TemplateParams): Pro
 
 async function mailerPlugin(app: FastifyInstance): Promise<void> {
     const resend = new Resend(env.RESEND_API_KEY);
-    const isDev = process.env.NODE_ENV !== "production";
+    const isDev = env.NODE_ENV !== "production";
 
     async function sendEmail(options: SendEmailOptions): Promise<void> {
         const { to, subject, templateName, params } = options;

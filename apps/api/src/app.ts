@@ -87,7 +87,7 @@ export const buildApp = async () => {
 
                         const loggerMethods: Record<string, (...args: any[]) => void> = logger as any;
                         if (typeof loggerMethods[levelName] === 'function') {
-                            loggerMethods[levelName](`${hostname} -> ${msg}`);
+                            loggerMethods[levelName](`[API] ${hostname} -> ${msg}`);
                         } else {
                             logger.info(`[API] ${hostname} -> ${msg}`);
                         }
@@ -102,7 +102,6 @@ export const buildApp = async () => {
 
     await app.register(fastifyMultipart);
     await app.register(datasourcePlugin);
-    await app.register(import('@fastify/jwt'), { secret: env.JWT_SECRET });
     await app.register(fastifyAuth);
     await app.register(fastifyCookie, { secret: env.COOKIE_SECRET });
     await app.register(mailerPlugin);

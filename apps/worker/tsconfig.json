@@ -1,5 +1,5 @@
 {
-  "extends": "@topobre/tsconfig/lib.json",
+  "extends": "@topobre/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "dist"
   },

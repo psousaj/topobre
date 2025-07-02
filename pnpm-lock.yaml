@@ -410,6 +410,9 @@ importers:
       '@opentelemetry/semantic-conventions':
         specifier: ^1.34.0
         version: 1.34.0
+      '@topobre/env':
+        specifier: workspace:*
+        version: link:../env
       '@topobre/winston':
         specifier: workspace:*
         version: link:../winston
@@ -419,9 +422,6 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
-      '@topobre/redis':
-        specifier: workspace:*
-        version: link:../redis
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1

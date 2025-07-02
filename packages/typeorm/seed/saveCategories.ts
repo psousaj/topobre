@@ -72,3 +72,9 @@ export async function saveCategories() {
         logger.info("[TYPEORM] Datasource encerrado.");
     }
 }
+
+if (require.main === module) {
+    // Quando este arquivo é executado diretamente (e não importado)
+    // executa a função saveCategories()
+    saveCategories().then(() => process.exit(0)).catch(error => process.exit(1));
+}

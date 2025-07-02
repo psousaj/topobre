@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { REPOSITORIES } from "../shared/constant"
 import { env } from "@topobre/env";
+import { logger } from "@topobre/winston";
 
 export async function authHandler(request: FastifyRequest, reply: FastifyReply) {
     try {
@@ -53,7 +54,7 @@ export async function authHandler(request: FastifyRequest, reply: FastifyReply) 
         const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
 
         if (env.NODE_ENV === 'development') {
-            console.error('❌ Erro na autenticação:', errorMessage);
+            logger.error('Erro na autenticação:', errorMessage);
         }
 
         return reply.code(401).send({

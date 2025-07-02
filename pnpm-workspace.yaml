@@ -6,5 +6,13 @@ packages:
 hoistPattern:
   - '*'
 
+ignoredBuiltDependencies:
+  - '@clerk/shared'
+
 onlyBuiltDependencies:
+  - bcrypt
+  - esbuild
+  - msgpackr-extract
   - protobufjs
+  - sharp
+  - unrs-resolver

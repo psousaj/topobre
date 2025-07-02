@@ -1,6 +1,6 @@
 import winston from "winston"
 import { env } from '@topobre/env'
-import { OpenTelemetryTransport } from './OpenTelemetryTransport';
+// import { OpenTelemetryTransport } from './OpenTelemetryTransport';
 
 export const logger = winston.createLogger({
     format: winston.format.combine(
@@ -31,6 +31,6 @@ export const logger = winston.createLogger({
             )
         }),
         // Adiciona o transport do OpenTelemetry
-        new OpenTelemetryTransport(),
+        // new OpenTelemetryTransport(),
     ]
 })

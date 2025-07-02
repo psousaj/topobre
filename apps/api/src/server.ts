@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { initTelemetry } from '@topobre/telemetry';
 import { buildApp } from "./app";
 import { bootstrapLogger } from './shared/bootstrapLogger';

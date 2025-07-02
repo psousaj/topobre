@@ -9,7 +9,7 @@
     "db:seed": "turbo run db:seed --filter=@topobre/typeorm",
     "dev:api": "turbo run dev --filter=@topobre/api --cache=local:r,remote:r",
     "dev:worker": "turbo run dev --filter=@topobre/worker --cache=local:r,remote:r",
-    "dev/backend": "turbo run dev --filter=@topobre/api --filter=@topobre/worker --cache=local:r,remote:r",
+    "dev:backend": "turbo run dev --filter=@topobre/api --filter=@topobre/worker --cache=local:r,remote:r",
     "dev:finloader": "turbo run dev --filter=@topobre/finloader",
     "build:api": "turbo run build --filter=@topobre/api",
     "start:api": "turbo run start --filter=@topobre/api"

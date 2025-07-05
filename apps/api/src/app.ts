@@ -6,6 +6,7 @@ import fastify, { FastifyInstance, FastifyRequest } from "fastify";
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from "fastify-type-provider-zod";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyAuth from '@fastify/auth';
+import fastifyMultipart from '@fastify/multipart';
 
 import datasourcePlugin from "./plugins/datasource";
 import mailerPlugin from './plugins/mailer';
@@ -22,7 +23,6 @@ import { hostname as host } from 'os';
 import pkg from '../package.json'
 import { env } from '@topobre/env';
 import { logger } from '@topobre/winston'
-import fastifyMultipart from '@fastify/multipart';
 
 const logLevelMap = {
     10: 'trace',
@@ -35,6 +35,7 @@ const logLevelMap = {
 
 import { verifySession } from './plugins/authenticate';
 import { hasRole, isOwner } from './plugins/authorization';
+import fastifyJwt from '@fastify/jwt';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
     // Rotas públicas
@@ -46,7 +47,7 @@ const appRoutes = async (app: FastifyInstance, opts: any) => {
         // Aplica o hook de autenticação a todas as rotas neste escopo
         authenticatedApp.addHook('preHandler', authenticatedApp.auth([verifySession]));
 
-        await authenticatedApp.register(financialRecordsRoutes, { prefix: 'financial-records' });
+        await authenticatedApp.register(financialRecordsRoutes, { prefix: 'transactions' });
         await authenticatedApp.register(categoriesRoutes, { prefix: 'categories' });
         await authenticatedApp.register(userRoutes, { prefix: 'users' });
     });
@@ -103,6 +104,9 @@ export const buildApp = async () => {
     await app.register(fastifyMultipart);
     await app.register(datasourcePlugin);
     await app.register(fastifyAuth);
+    await app.register(fastifyJwt, {
+        secret: env.JWT_SECRET,
+    });
     await app.register(fastifyCookie, { secret: env.COOKIE_SECRET });
     await app.register(mailerPlugin);
     await app.register(templatePreview, {

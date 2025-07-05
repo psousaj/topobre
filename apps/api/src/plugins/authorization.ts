@@ -4,17 +4,17 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 export const hasRole = (roles: string[]) => {
   return (request: FastifyRequest, reply: FastifyReply, done: (err?: Error) => void) => {
     if (!request.user || !request.user.roles.some(role => roles.includes(role))) {
-      return reply.status(403).send({ message: 'Acesso negado: você não tem permissão para este recurso.' });
+      return reply.status(403).send({ message: 'Acesso Negado: você não tem permissão para este recurso.' });
     }
     done();
   };
 };
 
 // Função para verificar se o usuário é o dono do recurso
-export const isOwner = (paramName = 'id') => {
+export const isOwner = (paramName = 'userId') => {
   return (request: FastifyRequest, reply: FastifyReply, done: (err?: Error) => void) => {
     if (!request.user || (request.params as any)[paramName] !== request.user.userId) {
-      return reply.status(403).send({ message: 'Acesso negado: você não é o proprietário deste recurso.' });
+      return reply.status(403).send({ message: 'Acesso Negado: você não é o proprietário deste recurso.' });
     }
     done();
   };

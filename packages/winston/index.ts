@@ -1,5 +1,6 @@
 import winston from "winston"
 import { env } from '@topobre/env'
+import LokiTransport from 'winston-loki';
 // import { OpenTelemetryTransport } from './OpenTelemetryTransport';
 
 export const logger = winston.createLogger({
@@ -32,5 +33,15 @@ export const logger = winston.createLogger({
         }),
         // Adiciona o transport do OpenTelemetry
         // new OpenTelemetryTransport(),
+        new LokiTransport({
+            host: 'http://localhost:3100', // 🧪 Loki padrão para dev
+            labels: { service: 'topobre-api', env: env.NODE_ENV || 'dev' },
+            json: true,
+            replaceTimestamp: true,
+            format: winston.format.json(),
+            onConnectionError: (err) => {
+                winston.error('[LOKI] Connection error:', err);
+            }
+        })
     ]
 })

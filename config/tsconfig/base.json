@@ -8,9 +8,6 @@
         "moduleResolution": "node",
         "baseUrl": ".",
         "paths": {
-            "@topobre/shared": [
-                "packages/shared/src"
-            ],
             "@topobre/queue": [
                 "packages/queue/src"
             ],

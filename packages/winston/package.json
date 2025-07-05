@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@topobre/env": "workspace:*",
     "winston": "^3.17.0",
-    "@topobre/env": "workspace:*"
+    "winston-loki": "^6.1.3"
   }
 }

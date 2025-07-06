@@ -19,23 +19,26 @@ jobs:
       - name: Build and push API image
         run: |
           docker buildx build \
+            --file apps/api/Dockerfile \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-api:latest \
             --push \
-            ./apps/api
+            .
 
       - name: Build and push Web image
         run: |
           docker buildx build \
+            --file apps/web/Dockerfile \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-web:latest \
             --push \
-            ./apps/web
+            .
 
       - name: Build and push Worker image
         run: |
           docker buildx build \
+            --file apps/worker/Dockerfile \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-worker:latest \
             --push \
-            ./apps/worker
+            .
 
   deploy:
     runs-on: self-hosted

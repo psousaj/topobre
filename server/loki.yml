@@ -7,3 +7,5 @@ services:
       - ./loki-config.yml:/etc/loki/loki-config.yml
     ports:
       - "3100:3100"
+    networks:
+      - topobre-net

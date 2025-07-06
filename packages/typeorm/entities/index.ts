@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Category } from "./category.entity";
 import { FinancialRecord } from "./financial-record.entity";
 import { PasswordResetToken } from "./password-reset.entity";

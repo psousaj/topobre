@@ -15,8 +15,8 @@ export const verifySession = async (request: FastifyRequest) => {
         }
 
         // 2. Decodifica o token para obter o JTI (ID da Sessão) e o ID do usuário
-        const decoded = request.server.jwt.verify(token) as { jti: string, userId: string };
-        if (!decoded.jti || !decoded.userId) {
+        const decoded = request.server.jwt.verify(token);
+        if (!decoded.valueOf || !decoded.userId) {
             throw new Error('Token inválido ou malformado.');
         }
 

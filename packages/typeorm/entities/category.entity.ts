@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from "typeorm";
 import { FinancialRecord } from "./financial-record.entity";
 

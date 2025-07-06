@@ -40,9 +40,9 @@ RUN npm install -g pnpm
 # Copiar arquivos necessários da build
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
 COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 
 # Porta padrão da API
 EXPOSE 3003

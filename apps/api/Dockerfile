@@ -14,6 +14,7 @@ RUN npm install -g pnpm
 
 # Copiar arquivos de dependência da raíz do monorepo
 COPY ../../pnpm-lock.yaml ../../package.json ./
+COPY ../../pnpm-workspace.yaml ./  
 COPY ../../apps/api ./apps/api
 COPY ../../packages ./packages
 

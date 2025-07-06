@@ -1,18 +1,69 @@
-# ToPobre
+<h1 align="center">📊 ToPobre App</h1>
 
-Este é um projeto Next.js que visa ajudar os usuários a gerenciar suas finanças pessoais de forma simples e eficiente. O aplicativo permite que os usuários adicionem, editem e excluam transações, além de visualizar um resumo de suas finanças.
+<p align="center">
+  Um sistema completo para controle financeiro pessoal, com foco em simplicidade, rastreabilidade e observabilidade.
+</p>
 
-## Começando
+<p align="center">
+  <img src="https://img.shields.io/github/license/psousa/topobre?color=blue" alt="License" />
+  <img src="https://img.shields.io/github/workflow/status/psousaj/topobre/Deploy%20Apps?label=CI%2FCD" alt="CI/CD" />
+</p>
 
-Para começar a usar o projeto, siga os passos abaixo:
+---
 
-### Pré-requisitos
+## ✨ Visão Geral
 
-- Node.js (versão 14 ou superior)
-- npm ou yarn
-- PostgreSQL (ou outro banco de dados compatível com Prisma)
+O **ToPobre** é um sistema full-stack que permite ao usuário gerenciar suas finanças, com recursos como:
 
-### Instalação
+- ✅ Cadastro e visualização de transações
+- ✅ Dashboard intuitivo
+- ✅ Observabilidade com Grafana, Prometheus, Tempo e Loki
+- ✅ Tracing distribuído com OpenTelemetry
+- ✅ Arquitetura moderna com Docker e GitHub Actions
+
+---
+
+## 📁 Estrutura do Projeto
+
+topobre/
+├── apps/
+│ ├── api/ # Backend (Node.js, Prisma, OpenTelemetry)
+│ ├── web/ # Frontend (Next.js)
+│ └── worker/ # Worker de fila/eventos
+├── prisma/ # Esquema e migrações do Prisma
+├── server/ # Serviços da infra (Postgres, Redis, Grafana, etc)
+├── docker-compose.apps.yml
+├── docker-compose.infra.yml
+└── .github/workflows/
+
+---
+
+## 🚀 Stack Principal
+
+| Categoria       | Tecnologias |
+|----------------|-------------|
+| Frontend       | Next.js, Tailwind CSS |
+| Backend        | Node.js, Prisma, OpenTelemetry |
+| Worker         | Node.js, Queue/Event-driven |
+| Banco de Dados | PostgreSQL (via Neon) |
+| Cache          | Redis (via Upstash) |
+| Observabilidade| Grafana, Loki, Tempo, Prometheus |
+| CI/CD          | GitHub Actions + GitHub Container Registry |
+| Deploy         | Docker Compose (auto e manual) |
+
+---
+
+## 🛠️ Pré-requisitos
+
+- [Node.js](https://nodejs.org/) (v16+)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- Conta no [GitHub](https://github.com/)
+- Variáveis de ambiente configuradas (ver `.env.example`)
+
+---
+
+## ⚙️ Instalação Local
 
 1. Clone o repositório:
    ```bash
@@ -20,53 +71,25 @@ Para começar a usar o projeto, siga os passos abaixo:
    cd topobre
    ```
 
-2. Instale as dependências do backend:
-   ```bash
-   cd api
-   npm install
-   ```
+2. Crie o arquivo .env na raiz e preencha com suas credenciais (Postgres, Redis, API keys etc).
 
-3. Instale as dependências do frontend:
-   ```bash
-   cd web
-   npm install
-   ```
+3. Inicie todos os serviços:
 
-4. Crie um arquivo `.env` na raiz do projeto e adicione suas variáveis de ambiente. Um exemplo de configuração pode ser encontrado em `.env.example`.
+   - Infra:
 
-5. Execute as migrações do banco de dados:
-   ```bash
-   npx prisma migrate dev
-   ```
+      ```bash
+      docker compose -f docker-compose.infra.yml up -d
+      ```
+   - Apps:
 
-### Executando o projeto
+         ```bash
+         docker compose -f docker-compose.apps.yml up -d --build
+         ```
 
-Para iniciar o servidor de desenvolvimento, siga os passos abaixo:
+4. Acesse:
 
-1. Inicie o backend:
-   ```bash
-   cd api
-   npm run dev
-   ```
+   - Web App: http://localhost:3000
 
-2. Em um novo terminal, inicie o frontend:
-   ```bash
-   cd web
-   npm run dev
-   ```
+   - API: http://localhost:3003
 
-3. Abra seu navegador e acesse [http://localhost:3000](http://localhost:3000) para ver o aplicativo em funcionamento.
-
-## Estrutura do projeto
-
-- `api/`: Contém o código do backend, incluindo rotas, modelos e configuração do Prisma.
-- `web/`: Contém o código do frontend, construído com Next.js e React.
-- `prisma/`: Contém os arquivos de configuração do Prisma e as migrações do banco de dados.
-
-## Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma issue ou enviar um pull request.
-
-## Licença
-
-Este projeto está licenciado sob a MIT License. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+   - Grafana: http://localhost:3001 (usuário: admin, senha: admin)

@@ -21,25 +21,28 @@ jobs:
           docker buildx build \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-api:latest \
             --push \
-            ./api
+            ./apps/api
 
       - name: Build and push Web image
         run: |
           docker buildx build \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-web:latest \
             --push \
-            ./web
+            ./apps/web
 
       - name: Build and push Worker image
         run: |
           docker buildx build \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-worker:latest \
             --push \
-            ./worker
+            ./apps/worker
 
   deploy:
     runs-on: self-hosted
     needs: build
+    env:
+      NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+      NODE_ENV: ${{ vars.NODE_ENV }}
 
     steps:
       - name: Checkout

@@ -14,9 +14,11 @@ export const verifySession = async (request: FastifyRequest) => {
             throw new Error('Token não fornecido.');
         }
 
+        await request.jwtVerify();
+        const { jti, userId, roles, email } = request.user
+
         // 2. Decodifica o token para obter o JTI (ID da Sessão) e o ID do usuário
-        const decoded = request.server.jwt.verify(token);
-        if (!decoded.valueOf || !decoded.userId) {
+        if (!jti || !userId) {
             throw new Error('Token inválido ou malformado.');
         }
 
@@ -24,8 +26,8 @@ export const verifySession = async (request: FastifyRequest) => {
         const sessionRepository = request.server.db.getRepository<Session>(REPOSITORIES.SESSION);
         const session = await sessionRepository.findOne({
             where: {
-                jti: decoded.jti,
-                userId: decoded.userId,
+                jti: jti,
+                userId: userId,
                 isActive: true,
             }
         });
@@ -41,7 +43,7 @@ export const verifySession = async (request: FastifyRequest) => {
         }
 
         const userRepository = request.server.db.getRepository<User>(REPOSITORIES.USER);
-        const user = await userRepository.findOne({ where: { id: decoded.userId } });
+        const user = await userRepository.findOne({ where: { id: userId } });
 
         if (!user) {
             throw new Error('Usuário não encontrado.');
@@ -49,7 +51,7 @@ export const verifySession = async (request: FastifyRequest) => {
 
         // 4. Anexa o usuário à requisição para uso posterior nas rotas
         // 4. Anexa o usuário à requisição para uso posterior nas rotas
-        request.user = { id: user.id, roles: user.roles };
+        // request.user = { id: user.id, roles: user.roles };
 
     } catch (err: any) {
         // Lança um erro que o @fastify/auth irá capturar e transformar em uma resposta 401 Unauthorized.

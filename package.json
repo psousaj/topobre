@@ -12,7 +12,11 @@
     "dev:backend": "turbo run dev --filter=@topobre/api --filter=@topobre/worker --cache=local:r,remote:r",
     "dev:finloader": "turbo run dev --filter=@topobre/finloader",
     "build:api": "turbo run build --filter=@topobre/api",
-    "start:api": "turbo run start --filter=@topobre/api"
+    "start:api": "turbo run start --filter=@topobre/api",
+    "build:web": "turbo run build --filter=@topobre/web",
+    "start:web": "turbo run start --filter=@topobre/web",
+    "build:worker": "turbo run build --filter=@topobre/worker",
+    "start:worker": "turbo run start --filter=@topobre/worker"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",

@@ -1,35 +1,65 @@
-# Usar a imagem base do Node.js
-FROM node:18 as WebBuilder
+# ========= 🚧 Build Stage =========
+FROM node:18-slim AS builder
 
-# Definir o diretório de trabalho
 WORKDIR /app
 
-ARG CLERK_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY
-ARG API_URL
-ENV NEXT_PUBLIC_API_URL=$API_URL
+# Instalar dependências básicas
+RUN apt-get update && apt-get install -y \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Verificar se o argumento está vazio
-RUN if [ -z "$CLERK_PUBLISHABLE_KEY" ]; then \
-      echo "Erro: CLERK_PUBLISHABLE_KEY não pode ser vazio." && exit 1; \
-    fi
-
-# Copiar os arquivos de package.json e package-lock.json
-COPY package*.json ./
-
-# Instalar as dependências
+# Instalar pnpm
 RUN npm install -g pnpm
 
+# Copiar dependências da raiz do monorepo
+COPY ../../pnpm-lock.yaml ../../package.json ./
+COPY ../../apps/web ./apps/web
+COPY ../../packages ./packages
+COPY ../../tsconfig.json ./
+
+# Instalar dependências com os workspaces
 RUN pnpm install
 
-# Copiar o restante dos arquivos do projeto
-COPY . .
+# Definir variável pública do Next.js
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-# Construir a aplicação
-RUN pnpm run build
+# Gerar build da web
+RUN pnpm build:web
 
-# Expor a porta que a aplicação irá rodar
+
+# ========= ✅ Production Stage =========
+FROM node:18-slim AS runner
+
+WORKDIR /app
+
+# Instalar dependências básicas
+RUN apt-get update && apt-get install -y \
+    openssl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar pnpm
+RUN npm install -g pnpm
+
+# Copiar apenas os artefatos necessários
+COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/web/.next ./apps/web/.next
+COPY --from=builder /app/apps/web/public ./apps/web/public
+COPY --from=builder /app/apps/web/next.config.js ./apps/web/next.config.js
+
+# Definir variáveis de ambiente
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Porta do Next.js
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
-CMD ["pnpm", "start"]
+# Entrar na pasta correta
+WORKDIR /app/apps/web
+
+# Rodar em produção
+CMD ["pnpm", "start:web"]

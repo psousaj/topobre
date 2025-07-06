@@ -1,9 +1,9 @@
-# Estágio de build
-FROM node:18-slim as builder
+# ========= 🚧 Build Stage =========
+FROM node:18-slim AS builder
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Instalar dependências necessárias para o build
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
     openssl \
     ca-certificates \
@@ -12,28 +12,24 @@ RUN apt-get update && apt-get install -y \
 # Instalar pnpm
 RUN npm install -g pnpm
 
-# Copiar arquivos de dependência
-COPY package.json pnpm-lock.yaml* ./
-COPY prisma ./prisma/
+# Copiar arquivos de dependência da raíz do monorepo
+COPY ../../pnpm-lock.yaml ../../package.json ./
+COPY ../../apps/api ./apps/api
+COPY ../../packages ./packages
+COPY ../../tsconfig.json ./
 
-# Instalar dependências incluindo as devDependencies necessárias para o build
+# Instalar todas as dependências com os workspaces
 RUN pnpm install
 
-# Gerar o cliente Prisma
-RUN pnpm dlx prisma generate
+# Gerar build apenas da API
+RUN pnpm build:api
 
-# Copiar código fonte e arquivos de configuração
-COPY . .
+# ========= ✅ Production Stage =========
+FROM node:18-slim AS runner
 
-# Gerar o build
-RUN pnpm build
+WORKDIR /app
 
-# Estágio de produção
-FROM node:18-slim as runner
-
-WORKDIR /usr/src/app
-
-# Instalar dependências necessárias para produção
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
     openssl \
     ca-certificates \
@@ -42,24 +38,18 @@ RUN apt-get update && apt-get install -y \
 # Instalar pnpm
 RUN npm install -g pnpm
 
-# Copiar arquivos necessários do estágio de build
-COPY --from=builder /usr/src/app/package.json ./
-COPY --from=builder /usr/src/app/pnpm-lock.yaml* ./
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/prisma ./prisma
-COPY --from=builder /usr/src/app/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma ./node_modules/.prisma
+# Copiar arquivos necessários da build
+COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/apps/api/dist ./apps/api/dist
+COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 
-# Instalar apenas dependências de produção
-RUN pnpm install --prod
+# Porta padrão da API
+EXPOSE 3003
 
-# Gerar o cliente Prisma novamente no ambiente de produção
-RUN pnpm dlx prisma generate
+# Entrar na pasta da API antes de iniciar
+WORKDIR /app/apps/api
 
-ARG CLERK_PUBLISHABLE_KEY
-ENV CLERK_PUBLISHABLE_KEY=$CLERK_PUBLISHABLE_KEY
-
-# Expor a porta
-EXPOSE 3001
-
-# Comando para iniciar a aplicação
-CMD ["pnpm", "start"]
+# Start em produção
+CMD ["pnpm", "start:api"]

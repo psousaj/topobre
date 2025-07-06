@@ -2,6 +2,11 @@ import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, Update
 import { Session } from './session.entity';
 import { FinancialRecord } from './financial-record.entity';
 
+export enum Role {
+    ADMIN = 'admin',
+    USER = 'user',
+}
+
 @Entity('users')
 @Index('idx_user_email', ['email'], { unique: true })
 export class User {
@@ -19,6 +24,14 @@ export class User {
 
     @Column({ nullable: true })
     phone: string;
+
+    @Column({
+        type: 'enum',
+        enum: Role,
+        array: true,
+        default: [Role.USER],
+    })
+    roles: Role[];
 
     @Column({ default: true })
     isActive: boolean;

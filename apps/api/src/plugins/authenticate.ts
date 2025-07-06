@@ -48,7 +48,8 @@ export const verifySession = async (request: FastifyRequest) => {
         }
 
         // 4. Anexa o usuário à requisição para uso posterior nas rotas
-        request.user = { userId: user.id, roles: user.roles };
+        // 4. Anexa o usuário à requisição para uso posterior nas rotas
+        request.user = { id: user.id, roles: user.roles };
 
     } catch (err: any) {
         // Lança um erro que o @fastify/auth irá capturar e transformar em uma resposta 401 Unauthorized.

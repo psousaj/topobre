@@ -27,11 +27,27 @@ O **ToPobre** é um sistema full-stack que permite ao usuário gerenciar suas fi
 
 topobre/
 ├── apps/
-│ ├── api/ # Backend (Node.js, Prisma, OpenTelemetry)
-│ ├── web/ # Frontend (Next.js)
-│ └── worker/ # Worker de fila/eventos
-├── prisma/ # Esquema e migrações do Prisma
-├── server/ # Serviços da infra (Postgres, Redis, Grafana, etc)
+│   ├── api/              # Backend (Fastify, TypeORM, OpenTelemetry)
+│   ├── web/              # Frontend (Next.js)
+│   ├── worker/           # Worker de fila/eventos (BullMQ)
+│   ├── analytics/        # Serviço de análise de dados
+│   ├── billing/          # Serviço de faturamento
+│   ├── budget-engine/    # Motor de orçamento
+│   ├── finloader/        # Carregador de extratos financeiros
+│   ├── notification/     # Serviço de notificações
+│   └── reports/          # Serviço de relatórios
+├── packages/
+│   ├── typeorm/          # Entidades e configurações do TypeORM
+│   ├── bullmq/           # Configuração do BullMQ para filas
+│   ├── redis/            # Cliente Redis
+│   ├── telemetry/        # Configuração do OpenTelemetry
+│   ├── winston/          # Configuração de logs com Winston
+│   └── ...               # Outros pacotes compartilhados
+├── config/
+│   ├── eslint/           # Configurações do ESLint
+│   ├── prettier/         # Configurações do Prettier
+│   └── tsconfig/         # Configurações base do TypeScript
+├── server/               # Serviços de infraestrutura (Postgres, Redis, Grafana, etc)
 ├── docker-compose.apps.yml
 ├── docker-compose.infra.yml
 └── .github/workflows/
@@ -43,13 +59,13 @@ topobre/
 | Categoria       | Tecnologias |
 |----------------|-------------|
 | Frontend       | Next.js, Tailwind CSS |
-| Backend        | Node.js, Prisma, OpenTelemetry |
-| Worker         | Node.js, Queue/Event-driven |
-| Banco de Dados | PostgreSQL (via Neon) |
-| Cache          | Redis (via Upstash) |
+| Backend        | Fastify, TypeORM, OpenTelemetry |
+| Worker         | Node.js, BullMQ |
+| Banco de Dados | PostgreSQL |
+| Cache          | Redis |
 | Observabilidade| Grafana, Loki, Tempo, Prometheus |
-| CI/CD          | GitHub Actions + GitHub Container Registry |
-| Deploy         | Docker Compose (auto e manual) |
+| CI/CD          | GitHub Actions |
+| Deploy         | Docker Compose |
 
 ---
 

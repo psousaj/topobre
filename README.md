@@ -6,7 +6,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/license/psousa/topobre?color=blue" alt="License" />
-  <img src="https://img.shields.io/github/workflow/status/psousaj/topobre/Deploy%20Apps?label=CI%2FCD" alt="CI/CD" />
+  <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/Deploy%20Apps.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
 </p>
 
 ---

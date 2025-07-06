@@ -86,7 +86,7 @@ export async function authRoutes(app: FastifyZodApp) {
             }
 
             const accessToken = app.jwt.sign(
-                { userId: user.id, email: user.email, jti },
+                { userId: user.id, email: user.email, roles: user.roles, jti },
                 { expiresIn: '24h' }
             );
 
@@ -185,6 +185,7 @@ export async function authRoutes(app: FastifyZodApp) {
         const accessToken = app.jwt.sign({
             userId: session.user.id,
             email: session.user.email,
+            roles: session.user.roles,
             jti: newJti
         }, { expiresIn: '24h' });
 

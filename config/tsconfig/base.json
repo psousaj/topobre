@@ -7,20 +7,15 @@
         ],
         "moduleResolution": "node",
         "baseUrl": ".",
-        "paths": {
-            "@topobre/queue": [
-                "packages/queue/src"
-            ],
-            "@topobre/mailer": [
-                "packages/mailer/src"
-            ]
-        },
         "esModuleInterop": true,
         "skipLibCheck": true,
         "strict": true,
         "resolveJsonModule": true,
         "sourceMap": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "types": [
+            "node"
+        ]
     }
 }

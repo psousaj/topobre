@@ -246,7 +246,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             const transactionExists = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findOne({
                 where: {
                     id,
-                    user: request.user
+                    user: { id: request.user.userId }
                 }
             })
 

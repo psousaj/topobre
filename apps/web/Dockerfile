@@ -16,7 +16,6 @@ RUN npm install -g pnpm
 COPY ../../pnpm-lock.yaml ../../package.json ./
 COPY ../../apps/web ./apps/web
 COPY ../../packages ./packages
-COPY ../../tsconfig.json ./
 
 # Instalar dependências com os workspaces
 RUN pnpm install

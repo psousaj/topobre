@@ -1,6 +1,6 @@
 include:
-  - server/postgres.yml
-  - server/redis.yml
+  # - server/postgres.yml
+  # - server/redis.yml
   - server/grafana.yml
   - server/loki.yml
   - server/prometheus.yml

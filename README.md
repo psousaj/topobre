@@ -5,12 +5,14 @@
 </p>
 
 <p align="center">
-
-  [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
-
-  <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/deploy%20apps.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
-
+  <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg" alt="License: CC BY-NC-ND 4.0" />
+  </a>
+  <a href="https://github.com/psousaj/topobre/actions/workflows/deploy%20apps.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/deploy%20apps.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
+  </a>
 </p>
+
 
 
 ---
@@ -116,10 +118,10 @@ topobre/
 
 ---
 
-## Licença
+## 📄 Licença
 
-This code is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
+Este projeto é disponibilizado publicamente apenas para fins de portfólio e aprendizado.  
+**Qualquer uso comercial ou modificação é proibido sem autorização.**
 
-You may view and share this code for non-commercial and educational purposes only. Any commercial use, modification, or redistribution is strictly prohibited.
+Licença: [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
-© 2025 Pinheiro Sousa. All rights reserved.

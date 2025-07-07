@@ -15,9 +15,9 @@ services:
       - NODE_ENV=production
       - OTEL_SERVICE_NAME=api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-    depends_on:
-      - postgres
-      - redis
+    # depends_on:
+    #   - postgres
+    #   - redis
     networks:
       - topobre-net
 
@@ -35,9 +35,9 @@ services:
       - NODE_ENV=production
       - OTEL_SERVICE_NAME=worker
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-    depends_on:
-      - postgres
-      - redis
+    # depends_on:
+    #   - postgres
+    #   - redis
     networks:
       - topobre-net
 

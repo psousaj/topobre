@@ -11,5 +11,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Stop infra containers and clean volumes
+        run: docker compose -f docker-compose.infra.yml down -v
+
       - name: Deploy Infra
         run: docker compose -f docker-compose.infra.yml up -d

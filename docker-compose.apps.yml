@@ -1,8 +1,6 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: ghcr.io/psousaj/topobre-api:latest
     container_name: topobre-api
     ports:
       - "3003:3003"
@@ -15,16 +13,11 @@ services:
       - NODE_ENV=production
       - OTEL_SERVICE_NAME=api
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-    # depends_on:
-    #   - postgres
-    #   - redis
     networks:
       - topobre-net
 
   worker:
-    build:
-      context: .
-      dockerfile: apps/worker/Dockerfile
+    image: ghcr.io/psousaj/topobre-worker:latest
     container_name: topobre-worker
     environment:
       - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
@@ -35,16 +28,11 @@ services:
       - NODE_ENV=production
       - OTEL_SERVICE_NAME=worker
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-    # depends_on:
-    #   - postgres
-    #   - redis
     networks:
       - topobre-net
 
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+    image: ghcr.io/psousaj/topobre-web:latest
     container_name: topobre-web
     ports:
       - "3000:3000"

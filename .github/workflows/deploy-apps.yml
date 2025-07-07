@@ -56,7 +56,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Pull and deploy
-        run: |
-          docker compose -f docker-compose.apps.yml pull
-          docker compose -f docker-compose.apps.yml up -d
+      - name: Pull latest images
+        run: docker compose -f docker-compose.apps.yml pull
+
+      - name: Stop containers and clean volumes
+        run: docker compose -f docker-compose.apps.yml down -v
+
+      - name: Start containers fresh
+        run: docker compose -f docker-compose.apps.yml up -d

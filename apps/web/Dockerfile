@@ -13,9 +13,10 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g pnpm
 
 # Copiar dependências da raiz do monorepo
-COPY ../../pnpm-lock.yaml ../../package.json ./
-COPY ../../apps/web ./apps/web
-COPY ../../packages ./packages
+COPY ./pnpm-lock.yaml ./package.json ./
+COPY ./pnpm-workspace.yaml ./
+COPY ./apps/web ./apps/web
+COPY ./packages ./packages
 
 # Instalar dependências com os workspaces
 RUN pnpm install
@@ -43,12 +44,12 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g pnpm
 
 # Copiar apenas os artefatos necessários
-COPY --from=builder /app/apps/web/package.json ./apps/web/package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/web/.next ./apps/web/.next
-COPY --from=builder /app/apps/web/public ./apps/web/public
-COPY --from=builder /app/apps/web/next.config.js ./apps/web/next.config.js
+COPY --from=builder ./apps/web/package.json ./apps/web/package.json
+COPY --from=builder ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder ./node_modules ./node_modules
+COPY --from=builder ./apps/web/.next ./apps/web/.next
+COPY --from=builder ./apps/web/public ./apps/web/public
+COPY --from=builder ./apps/web/next.config.js ./apps/web/next.config.js
 
 # Definir variáveis de ambiente
 ARG NEXT_PUBLIC_API_URL

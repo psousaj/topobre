@@ -33,3 +33,10 @@ metrics_generator:
     # span_metrics:
   storage:
     path: /tmp/tempo/metrics
+
+search_enabled: true
+
+query_frontend:
+  search:
+    concurrent_jobs: 1000
+    max_duration: 0s

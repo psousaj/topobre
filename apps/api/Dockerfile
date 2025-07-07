@@ -45,7 +45,7 @@ COPY --from=builder /topobre/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /topobre/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /topobre/node_modules ./node_modules
 COPY --from=builder /topobre/apps/api/dist ./apps/api/dist
-COPY --from=bulder /topobre ./
+COPY --from=builder /topobre ./
 
 # Porta padrão da API
 EXPOSE 3003

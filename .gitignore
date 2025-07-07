@@ -58,3 +58,25 @@ node_modules
 
 # turborepo
 .turbo
+
+# Loki data files
+server/loki/wal/
+server/loki/data/
+server/loki/boltdb-shipper-active/
+server/loki/boltdb-shipper-cache/
+server/loki/chunks/
+server/loki/boltdb-shipper-compactor/
+
+# Tempo data files
+server/tempo/data/
+server/tempo/wal/
+
+# Prometheus data
+server/prometheus/data/
+
+# Grafana data
+server/grafana/data/
+
+# Other observability data
+*.db
+*.log

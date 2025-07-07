@@ -9,10 +9,12 @@
     ],
     "tasks": {
         "build": {
+            "dependsOn": [
+                "^build"
+            ],
             "outputs": [
                 "dist/**"
-            ],
-            "dependsOn": []
+            ]
         },
         "lint": {
             "cache": false

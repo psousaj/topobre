@@ -1,8 +1,11 @@
 {
     "name": "@topobre/bullmq",
     "version": "0.0.0",
-    "main": "index.ts",
+    "main": "index.js",
     "types": "index.ts",
+    "scripts": {
+        "build": "tsc"
+    },
     "dependencies": {
         "bullmq": "^4.17.0",
         "@topobre/env": "workspace:*"

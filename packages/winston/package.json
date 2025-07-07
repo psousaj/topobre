@@ -1,7 +1,10 @@
 {
   "name": "@topobre/winston",
   "version": "0.0.0",
-  "main": "index.ts",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "@topobre/env": "workspace:*",
     "@topobre/tsconfig": "workspace:*",

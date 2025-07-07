@@ -2,7 +2,10 @@
   "name": "@topobre/telemetry",
   "version": "1.0.0",
   "private": true,
-  "main": "index.ts",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.60.1",

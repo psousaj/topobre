@@ -7,8 +7,6 @@
 <p align="center">
 
   [![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
-  
-  <br>
 
   <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/deploy%20apps.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
 

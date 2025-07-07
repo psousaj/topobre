@@ -45,8 +45,8 @@ RUN apt-get update && apt-get install -y \
 RUN npm install -g pnpm
 
 # Copiar apenas os artefatos necessários
-COPY --from=builder ./apps/web/package.json ./apps/web/package.json
-COPY --from=builder ./pnpm-lock.yaml ./pnpm-lock.yaml
+# COPY --from=builder ./apps/web/package.json ./apps/web/package.json
+# COPY --from=builder ./pnpm-lock.yaml ./pnpm-lock.yaml
 #COPY --from=builder ./node_modules ./node_modules
 #COPY --from=builder ./apps/web/.next ./apps/web/.next
 #COPY --from=builder ./apps/web/public ./apps/web/public

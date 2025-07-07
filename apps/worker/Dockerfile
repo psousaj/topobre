@@ -32,8 +32,8 @@ RUN npm install -g pnpm
 
 # Copiar apenas o necessário
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/worker/dist ./apps/worker/dist
+COPY --from=builder /topobre/node_modules ./node_modules
+COPY --from=builder /topobre/apps/worker/dist ./apps/worker/dist
 
 # Instalar só as dependências de produção
 RUN pnpm install --prod

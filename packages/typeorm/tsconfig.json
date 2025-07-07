@@ -8,7 +8,9 @@
             "@t3-oss/env-nextjs": [
                 "../env/node_modules/@t3-oss/env-nextjs"
             ],
-        }
+        },
+        "composite": true,
+        "outDir": "./dist",
     },
     "include": [
         "."

@@ -338,6 +338,9 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
       '@topobre/winston':
         specifier: workspace:*
         version: link:../winston
@@ -364,7 +367,11 @@ importers:
         specifier: workspace:*
         version: link:../../config/tsconfig
 
-  packages/resend: {}
+  packages/resend:
+    dependencies:
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
 
   packages/telemetry:
     dependencies:
@@ -410,6 +417,9 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
       '@topobre/winston':
         specifier: workspace:*
         version: link:../winston
@@ -459,6 +469,9 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
       winston:
         specifier: ^3.17.0
         version: 3.17.0

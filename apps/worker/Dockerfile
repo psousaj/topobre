@@ -34,9 +34,10 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY --from=builder /topobre/node_modules ./node_modules
 COPY --from=builder /topobre/apps/worker/dist ./apps/worker/dist
+COPY --from=builder . ./
 
 # Instalar só as dependências de produção
-RUN pnpm install --prod
+RUN pnpm install
 
 # Definir comando de entrada
 CMD ["pnpm", "start:worker"]

@@ -32,9 +32,9 @@ WORKDIR /topobre
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
-    openssl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+openssl \
+ca-certificates \
+&& rm -rf /var/lib/apt/lists/*
 
 # Instalar pnpm
 RUN npm install -g pnpm
@@ -45,7 +45,7 @@ COPY --from=builder /topobre/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /topobre/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /topobre/node_modules ./node_modules
 COPY --from=builder /topobre/apps/api/dist ./apps/api/dist
-COPY --from=builder . ./
+COPY --from=bulder /topobre ./
 
 # Porta padrão da API
 EXPOSE 3003

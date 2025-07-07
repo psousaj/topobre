@@ -5,6 +5,7 @@ services:
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:
       - ./loki/loki-config.yml:/etc/loki/loki-config.yml
+      - ./loki/wal:/wal  
     ports:
       - "3100:3100"
     networks:

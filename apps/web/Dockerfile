@@ -1,7 +1,7 @@
 # ========= 🚧 Build Stage =========
 FROM node:18-slim AS builder
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar dependências básicas
 RUN apt-get update && apt-get install -y \
@@ -17,6 +17,7 @@ COPY ./pnpm-lock.yaml ./package.json ./
 COPY ./pnpm-workspace.yaml ./
 COPY ./apps/web ./apps/web
 COPY ./packages ./packages
+COPY . ./
 
 # Instalar dependências com os workspaces
 RUN pnpm install
@@ -32,7 +33,7 @@ RUN pnpm build:web
 # ========= ✅ Production Stage =========
 FROM node:18-slim AS runner
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar dependências básicas
 RUN apt-get update && apt-get install -y \
@@ -59,7 +60,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 EXPOSE 3000
 
 # Entrar na pasta correta
-WORKDIR /app/apps/web
+WORKDIR /topobre/apps/web
 
 # Rodar em produção
 CMD ["pnpm", "start:web"]

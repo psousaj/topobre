@@ -1,7 +1,7 @@
 # ========= 🚧 Build Stage =========
 FROM node:18-slim AS builder
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -28,7 +28,7 @@ RUN pnpm build:api
 # ========= ✅ Production Stage =========
 FROM node:18-slim AS runner
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
@@ -50,7 +50,7 @@ COPY --from=builder /app/apps/api/dist ./apps/api/dist
 EXPOSE 3003
 
 # Entrar na pasta da API antes de iniciar
-WORKDIR /app/apps/api
+WORKDIR /topobre/apps/api
 
 # Start em produção
 CMD ["pnpm", "start:api"]

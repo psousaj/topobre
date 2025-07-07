@@ -1,7 +1,7 @@
 # ========= 🚧 Build Stage =========
 FROM node:18-slim AS builder
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar pnpm
 RUN npm install -g pnpm
@@ -10,9 +10,10 @@ RUN npm install -g pnpm
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
 # Copiar pacotes e app do worker
-COPY packages ./packages
-COPY config ./config
-COPY apps/worker ./apps/worker
+COPY ./packages ./packages
+COPY ./config ./config
+COPY ./apps/worker ./apps/worker
+COPY . ./
 
 # Instalar dependências com workspaces
 RUN pnpm install
@@ -24,7 +25,7 @@ RUN pnpm build:worker
 # ========= ✅ Production Stage =========
 FROM node:18-slim AS runner
 
-WORKDIR /app
+WORKDIR /topobre
 
 # Instalar pnpm
 RUN npm install -g pnpm

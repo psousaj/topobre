@@ -51,6 +51,7 @@ RUN npm install -g pnpm
 #COPY --from=builder ./apps/web/.next ./apps/web/.next
 #COPY --from=builder ./apps/web/public ./apps/web/public
 #COPY --from=builder ./apps/web/next.config.js ./apps/web/next.config.js
+COPY --from=builder . ./
 
 # Definir variáveis de ambiente
 ARG NEXT_PUBLIC_API_URL

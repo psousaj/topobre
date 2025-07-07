@@ -45,12 +45,13 @@ COPY --from=builder /topobre/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /topobre/pnpm-workspace.yaml ./pnpm-workspace.yaml
 COPY --from=builder /topobre/node_modules ./node_modules
 COPY --from=builder /topobre/apps/api/dist ./apps/api/dist
+COPY --from=builder . ./
 
 # Porta padrão da API
 EXPOSE 3003
 
 # Entrar na pasta da API antes de iniciar
-WORKDIR /topobre/apps/api
+# WORKDIR /topobre/apps/api
 
 # Start em produção
 CMD ["pnpm", "start:api"]

@@ -12,8 +12,7 @@ distributor:
 ingester:
   trace_idle_period: 10s
   max_block_duration: 5m
-  wal:
-    enabled: true
+  # WAL is enabled by default in newer versions, no need to specify
 
 compactor:
   compaction:
@@ -26,6 +25,11 @@ storage:
       path: /tmp/tempo/traces
 
 metrics_generator:
-  enabled: true
+  processor:
+    # Enable service graphs processor
+    service_graphs:
+      # This enables the metrics generator functionality
+    # You can also enable span metrics if needed
+    # span_metrics:
   storage:
     path: /tmp/tempo/metrics

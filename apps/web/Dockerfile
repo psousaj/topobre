@@ -47,10 +47,10 @@ RUN npm install -g pnpm
 # Copiar apenas os artefatos necessários
 COPY --from=builder ./apps/web/package.json ./apps/web/package.json
 COPY --from=builder ./pnpm-lock.yaml ./pnpm-lock.yaml
-COPY --from=builder ./node_modules ./node_modules
-COPY --from=builder ./apps/web/.next ./apps/web/.next
-COPY --from=builder ./apps/web/public ./apps/web/public
-COPY --from=builder ./apps/web/next.config.js ./apps/web/next.config.js
+#COPY --from=builder ./node_modules ./node_modules
+#COPY --from=builder ./apps/web/.next ./apps/web/.next
+#COPY --from=builder ./apps/web/public ./apps/web/public
+#COPY --from=builder ./apps/web/next.config.js ./apps/web/next.config.js
 
 # Definir variáveis de ambiente
 ARG NEXT_PUBLIC_API_URL
@@ -60,7 +60,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 EXPOSE 3000
 
 # Entrar na pasta correta
-WORKDIR /topobre/apps/web
+# WORKDIR /topobre/apps/web
 
 # Rodar em produção
 CMD ["pnpm", "start:web"]

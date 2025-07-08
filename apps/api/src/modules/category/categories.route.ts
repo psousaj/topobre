@@ -3,7 +3,7 @@ import { FastifyZodApp } from '../../types'
 import { REPOSITORIES } from '../../shared/constant'
 import { categoryResponseSchema, categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
-import { Category } from '@topobre/typeorm/entities'
+import { Category } from '@topobre/typeorm'
 import { saveCategories } from '@topobre/typeorm/seed'
 
 export async function categoriesRoutes(app: FastifyZodApp) {

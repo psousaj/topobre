@@ -5,6 +5,9 @@
             "@topobre/typeorm/types": [
                 "./types"
             ],
+            "@topobre/typeorm": [
+                "./entities"
+            ],
             "@t3-oss/env-nextjs": [
                 "../env/node_modules/@t3-oss/env-nextjs"
             ],

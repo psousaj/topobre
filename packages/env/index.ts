@@ -1,8 +1,39 @@
-import dotenv from 'dotenv'
+import { config as dotenvConfig } from 'dotenv';
 import { z } from 'zod'
-import * as path from 'path'
+import { existsSync } from 'fs';
+import { resolve } from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+
+// Função para tentar localizar .env na raiz do monorepo,
+// subindo da pasta do arquivo atual em dev ou prod
+
+function findMonorepoRootEnv() {
+    // __dirname aponta pra src em dev e dist/src em build
+    // vamos tentar algumas resoluções relativas para pegar a raiz
+
+    // 1) Tentar .env na raiz subindo 3 níveis (ex: dev: /src -> ../../../.env)
+    let possiblePath = resolve(__dirname, '../../../.env');
+    if (existsSync(possiblePath)) return possiblePath;
+
+    // 2) Tentar 4 níveis (ex: build: /dist/src -> ../../../../.env)
+    possiblePath = resolve(__dirname, '../../../../.env');
+    if (existsSync(possiblePath)) return possiblePath;
+
+    // 3) fallback pra CWD + '.env' (menos recomendado)
+    possiblePath = resolve(process.cwd(), '.env');
+    if (existsSync(possiblePath)) return possiblePath;
+
+    // Se não achar, retorna undefined (ou null)
+    return undefined;
+}
+
+const envPath = findMonorepoRootEnv();
+if (envPath) {
+    dotenvConfig({ path: envPath });
+    console.log('🔍 Carregado .env de:', envPath);
+} else {
+    console.log('⚠️ Arquivo .env não encontrado.');
+}
 
 const preprocessEmptyString = (val: unknown) => (val === '' ? undefined : val);
 
@@ -15,15 +46,15 @@ const serverSchema = z.object({
     RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     JWT_SECRET: z.preprocess(preprocessEmptyString, z.string()),
     COOKIE_SECRET: z.preprocess(preprocessEmptyString, z.string()),
-    REDIS_HOST: z.preprocess(preprocessEmptyString, z.string()),
-    REDIS_PORT: z.coerce.number(),
+    REDIS_HOST: z.preprocess(preprocessEmptyString, z.string()).optional(),
+    REDIS_PORT: z.coerce.number().optional(),
     REDIS_USERNAME: z.preprocess(preprocessEmptyString, z.string().optional()),
     REDIS_PASSWORD: z.preprocess(preprocessEmptyString, z.string().optional()),
     REDIS_TOKEN: z.preprocess(preprocessEmptyString, z.string().optional()),
     UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string().optional()),
     GEMINI_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: z.preprocess(preprocessEmptyString, z.string()),
-    PROMETHEUS_PORT: z.coerce.number()
+    PROMETHEUS_PORT: z.coerce.number().default(9090),
 });
 
 const clientSchema = z.object({

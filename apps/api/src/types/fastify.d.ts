@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { JWT } from "@fastify/jwt";
 import type { DataSource } from "@topobre/typeorm";
-import type { Role, User } from "@topobre/typeorm/entities";
+import type { Role, User } from "@topobre/typeorm";
 import type { DatabaseService, Mailer } from ".";
 
 declare module "fastify" {

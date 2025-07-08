@@ -20,6 +20,23 @@
     "rootDir": "./",
     "skipLibCheck": true,
   },
+  "references": [
+    {
+      "path": "../../packages/typeorm"
+    },
+    {
+      "path": "../../packages/winston"
+    },
+    {
+      "path": "../../packages/telemetry"
+    },
+    {
+      "path": "../../packages/bullmq"
+    },
+    {
+      "path": "../finloader"
+    },
+  ],
   "exclude": [
     "node_modules",
     "dist"

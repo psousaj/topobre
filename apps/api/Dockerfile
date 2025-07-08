@@ -25,6 +25,7 @@ RUN pnpm install
 # Gerar build apenas da API
 RUN pnpm build:api
 
+
 # ========= ✅ Production Stage =========
 FROM node:18-slim AS runner
 

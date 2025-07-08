@@ -2,7 +2,7 @@
   "name": "@topobre/finloader",
   "version": "1.0.0",
   "private": true,
-  "main": "index.ts",
+  "main": "dist/index.js",
   "dependencies": {
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*",

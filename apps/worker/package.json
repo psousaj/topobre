@@ -2,9 +2,10 @@
   "name": "@topobre/worker",
   "version": "0.0.0",
   "private": true,
+  "main": "dist/index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
-    "build": "tsc",
+    "build": "tsc -b",
     "start": "node dist/index.js"
   },
   "dependencies": {

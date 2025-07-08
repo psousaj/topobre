@@ -1,13 +1,13 @@
 {
   "name": "@topobre/env",
   "version": "0.0.0",
-  "main": "./index.ts",
-  "types": "./index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc -p .",
     "lint": "npx eslint ."
   },
   "dependencies": {
-    
     "dotenv": "^16.5.0",
     "zod": "^3.25.56"
   },

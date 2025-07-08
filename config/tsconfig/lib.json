@@ -18,7 +18,7 @@
             "DOM",
             "ES2021"
         ],
-        "module": "ESNext",
+        "module": "CommonJS",
         "target": "es6",
     }
 }

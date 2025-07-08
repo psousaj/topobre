@@ -3,7 +3,7 @@ import { initTelemetry } from '@topobre/telemetry';
 initTelemetry('worker');
 
 import { TopobreDataSource } from '@topobre/typeorm';
-import { FinancialRecord, Category } from '@topobre/typeorm/entities';
+import { FinancialRecord, Category } from '@topobre/typeorm';
 import { processTransactionFile, BankType } from '@topobre/finloader';
 import { FINLOADER_QUEUE_NAME, redisConnection, Worker } from '@topobre/bullmq';
 import { logger } from '@topobre/winston';

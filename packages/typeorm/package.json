@@ -1,10 +1,11 @@
 {
   "name": "@topobre/typeorm",
-  "main": "./index.ts",
-  "types": "./index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "build": "tsc -p .",
     "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
     "lint": "npx eslint ."
   },
@@ -20,8 +21,7 @@
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "pg": "8.11.3",
-    "tsc": "^2.0.4"
+    "pg": "8.11.3"
   },
   "peerDependencies": {
     "typeorm": "^0.3.24"

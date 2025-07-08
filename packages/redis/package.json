@@ -1,16 +1,17 @@
 {
   "name": "@topobre/redis",
   "version": "0.0.0",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p .",
     "lint": "npx eslint ."
   },
   "dependencies": {
     "@topobre/env": "workspace:*",
+    "@topobre/telemetry": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "@topobre/telemetry": "workspace:*"
+    "redis": "^5.5.6"
   },
   "devDependencies": {
     "@topobre/eslint": "workspace:*",

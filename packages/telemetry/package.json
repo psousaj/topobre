@@ -2,9 +2,10 @@
   "name": "@topobre/telemetry",
   "version": "1.0.0",
   "private": true,
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -p ."
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

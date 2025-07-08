@@ -34,7 +34,7 @@
       "path": "../../packages/bullmq"
     },
     {
-      "path": "../../packages/finloader"
+      "path": "../finloader"
     },
   ],
   "exclude": [

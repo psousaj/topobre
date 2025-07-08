@@ -9,6 +9,8 @@ logger.info('[REDIS] Redis config:', {
     password: env.REDIS_PASSWORD,
 });
 
+export * from 'redis';
+
 export class RedisClient extends Redis {
     constructor() {
         super({

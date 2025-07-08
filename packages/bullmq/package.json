@@ -1,10 +1,10 @@
 {
     "name": "@topobre/bullmq",
     "version": "0.0.0",
-    "main": "index.js",
-    "types": "index.ts",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc -p ."
     },
     "dependencies": {
         "bullmq": "^4.17.0",

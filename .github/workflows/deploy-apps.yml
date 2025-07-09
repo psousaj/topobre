@@ -54,8 +54,8 @@ jobs:
       - name: Stop containers and clean volumes
         run: docker compose -f docker-compose.apps.yml down -v
 
-      - name: Start containers fresh
-        run: docker compose -f docker-compose.apps.yml up -d
+      - name: Rodar script de deploy
+        run: bash scripts/deploy.sh
         env:
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}

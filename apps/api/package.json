@@ -12,12 +12,20 @@
     "@topobre/typeorm": "../../packages/typeorm/dist"
   },
   "dependencies": {
+    "@fastify/auth": "^5.0.2",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^10.0.1",
     "@fastify/jwt": "^9.1.0",
+    "@fastify/multipart": "^9.0.3",
     "@fastify/swagger": "^9.4.0",
     "@fastify/swagger-ui": "^5.1.0",
     "@fastify/view": "^11.1.0",
+    "@topobre/bullmq": "workspace:*",
+    "@topobre/env": "workspace:*",
+    "@topobre/finloader": "workspace:*",
+    "@topobre/telemetry": "workspace:*",
+    "@topobre/typeorm": "workspace:*",
+    "@topobre/winston": "workspace:*",
     "@types/qs": "^6.14.0",
     "bcrypt": "^6.0.0",
     "fastify": "^5.1.0",
@@ -27,13 +35,7 @@
     "qs": "^6.14.0",
     "resend": "^4.5.2",
     "uuid": "^11.1.0",
-    "zod": "^3.23.8",
-    "@topobre/env": "workspace:*",
-    "@topobre/typeorm": "workspace:*",
-    "@topobre/winston": "workspace:*",
-    "@topobre/telemetry": "workspace:*",
-    "@topobre/bullmq": "workspace:*",
-    "@topobre/finloader": "workspace:*"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@topobre/eslint": "workspace:*",

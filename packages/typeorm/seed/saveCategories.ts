@@ -73,6 +73,11 @@ export async function saveCategories() {
     }
 }
 
+if (process.env.RUN_SEED === 'true') {
+    saveCategories().then()
+}
+
+
 if (require.main === module) {
     // Quando este arquivo é executado diretamente (e não importado)
     // executa a função saveCategories()

@@ -13,32 +13,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set IMAGE_TAG (SHA + Run Number)
+        run: |
+          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${SHORT_SHA}-r${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build and push API image
-        run: |
-          docker buildx build \
-            --file apps/api/Dockerfile \
-            --tag ghcr.io/${{ github.repository_owner }}/topobre-api:latest \
-            --push \
-            .
+      - name: Build monorepo artifacts
+        run: docker build -f build/Dockerfile.build -t topobre-builder .
 
-      - name: Build and push Web image
+      - name: Build and push all apps with Bake
         run: |
-          docker buildx build \
-            --file apps/web/Dockerfile \
-            --tag ghcr.io/${{ github.repository_owner }}/topobre-web:latest \
-            --push \
-            .
-
-      - name: Build and push Worker image
-        run: |
-          docker buildx build \
-            --file apps/worker/Dockerfile \
-            --tag ghcr.io/${{ github.repository_owner }}/topobre-worker:latest \
-            --push \
-            .
+          docker buildx bake --push \
+            --set api.tags=ghcr.io/${{ github.repository_owner }}/topobre-api:latest,ghcr.io/${{ github.repository_owner }}/topobre-api:${{ env.IMAGE_TAG }} \
+            --set web.tags=ghcr.io/${{ github.repository_owner }}/topobre-web:latest,ghcr.io/${{ github.repository_owner }}/topobre-web:${{ env.IMAGE_TAG }} \
+            --set worker.tags=ghcr.io/${{ github.repository_owner }}/topobre-worker:latest,ghcr.io/${{ github.repository_owner }}/topobre-worker:${{ env.IMAGE_TAG }} \
+            --set api.platform=linux/amd64 \
+            --set web.platform=linux/amd64 \
+            --set worker.platform=linux/amd64 \
+            --file build/docker-bake.hcl
 
   deploy:
     runs-on: self-hosted
@@ -48,15 +43,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Pull latest images
-        run: docker compose -f docker-compose.apps.yml pull
-
-      - name: Stop containers and clean volumes
-        run: docker compose -f docker-compose.apps.yml down -v
-
       - name: Rodar script de deploy
-        run: bash scripts/deploy.sh
+        run: /bin/bash -c "export IMAGE_TAG=${{ env.IMAGE_TAG }} && build/scripts/deploy.sh"
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
           COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}

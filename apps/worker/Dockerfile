@@ -1,43 +1,16 @@
-# ========= 🚧 Build Stage =========
-FROM node:18-slim AS builder
+FROM node:22-slim
 
-WORKDIR /topobre
+WORKDIR /usr/src/topobre
 
-# Instalar pnpm
 RUN npm install -g pnpm
 
-# Copiar configs de workspace
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
+COPY --from=topobre-builder /topobre/package.json ./
+COPY --from=topobre-builder /topobre/pnpm-lock.yaml ./
+COPY --from=topobre-builder /topobre/pnpm-workspace.yaml ./
+COPY --from=topobre-builder /topobre/apps/worker/package.json ./apps/worker/package.json
 
-# Copiar pacotes e app do worker
-COPY ./packages ./packages
-COPY ./config ./config
-COPY ./apps/worker ./apps/worker
-COPY . ./
+COPY --from=topobre-builder /topobre/apps/worker/dist ./apps/worker/dist
 
-# Instalar dependências com workspaces
-RUN pnpm install
+RUN pnpm install --prod --frozen-lockfile --filter=@topobre/worker
 
-# Gerar build do worker
-RUN pnpm build:worker
-
-
-# ========= ✅ Production Stage =========
-FROM node:18-slim AS runner
-
-WORKDIR /topobre
-
-# Instalar pnpm
-RUN npm install -g pnpm
-
-# Copiar apenas o necessário
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY --from=builder /topobre/node_modules ./node_modules
-COPY --from=builder /topobre/apps/worker/dist ./apps/worker/dist
-COPY --from=builder /topobre ./
-
-# Instalar só as dependências de produção
-RUN pnpm install
-
-# Definir comando de entrada
 CMD ["pnpm", "start:worker"]

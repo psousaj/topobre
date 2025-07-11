@@ -13,14 +13,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set IMAGE_TAG (SHA + Run Number)
+        run: |
+          echo "SHORT_SHA=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_ENV
+          echo "IMAGE_TAG=${SHORT_SHA}-r${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build monorepo artifacts
+        run: docker build -f build/Dockerfile.build -t topobre-builder .
 
       - name: Build and push API image
         run: |
           docker buildx build \
             --file apps/api/Dockerfile \
+            --tag ghcr.io/${{ github.repository_owner }}/topobre-api:${{ env.IMAGE_TAG }} \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-api:latest \
+            --platform linux/amd64
             --push \
             .
 
@@ -28,7 +38,9 @@ jobs:
         run: |
           docker buildx build \
             --file apps/web/Dockerfile \
+            --tag ghcr.io/${{ github.repository_owner }}/topobre-web:${{ env.IMAGE_TAG }} \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-web:latest \
+            --platform linux/amd64
             --push \
             .
 
@@ -36,7 +48,9 @@ jobs:
         run: |
           docker buildx build \
             --file apps/worker/Dockerfile \
+            --tag ghcr.io/${{ github.repository_owner }}/topobre-worker:${{ env.IMAGE_TAG }} \
             --tag ghcr.io/${{ github.repository_owner }}/topobre-worker:latest \
+            --platform linux/amd64
             --push \
             .
 
@@ -55,8 +69,9 @@ jobs:
         run: docker compose -f docker-compose.apps.yml down -v
 
       - name: Rodar script de deploy
-        run: bash scripts/deploy.sh
+        run: bash build/scripts/deploy.sh
         env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
           COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}

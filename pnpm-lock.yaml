@@ -8,18 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@fastify/auth':
-        specifier: ^5.0.2
-        version: 5.0.2
-      '@fastify/multipart':
-        specifier: ^9.0.3
-        version: 9.0.3
-      '@opentelemetry/exporter-logs-otlp-grpc':
-        specifier: ^0.202.0
-        version: 0.202.0(@opentelemetry/api@1.9.0)
-      '@opentelemetry/sdk-logs':
-        specifier: ^0.202.0
-        version: 0.202.0(@opentelemetry/api@1.9.0)
       ioredis:
         specifier: ^5.6.1
         version: 5.6.1
@@ -48,6 +36,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@fastify/auth':
+        specifier: ^5.0.2
+        version: 5.0.2
       '@fastify/cookie':
         specifier: ^11.0.2
         version: 11.0.2
@@ -57,6 +48,9 @@ importers:
       '@fastify/jwt':
         specifier: ^9.1.0
         version: 9.1.0
+      '@fastify/multipart':
+        specifier: ^9.0.3
+        version: 9.0.3
       '@fastify/swagger':
         specifier: ^9.4.0
         version: 9.5.1

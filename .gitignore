@@ -8,7 +8,8 @@
 **/!.yarn/releases
 **/!.yarn/versions
 
-**/**/errors.json
+**/errors.json
+**/erros.json
 
 # testing
 **/coverage
@@ -19,7 +20,7 @@
 
 # production
 **/dist
-**/build
+# **/build
 
 # misc
 **.DS_Store
@@ -40,10 +41,6 @@
 # typescript
 **/*.tsbuildinfo
 **/next-env.d.ts
-
-apps/api/node_modules
-
-apps/api/dist
 
 # dependencies
 node_modules
@@ -78,5 +75,5 @@ server/prometheus/data/
 server/grafana/data/
 
 # Other observability data
-*.db
-*.log
+**.db
+**.log

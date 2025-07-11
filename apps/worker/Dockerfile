@@ -18,6 +18,6 @@ COPY --from=topobre-builder /topobre/packages/typeorm/dist ./packages/typeorm/di
 COPY --from=topobre-builder /topobre/packages/winston/dist ./packages/winston/dist
 COPY --from=topobre-builder /topobre/packages/gemini/dist ./packages/gemini/dist
 
-RUN pnpm install --prod --frozen-lockfile --filter=@topobre/worker
+RUN pnpm install --prod --frozen-lockfile --filter=@topobre/worker...
 
 CMD ["pnpm", "start:worker"]

@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Rodar script de deploy
-        run: /bin/bash -c "export IMAGE_TAG=${{ env.IMAGE_TAG }} && build/scripts/deploy.sh"
+        run: /bin/bash -c "export IMAGE_TAG=${{ env.IMAGE_TAG }} && chmod +x build/scripts/deploy.sh && build/scripts/deploy.sh"
         env:
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
           NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}

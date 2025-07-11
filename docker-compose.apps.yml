@@ -1,6 +1,6 @@
 services:
   api:
-    image: ghcr.io/psousaj/topobre-api:latest
+    image: ghcr.io/psousaj/topobre-api:${IMAGE_TAG}
     container_name: topobre-api
     ports:
       - "3003:3003"
@@ -17,7 +17,7 @@ services:
       - topobre-net
 
   worker:
-    image: ghcr.io/psousaj/topobre-worker:latest
+    image: ghcr.io/psousaj/topobre-worker:${IMAGE_TAG}
     container_name: topobre-worker
     environment:
       - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
@@ -32,7 +32,7 @@ services:
       - topobre-net
 
   web:
-    image: ghcr.io/psousaj/topobre-web:latest
+    image: ghcr.io/psousaj/topobre-web:${IMAGE_TAG}
     container_name: topobre-web
     ports:
       - "3000:3000"

@@ -17,6 +17,13 @@ COPY --from=topobre-builder /topobre/packages/telemetry/dist ./packages/telemetr
 COPY --from=topobre-builder /topobre/packages/typeorm/dist ./packages/typeorm/dist
 COPY --from=topobre-builder /topobre/packages/winston/dist ./packages/winston/dist
 
-RUN pnpm install --prod --frozen-lockfile --filter=@topobre/api...
+RUN pnpm install --prod --frozen-lockfile \
+  --filter=@topobre/api \
+  --filter=@topobre/finloader \
+  --filter=@topobre/telemetry \
+  --filter=@topobre/bullmq \
+  --filter=@topobre/env \
+  --filter=@topobre/typeorm \
+  --filter=@topobre/winston
 
 CMD ["pnpm", "start:api"]

@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p ."
+  },
   "dependencies": {
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*",

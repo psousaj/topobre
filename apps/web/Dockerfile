@@ -20,7 +20,7 @@ COPY --from=topobre-builder /topobre/apps/web/package.json ./apps/web/package.js
 
 RUN pnpm install --prod --frozen-lockfile --filter=@topobre/web
 
-COPY ../../build/scripts/start.sh ./start.sh
+COPY --from=topobre-builder /build/scripts/start.sh ./start.sh
 RUN chmod +x ./start.sh
 ENTRYPOINT ["./start.sh"]
 

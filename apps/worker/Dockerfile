@@ -26,7 +26,7 @@ COPY --from=topobre-builder /topobre/packages/typeorm/dist ./packages/typeorm/di
 COPY --from=topobre-builder /topobre/packages/winston/dist ./packages/winston/dist
 COPY --from=topobre-builder /topobre/packages/gemini/dist ./packages/gemini/dist
 
-#RUN pnpm install --prod --frozen-lockfile --filter=@topobre/worker --recursive
-COPY --from=topobre-builder /topobre/node_modules ./node_modules
+RUN pnpm install --prod --frozen-lockfile 
+# COPY --from=topobre-builder /topobre/node_modules ./node_modules
 
 CMD ["pnpm", "start:worker"]

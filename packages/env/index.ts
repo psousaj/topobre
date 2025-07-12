@@ -3,6 +3,15 @@ import { z } from 'zod'
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
+console.log('🐛 DEBUG: Variáveis de ambiente disponíveis no process.env:');
+for (const key of Object.keys(process.env)) {
+    if (key.startsWith('PG') || key.startsWith('REDIS') || key.startsWith('JWT') || key.includes('SECRET') || key.includes('API_KEY')) {
+        console.log(`${key}=***`);
+    } else {
+        console.log(`${key}=${process.env[key]}`);
+    }
+}
+
 
 function findMonorepoRootEnv() {
     const filenames = ['.env.prod', '.env'];
@@ -28,8 +37,7 @@ if (envPath && process.env.NODE_ENV !== 'production') {
     dotenvConfig({ path: envPath });
     console.log('🔍 Carregado .env de:', envPath);
 } else {
-    console.log('⚠️ Arquivo .env não encontrado.');
-    console.log('⚠️ Rodando variáveis de ambiente do sistema.');
+    console.log('⚠️ .env não carregado (modo produção ou arquivo ausente).');
 }
 
 const preprocessEmptyString = (val: unknown) => (val === '' ? undefined : val);

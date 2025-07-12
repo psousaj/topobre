@@ -1,0 +1,45 @@
+# Ignora arquivos de controle de versão
+.git
+.gitignore
+
+# Ignora dependências instaladas localmente (serão instaladas na imagem)
+node_modules
+bower_components
+vendor
+
+# Ignora arquivos de log
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignora diretórios temporários e de cache
+tmp
+temp
+.cache
+dist
+build
+
+# Ignora arquivos de configuração e de ambiente locais
+.env
+.env.local
+.env.*.local
+
+# Ignora arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Ignora arquivos de testes (se não forem necessários na imagem)
+__tests__
+*.spec.js
+*.test.js
+
+# Ignora arquivos de container/dockers antigos
+docker-compose.override.yml
+
+# Outros exemplos comuns
+coverage
+*.swp
+*.swo
+.idea
+.vscode

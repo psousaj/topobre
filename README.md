@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg" alt="License: CC BY-NC-ND 4.0" />
   </a>
   <a href="https://github.com/psousaj/topobre/actions/workflows/deploy%20apps.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/deploy-apps.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
+    <img src="https://img.shields.io/github/actions/workflow/status/psousaj/topobre/deploy.yml?label=CI%2FCD&branch=main" alt="CI/CD" />
   </a>
 </p>
 

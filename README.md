@@ -13,8 +13,6 @@
   </a>
 </p>
 
-
-
 ---
 
 ## ✨ Visão Geral
@@ -31,6 +29,7 @@ O **ToPobre** é um sistema full-stack que permite ao usuário gerenciar suas fi
 
 ## 📁 Estrutura do Projeto
 
+```
 topobre/
 ├── apps/
 │   ├── api/              # Backend (Fastify, TypeORM, OpenTelemetry)
@@ -57,21 +56,22 @@ topobre/
 ├── docker-compose.apps.yml
 ├── docker-compose.infra.yml
 └── .github/workflows/
+```
 
 ---
 
 ## 🚀 Stack Principal
 
-| Categoria       | Tecnologias |
-|----------------|-------------|
-| Frontend       | Next.js, Tailwind CSS |
-| Backend        | Fastify, TypeORM, OpenTelemetry |
-| Worker         | Node.js, BullMQ |
-| Banco de Dados | PostgreSQL |
-| Cache          | Redis |
-| Observabilidade| Grafana, Loki, Tempo, Prometheus |
-| CI/CD          | GitHub Actions |
-| Deploy         | Docker Compose |
+| Categoria       | Tecnologias                              |
+|----------------|------------------------------------------|
+| Frontend       | Next.js, Tailwind CSS                    |
+| Backend        | Fastify, TypeORM, OpenTelemetry          |
+| Worker         | Node.js, BullMQ                         |
+| Banco de Dados | PostgreSQL                              |
+| Cache          | Redis                                   |
+| Observabilidade| Grafana, Loki, Tempo, Prometheus        |
+| CI/CD          | GitHub Actions                          |
+| Deploy         | Docker Compose                          |
 
 ---
 
@@ -110,11 +110,26 @@ topobre/
 
 4. Acesse:
 
-   - Web App: http://localhost:3000
+   - Web App: http://Tradescantia Zebrina:3000
 
    - API: http://localhost:3003
 
    - Grafana: http://localhost:3001 (usuário: admin, senha: admin)
+
+---
+
+## 🤝 Como Contribuir
+
+Quer ajudar a melhorar o **ToPobre**? Confira nosso [guia de contribuição](CONTRIBUTING.md) para detalhes sobre como configurar o ambiente, padrões de código e o processo de pull requests. Estamos abertos a ideias, correções de bugs e novas funcionalidades!
+
+---
+
+## 📈 Roadmap
+
+O **ToPobre** está em constante evolução! Veja os próximos passos planejados em [docs/roadmap.md](docs/roadmap.md), incluindo:
+- Migração para orquestração com Docker Swarm ou Kubernetes.
+- Novas funcionalidades, como ferramentas de orçamento e relatórios financeiros detalhados.
+- Melhorias em observabilidade, segurança e experiência do usuário.
 
 ---
 
@@ -125,3 +140,8 @@ Este projeto é disponibilizado publicamente apenas para fins de portfólio e ap
 
 Licença: [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)
 
+---
+
+## 📬 Contato
+
+Tem sugestões, encontrou problemas ou quer colaborar? Abra uma [issue](https://github.com/psousaj/topobre/issues) ou conecte-se comigo no [Twitter](https://x.com/seu_usuario)!

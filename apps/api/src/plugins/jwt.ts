@@ -3,5 +3,5 @@ import fjwt from '@fastify/jwt';
 import { env } from '@topobre/env';
 
 export default fp(async function (fastify) {
-    await fastify.register(fjwt, { secret: env.JWT_SECRET, sign: { expiresIn: env.JWT_EXPIRES_IN } });
+    await fastify.register(fjwt, { secret: env.JWT_SECRET, sign: { expiresIn: env.JWT_EXPIRATION } });
 });

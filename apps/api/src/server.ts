@@ -1,4 +1,6 @@
-import 'module-alias/register';
+if (process.env.NODE_ENV === 'production') {
+    require('module-alias/register');
+}
 import { initTelemetry } from '@topobre/telemetry';
 import { buildApp } from "./app";
 import { bootstrapLogger } from './shared/bootstrapLogger';

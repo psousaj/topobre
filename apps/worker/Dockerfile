@@ -29,7 +29,7 @@ COPY --from=topobre-builder /topobre/packages/gemini/dist ./packages/gemini/dist
 RUN pnpm install --prod --frozen-lockfile 
 # COPY --from=topobre-builder /topobre/node_modules ./node_modules
 
-COPY build/scripts/start.sh ./start.sh
+COPY ../../build/scripts/start.sh ./start.sh
 RUN chmod +x ./start.sh
 ENTRYPOINT ["./start.sh"]
 

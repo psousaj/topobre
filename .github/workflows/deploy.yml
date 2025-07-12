@@ -72,7 +72,7 @@ jobs:
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
-          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          API_COOKIE_SECRET: ${{ secrets.API_COOKIE_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           PROMETHEUS_PORT: ${{ secrets.PROMETHEUS_PORT }}

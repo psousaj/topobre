@@ -14,6 +14,9 @@ importers:
       module-alias:
         specifier: ^2.2.3
         version: 2.2.3
+      redis:
+        specifier: ^5.5.6
+        version: 5.5.6
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -440,7 +443,7 @@ importers:
         version: 7.3.0
       typeorm:
         specifier: ^0.3.24
-        version: 0.3.25(ioredis@5.6.1)(pg@8.11.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@24.0.10)(typescript@5.8.3))
+        version: 0.3.25(ioredis@5.6.1)(pg@8.11.3)(redis@5.5.6)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@24.0.10)(typescript@5.8.3))
       zod:
         specifier: ^3.25.56
         version: 3.25.74
@@ -10164,7 +10167,7 @@ snapshots:
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
 
-  typeorm@0.3.25(ioredis@5.6.1)(pg@8.11.3)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@24.0.10)(typescript@5.8.3)):
+  typeorm@0.3.25(ioredis@5.6.1)(pg@8.11.3)(redis@5.5.6)(reflect-metadata@0.2.2)(ts-node@10.9.2(@types/node@24.0.10)(typescript@5.8.3)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
@@ -10184,6 +10187,7 @@ snapshots:
     optionalDependencies:
       ioredis: 5.6.1
       pg: 8.11.3
+      redis: 5.5.6
       ts-node: 10.9.2(@types/node@24.0.10)(typescript@5.8.3)
     transitivePeerDependencies:
       - babel-plugin-macros

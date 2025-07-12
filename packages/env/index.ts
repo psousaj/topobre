@@ -5,27 +5,29 @@ import { resolve } from 'path';
 
 
 function findMonorepoRootEnv() {
-    let possiblePath = resolve(__dirname, '../../../.env');
-    if (existsSync(possiblePath)) return possiblePath;
+    const filenames = ['.env.runtime', '.env'];
 
-    possiblePath = resolve(__dirname, '../../../../.env');
-    if (existsSync(possiblePath)) return possiblePath;
+    for (const filename of filenames) {
+        let possiblePath = resolve(__dirname, '../../../', filename);
+        if (existsSync(possiblePath)) return possiblePath;
 
-    possiblePath = resolve(process.cwd(), '.env');
-    if (existsSync(possiblePath)) return possiblePath;
+        possiblePath = resolve(__dirname, '../../../../', filename);
+        if (existsSync(possiblePath)) return possiblePath;
+
+        possiblePath = resolve(process.cwd(), filename);
+        if (existsSync(possiblePath)) return possiblePath;
+    }
 
     return undefined;
 }
 
 const envPath = findMonorepoRootEnv();
 
-if (process.env.NODE_ENV !== 'production') {
-    if (envPath) {
-        dotenvConfig({ path: envPath });
-        console.log('🔍 Carregado .env de:', envPath);
-    } else {
-        console.log('⚠️ Arquivo .env não encontrado.');
-    }
+if (envPath) {
+    dotenvConfig({ path: envPath });
+    console.log('🔍 Carregado .env de:', envPath);
+} else {
+    console.log('⚠️ Arquivo .env não encontrado.');
 }
 
 const preprocessEmptyString = (val: unknown) => (val === '' ? undefined : val);

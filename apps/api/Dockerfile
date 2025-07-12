@@ -25,11 +25,9 @@ COPY --from=topobre-builder /topobre/packages/typeorm/dist ./packages/typeorm/di
 COPY --from=topobre-builder /topobre/packages/winston/dist ./packages/winston/dist
 
 RUN pnpm install --prod --frozen-lockfile
-# COPY --from=topobre-builder /topobre/node_modules ./node_modules
 
-
-COPY --from=topobre-builder /topobre/build/scripts/start.sh ./start.sh
-RUN chmod +x ./start.sh
-ENTRYPOINT ["./start.sh"]
+# COPY --from=topobre-builder /topobre/build/scripts/start.sh ./start.sh
+# RUN chmod +x ./start.sh
+# ENTRYPOINT ["./start.sh"]
 
 CMD ["pnpm", "start:api"]   

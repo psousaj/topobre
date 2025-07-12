@@ -107,7 +107,7 @@ export const buildApp = async () => {
     await app.register(fastifyJwt, {
         secret: env.JWT_SECRET,
     });
-    await app.register(fastifyCookie, { secret: env.COOKIE_SECRET });
+    await app.register(fastifyCookie, { secret: env.API_COOKIE_SECRET });
     await app.register(mailerPlugin);
     await app.register(templatePreview, {
         devMode: env.NODE_ENV !== 'production',
@@ -115,7 +115,7 @@ export const buildApp = async () => {
     });
 
     app.register(fastifyCors, {
-        origin: [`http://localhost:${env.PORT}`, 'https://topobre.crudbox.com.br'],
+        origin: [`http://localhost:${env.API_PORT}`, 'https://topobre.crudbox.com.br'],
         allowedHeaders: ["Authorization", "Content-Type"],
         credentials: true,
     });

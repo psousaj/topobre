@@ -1,6 +1,6 @@
 import { initTelemetry } from '@topobre/telemetry';
 // Inicializa a telemetria ANTES de qualquer outra coisa
-initTelemetry('worker');
+initTelemetry(process.env.OTEL_SERVICE_NAME || 'worker');
 
 import { TopobreDataSource } from '@topobre/typeorm';
 import { FinancialRecord, Category } from '@topobre/typeorm';

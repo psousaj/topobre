@@ -2,32 +2,22 @@ services:
   api:
     image: ghcr.io/psousaj/topobre-api:${IMAGE_TAG}
     container_name: topobre-api
+    env_file:
+      - .env.runtime
     ports:
-      - "3003:3003"
+      - ${API_PORT}:${API_PORT}
     environment:
-      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - NODE_ENV=production
       - OTEL_SERVICE_NAME=api
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     networks:
       - topobre-net
 
   worker:
     image: ghcr.io/psousaj/topobre-worker:${IMAGE_TAG}
     container_name: topobre-worker
+    env_file:
+      - .env.runtime
     environment:
-      - DATABASE_URL=postgresql://${PGUSER}:${PGPASSWORD}@postgres:5432/${PGDATABASE}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - NODE_ENV=production
       - OTEL_SERVICE_NAME=worker
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
     networks:
       - topobre-net
 
@@ -35,9 +25,11 @@ services:
     image: ghcr.io/psousaj/topobre-web:${IMAGE_TAG}
     container_name: topobre-web
     ports:
-      - "3000:3000"
+      - ${WEB_PORT}:${WEB_PORT}
+    env_file:
+      - .env.runtime
     environment:
-      - NODE_ENV=production
+      - OTEL_SERVICE_NAME=worker
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     networks:
       - topobre-net

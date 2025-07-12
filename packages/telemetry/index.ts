@@ -37,9 +37,9 @@ export function initTelemetry(config: TelemetryConfig | string) {
     const {
         serviceName,
         serviceVersion = '1.0.0',
-        environment = env.NODE_ENV || 'development',
-        otlpEndpoint = env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT || 'http://localhost:4318/v1/traces',
-        prometheusPort = env.PROMETHEUS_PORT || 9464
+        environment = env.NODE_ENV,
+        otlpEndpoint = env.OTEL_EXPORTER_OTLP_TRACES,
+        prometheusPort = env.PROMETHEUS_PORT
     } = telemetryConfig;
 
     // Resource comum  

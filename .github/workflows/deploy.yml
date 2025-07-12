@@ -60,18 +60,21 @@ jobs:
           build/scripts/deploy.sh
         env:
           IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
-          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
           NODE_ENV: ${{ vars.NODE_ENV }}
-          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          HOST: ${{ secrets.HOST }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT }}
-          PGDATABASE: ${{ secrets.PGDATABASE }}
+          API_HOST: ${{ secrets.API_HOST }}
+          API_PORT: ${{ secrets.API_PORT }}
+          WEB_PORT: ${{ secrets.WEB_PORT }}
           PGHOST: ${{ secrets.PGHOST }}
-          PGPASSWORD: ${{ secrets.PGPASSWORD }}
           PGUSER: ${{ secrets.PGUSER }}
-          PORT: ${{ secrets.PORT }}
+          PGPASSWORD: ${{ secrets.PGPASSWORD }}
+          PGDATABASE: ${{ secrets.PGDATABASE }}
           UPSTASH_REDIS_URL: ${{ secrets.UPSTASH_REDIS_URL }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION }}
+          COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          PROMETHEUS_PORT: ${{ secrets.PROMETHEUS_PORT }}
+          OTEL_EXPORTER_OTLP_TRACES: ${{ secrets.OTEL_EXPORTER_OTLP_TRACES }}
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}

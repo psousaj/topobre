@@ -43,23 +43,7 @@ if (envPath && process.env.NODE_ENV !== 'production') {
 const preprocessEmptyString = (val: unknown) => (val === '' ? undefined : val);
 
 const serverSchema = z.object({
-    // Variáveis privadas (acessadas apenas no servidor)
-    PGHOST: z.preprocess(preprocessEmptyString, z.string()),
-    PGDATABASE: z.preprocess(preprocessEmptyString, z.string()),
-    PGUSER: z.preprocess(preprocessEmptyString, z.string()),
-    PGPASSWORD: z.preprocess(preprocessEmptyString, z.string()),
-    RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
-    JWT_SECRET: z.preprocess(preprocessEmptyString, z.string()),
-    COOKIE_SECRET: z.preprocess(preprocessEmptyString, z.string()),
-    REDIS_HOST: z.preprocess(preprocessEmptyString, z.string()).optional(),
-    REDIS_PORT: z.coerce.number().optional(),
-    REDIS_USERNAME: z.preprocess(preprocessEmptyString, z.string().optional()),
-    REDIS_PASSWORD: z.preprocess(preprocessEmptyString, z.string().optional()),
-    REDIS_TOKEN: z.preprocess(preprocessEmptyString, z.string().optional()),
-    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string().optional()),
-    GEMINI_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
-    OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: z.preprocess(preprocessEmptyString, z.string()),
-    PROMETHEUS_PORT: z.coerce.number().default(9090),
+    API_COOKIE_SECRET: z.preprocess(preprocessEmptyString, z.string()),
 });
 
 const clientSchema = z.object({
@@ -69,9 +53,23 @@ const clientSchema = z.object({
 
 const sharedSchema = z.object({
     // Variáveis acessíveis em qualquer lugar (útil em ambos)
-    HOST: z.preprocess(preprocessEmptyString, z.string().default('0.0.0.0')),
-    PORT: z.coerce.number().default(3001),
-    JWT_EXPIRES_IN: z.preprocess(preprocessEmptyString, z.string().default('1d')),
+    API_HOST: z.preprocess(preprocessEmptyString, z.string().default('0.0.0.0')),
+    API_PORT: z.coerce.number().default(3003),
+    PGHOST: z.preprocess(preprocessEmptyString, z.string()),
+    PGDATABASE: z.preprocess(preprocessEmptyString, z.string()),
+    PGUSER: z.preprocess(preprocessEmptyString, z.string()),
+    PGPASSWORD: z.preprocess(preprocessEmptyString, z.string()),
+    REDIS_HOST: z.preprocess(preprocessEmptyString, z.string()).optional(),
+    REDIS_PORT: z.coerce.number().optional(),
+    REDIS_USERNAME: z.preprocess(preprocessEmptyString, z.string().optional()),
+    REDIS_PASSWORD: z.preprocess(preprocessEmptyString, z.string().optional()),
+    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string().optional()),
+    JWT_SECRET: z.preprocess(preprocessEmptyString, z.string()),
+    JWT_EXPIRATION: z.preprocess(preprocessEmptyString, z.string().default('1d')),
+    GEMINI_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
+    OTEL_EXPORTER_OTLP_TRACES: z.preprocess(preprocessEmptyString, z.string()),
+    PROMETHEUS_PORT: z.coerce.number().default(9090),
+    RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     NODE_ENV: z.preprocess(preprocessEmptyString, z.enum(['development', 'production', 'test']).default('development')),
 });
 

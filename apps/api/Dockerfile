@@ -24,6 +24,7 @@ COPY --from=topobre-builder /topobre/packages/telemetry/dist ./packages/telemetr
 COPY --from=topobre-builder /topobre/packages/typeorm/dist ./packages/typeorm/dist
 COPY --from=topobre-builder /topobre/packages/winston/dist ./packages/winston/dist
 
-RUN pnpm install --prod --frozen-lockfile --filter=@topobre/api --recursive
+#RUN pnpm install --prod --frozen-lockfile --filter=@topobre/api --recursive
+COPY --from=topobre-builder /topobre/node_modules ./node_modules
 
-CMD ["pnpm", "start:api"]
+CMD ["pnpm", "start:api"]   

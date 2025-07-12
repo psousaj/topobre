@@ -5,17 +5,18 @@ import { resolve } from 'path';
 
 
 function findMonorepoRootEnv() {
-    const filenames = ['.env.runtime', '.env'];
+    const filenames = ['.env.prod', '.env'];
 
     for (const filename of filenames) {
-        let possiblePath = resolve(__dirname, '../../../', filename);
+        let possiblePath = resolve(__dirname, '../../', filename);
         if (existsSync(possiblePath)) return possiblePath;
 
-        possiblePath = resolve(__dirname, '../../../../', filename);
+        possiblePath = resolve(__dirname, '../../../', filename);
         if (existsSync(possiblePath)) return possiblePath;
 
         possiblePath = resolve(process.cwd(), filename);
         if (existsSync(possiblePath)) return possiblePath;
+
     }
 
     return undefined;
@@ -23,11 +24,12 @@ function findMonorepoRootEnv() {
 
 const envPath = findMonorepoRootEnv();
 
-if (envPath) {
+if (envPath && process.env.NODE_ENV !== 'production') {
     dotenvConfig({ path: envPath });
     console.log('🔍 Carregado .env de:', envPath);
 } else {
     console.log('⚠️ Arquivo .env não encontrado.');
+    console.log('⚠️ Rodando variáveis de ambiente do sistema.');
 }
 
 const preprocessEmptyString = (val: unknown) => (val === '' ? undefined : val);

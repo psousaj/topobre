@@ -1,11 +1,11 @@
 // src/debug/debug-ioredis.ts
-import IORedis, { RedisOptions } from 'ioredis';
+import Redis, { RedisOptions } from 'ioredis';
 import fs from 'fs';
 import path from 'path';
 
 const logFilePath = path.resolve(__dirname, 'redis-connections.log');
 
-const OriginalRedis = IORedis;
+const OriginalRedis = Redis;
 
 class DebugRedis extends OriginalRedis {
     constructor(options?: RedisOptions | string) {

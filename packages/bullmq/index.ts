@@ -1,12 +1,17 @@
 import { Queue } from 'bullmq';
 import { env } from '@topobre/env';
-import IORedis from 'ioredis';
+import Redis from 'ioredis';
 
 export const FINLOADER_QUEUE_NAME = 'finloader-file-processing';
 
-export const redisConnection = new IORedis(env.UPSTASH_REDIS_URL, { maxRetriesPerRequest: null })
+export const redisConnection = new Redis({
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
+  password: env.REDIS_PASSWORD,
+  maxRetriesPerRequest: null,
+  tls: {},
+})
 
-// Fila para o produtor (API) usar
 export const finloaderQueue = new Queue(FINLOADER_QUEUE_NAME, {
   connection: redisConnection
 });

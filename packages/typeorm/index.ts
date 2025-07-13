@@ -2,8 +2,6 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as path from "path";
 import { env } from "@topobre/env";
-import { Redis } from "ioredis";
-import { url } from "inspector";
 
 export * from 'typeorm';
 export * from './entities';
@@ -25,18 +23,19 @@ export const TopobreDataSource = new DataSource({
     // logging: true,
     ssl: true,
     cache: {
-        type: "redis",
+        type: "ioredis",
         alwaysEnabled: true,
-        options: {
-            url: env.UPSTASH_REDIS_URL,
-        },
         // options: {
-        //     host: env.REDIS_HOST,
-        //     port: env.REDIS_PORT,
-        //     password: env.REDIS_PASSWORD,
-        //     tls: {},
-        //     ignoreErrors: true
+        //     url: env.UPSTASH_REDIS_URL,
         // },
+        options: {
+            host: env.REDIS_HOST,
+            port: env.REDIS_PORT,
+            password: env.REDIS_PASSWORD,
+            ignoreErrors: true,
+            tls: {},
+            maxRetriesPerRequest: null,
+        },
         duration: 60000 * 1 // 5 minutos
     },
     dropSchema: false, // Não derruba o schema ao reiniciar a aplicação

@@ -8,6 +8,14 @@
     "build": "tsc -b",
     "start": "node dist/index.js"
   },
+  "_moduleAliases": {
+    "@topobre/finloader": "../finloader/dist",
+    "@topobre/bullmq": "../../packages/bullmq/dist",
+    "@topobre/env": "../../packages/env/dist",
+    "@topobre/telemetry": "../../packages/telemetry/dist",
+    "@topobre/typeorm": "../../packages/typeorm/dist",
+    "@topobre/winston": "../../packages/winston/dist"
+  },
   "dependencies": {
     "@topobre/finloader": "workspace:*",
     "@topobre/bullmq": "workspace:*",

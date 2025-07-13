@@ -4,18 +4,9 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node src/index.ts",
+    "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/index.ts",
     "build": "tsc -b",
     "start": "node dist/index.js"
-  },
-  "_moduleAliases": {
-    "@topobre/finloader": "../../packages/finloader/dist",
-    "@topobre/bullmq": "../../packages/bullmq/dist",
-    "@topobre/env": "../../packages/env/dist",
-    "@topobre/telemetry": "../../packages/telemetry/dist",
-    "@topobre/typeorm": "../../packages/typeorm/dist",
-    "@topobre/winston": "../../packages/winston/dist",
-    "@topobre/gemini": "../../packages/gemini/dist"
   },
   "dependencies": {
     "@topobre/finloader": "workspace:*",

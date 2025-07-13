@@ -2,7 +2,14 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION, SEMRESATTRS_DEPLOYMENT_ENVIRONMENT, SEMRESATTRS_SERVICE_NAMESPACE } from '@opentelemetry/semantic-conventions';
+import {
+    SEMRESATTRS_SERVICE_NAME,
+    ATTR_SERVICE_NAME,
+    SEMRESATTRS_SERVICE_VERSION,
+    ATTR_SERVICE_VERSION,
+    SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
+    SEMRESATTRS_SERVICE_NAMESPACE,
+} from '@opentelemetry/semantic-conventions';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { IORedisInstrumentation } from '@opentelemetry/instrumentation-ioredis';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
@@ -21,6 +28,7 @@ interface TelemetryConfig {
     environment?: string;
     otlpEndpoint?: string;
     prometheusPort?: number;
+    prometheusHost?: string;
 }
 
 export function initTelemetry(config: TelemetryConfig | string) {
@@ -39,13 +47,14 @@ export function initTelemetry(config: TelemetryConfig | string) {
         serviceVersion = '1.0.0',
         environment = env.NODE_ENV,
         otlpEndpoint = env.OTEL_EXPORTER_OTLP_TRACES,
-        prometheusPort = env.PROMETHEUS_PORT
+        prometheusPort = env.PROMETHEUS_PORT,
+        prometheusHost = env.PROMETHEUS_HOST || `localhost`,
     } = telemetryConfig;
 
     // Resource comum  
     const resource = resourceFromAttributes({
-        [SEMRESATTRS_SERVICE_NAME]: serviceName,
-        [SEMRESATTRS_SERVICE_VERSION]: serviceVersion,
+        [ATTR_SERVICE_NAME]: serviceName,
+        [ATTR_SERVICE_VERSION]: serviceVersion,
         [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: environment,
         [SEMRESATTRS_SERVICE_NAMESPACE]: 'monorepo',
     });
@@ -127,7 +136,7 @@ export function initTelemetry(config: TelemetryConfig | string) {
         logger.info(`[OTEL] ✅ Telemetry initialized`);
         logger.info(`[OTEL] 📊 Service: ${serviceName} (${environment})`);
         logger.info(`[OTEL] 🔍 OTLP Traces: ${otlpEndpoint}`);
-        logger.info(`[OTEL] 📈 Prometheus: http://localhost:${prometheusPort}/metrics`);
+        logger.info(`[OTEL] 📈 Prometheus: http://${prometheusHost}:${prometheusPort}/metrics`);
 
     } catch (error) {
         logger.error('[OTEL] ❌ Failed to initialize telemetry:', error);

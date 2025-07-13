@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "_moduleAliases": {
-    "@topobre/finloader": "../../packages/finloader/dist",
+    "@topobre/finloader": "../finloader/dist",
     "@topobre/bullmq": "../../packages/bullmq/dist",
     "@topobre/env": "../../packages/env/dist",
     "@topobre/telemetry": "../../packages/telemetry/dist",

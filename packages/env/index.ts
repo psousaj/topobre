@@ -53,7 +53,7 @@ const sharedSchema = z.object({
     REDIS_PORT: z.coerce.number().optional(),
     REDIS_USERNAME: z.preprocess(preprocessEmptyString, z.string().optional()),
     REDIS_PASSWORD: z.preprocess(preprocessEmptyString, z.string().optional()),
-    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string()),
+    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string().optional()),
     JWT_SECRET: z.preprocess(preprocessEmptyString, z.string()),
     JWT_EXPIRATION: z.preprocess(preprocessEmptyString, z.string().default('1d')),
     GEMINI_API_KEY: z.preprocess(preprocessEmptyString, z.string()),

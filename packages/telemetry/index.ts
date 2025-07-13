@@ -120,9 +120,6 @@ export function initTelemetry(config: TelemetryConfig | string) {
             '@opentelemetry/instrumentation-pg': {
                 enabled: true,
             },
-            '@opentelemetry/instrumentation-redis': {
-                enabled: false,
-            },
             '@opentelemetry/instrumentation-ioredis': {
                 enabled: true,
             }

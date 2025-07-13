@@ -3,16 +3,6 @@ import { z } from 'zod'
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 
-console.log('🐛 DEBUG: Variáveis de ambiente disponíveis no process.env:');
-for (const key of Object.keys(process.env)) {
-    if (key.startsWith('PG') || key.startsWith('REDIS') || key.startsWith('JWT') || key.includes('SECRET') || key.includes('API_KEY')) {
-        console.log(`${key}=***`);
-    } else {
-        console.log(`${key}=${process.env[key]}`);
-    }
-}
-
-
 function findMonorepoRootEnv() {
     const filenames = ['.env.prod', '.env'];
 
@@ -63,12 +53,13 @@ const sharedSchema = z.object({
     REDIS_PORT: z.coerce.number().optional(),
     REDIS_USERNAME: z.preprocess(preprocessEmptyString, z.string().optional()),
     REDIS_PASSWORD: z.preprocess(preprocessEmptyString, z.string().optional()),
-    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string().optional()),
+    UPSTASH_REDIS_URL: z.preprocess(preprocessEmptyString, z.string()),
     JWT_SECRET: z.preprocess(preprocessEmptyString, z.string()),
     JWT_EXPIRATION: z.preprocess(preprocessEmptyString, z.string().default('1d')),
     GEMINI_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     OTEL_EXPORTER_OTLP_TRACES: z.preprocess(preprocessEmptyString, z.string()),
     PROMETHEUS_PORT: z.coerce.number().default(9090),
+    PROMETHEUS_HOST: z.preprocess(preprocessEmptyString, z.string().default('localhost')),
     RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     NODE_ENV: z.preprocess(preprocessEmptyString, z.enum(['development', 'production', 'test']).default('development')),
 });

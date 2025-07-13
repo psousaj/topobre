@@ -4,7 +4,7 @@ import { REPOSITORIES } from '../../shared/constant'
 import { categoryResponseSchema, categorySchema } from './category.schema'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 import { Category } from '@topobre/typeorm'
-import { saveCategories } from '@topobre/typeorm/seed'
+import { saveCategories } from '@topobre/typeorm'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
     app.get('/seed', {},

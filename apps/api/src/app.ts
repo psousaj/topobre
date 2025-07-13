@@ -1,5 +1,7 @@
 import '../src/types';
 
+import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
+
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastify, { FastifyInstance, FastifyRequest } from "fastify";

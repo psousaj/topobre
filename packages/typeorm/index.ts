@@ -2,10 +2,13 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import * as path from "path";
 import { env } from "@topobre/env";
+import { Redis } from "ioredis";
+import { url } from "inspector";
 
 export * from 'typeorm';
 export * from './entities';
 export * from './types';
+export * from './seed';
 
 export const TopobreDataSource = new DataSource({
     type: 'postgres',
@@ -31,7 +34,7 @@ export const TopobreDataSource = new DataSource({
         //     host: env.REDIS_HOST,
         //     port: env.REDIS_PORT,
         //     password: env.REDIS_PASSWORD,
-        //     tls: true,
+        //     tls: {},
         //     ignoreErrors: true
         // },
         duration: 60000 * 1 // 5 minutos

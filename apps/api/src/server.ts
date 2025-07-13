@@ -6,6 +6,7 @@ import { buildApp } from "./app";
 import { bootstrapLogger } from './shared/bootstrapLogger';
 import { env } from '@topobre/env';
 
+
 // Inicializa a telemetria ANTES de qualquer outra coisa
 initTelemetry(process.env.OTEL_SERVICE_NAME || 'api');
 

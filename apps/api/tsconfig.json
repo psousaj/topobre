@@ -18,7 +18,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./",
+    "baseUrl": ".",
     "skipLibCheck": true,
+    "paths": {
+      "@topobre/*": [
+        "../../packages/*/src"
+      ]
+    }
   },
   "references": [
     {

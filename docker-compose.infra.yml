@@ -6,6 +6,8 @@ include:
   - server/prometheus.yml
   - server/tempo.yml
   - server/otel-collector.yml
+  - server/portainer.yml
+  - server/jaeger.yml
 
 networks:
   topobre-net:

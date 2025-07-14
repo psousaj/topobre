@@ -17,6 +17,10 @@ exporters:
     endpoint: "tempo:4317"
     tls:
       insecure: true
+  jaeger:
+    endpoint: "jaeger:14250"
+    tls:
+      insecure: true
 
 processors:
   batch:
@@ -26,8 +30,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging, otlp/tempo]
-
+      exporters: [logging, otlp/tempo, jaeger]
     metrics:
       receivers: [otlp]
       processors: [batch]

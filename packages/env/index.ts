@@ -45,6 +45,7 @@ const sharedSchema = z.object({
     // Variáveis acessíveis em qualquer lugar (útil em ambos)
     API_HOST: z.preprocess(preprocessEmptyString, z.string().default('0.0.0.0')),
     API_PORT: z.coerce.number().default(3003),
+    API_PREFIX: z.preprocess(preprocessEmptyString, z.string().default('/v1')),
     PGHOST: z.preprocess(preprocessEmptyString, z.string()),
     PGDATABASE: z.preprocess(preprocessEmptyString, z.string()),
     PGUSER: z.preprocess(preprocessEmptyString, z.string()),

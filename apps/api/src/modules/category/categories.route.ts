@@ -7,9 +7,21 @@ import { Category } from '@topobre/typeorm'
 import { saveCategories } from '@topobre/typeorm'
 
 export async function categoriesRoutes(app: FastifyZodApp) {
-    app.get('/seed', {},
+    app.get('/seed',
+        {
+            schema: {
+                tags: ['Categories'],
+                description: 'Roda o script de seed para categorias padrões',
+                summary: 'Roda o script de seed para categorias padrões',
+                response: {
+                    200: z.object({
+                        message: z.string(),
+                    }),
+                },
+            }
+        },
         async (req, rep) => {
-            await saveCategories()
+            await saveCategories(app.db)
         }
     )
 

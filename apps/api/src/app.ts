@@ -151,7 +151,7 @@ export const buildApp = async () => {
     app.setSerializerCompiler(serializerCompiler);
     app.setErrorHandler(errorHandler);
 
-    app.register(appRoutes, { prefix: '/v1' });
+    app.register(appRoutes, { prefix: env.API_PREFIX });
 
     return app;
 };

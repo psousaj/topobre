@@ -16,9 +16,9 @@ export const logger = winston.createLogger({
                 winston.format.splat(),
                 winston.format.printf((info: any) => {
                     if (info.stack) {
-                        return `${info.timestamp} ${info.level} ${info.stack}`
+                        return `[${info.timestamp}] [${info.level}] //-> ${info.stack}`
                     }
-                    return `${info.timestamp} ${info.level} ${String(info.message).trim()}`
+                    return `[${info.timestamp}] [${info.level}] -> ${String(info.message).trim()}`
                 })
             ),
             level: env.NODE_ENV !== 'production' ? 'debug' : 'info'
@@ -34,11 +34,14 @@ export const logger = winston.createLogger({
         // Adiciona o transport do OpenTelemetry
         // new OpenTelemetryTransport(),
         new LokiTransport({
-            host: 'http://localhost:3100', // 🧪 Loki padrão para dev
+            host: env.LOKI_ENDPOINT,
             labels: { service: 'topobre-api', env: env.NODE_ENV || 'dev' },
             json: true,
             replaceTimestamp: true,
-            format: winston.format.json(),
+            format: winston.format.combine(
+                winston.format.timestamp(),
+                winston.format.json()
+            ),
             onConnectionError: (err) => {
                 winston.error('[LOKI] Connection error:', err);
             }

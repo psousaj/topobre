@@ -12,6 +12,11 @@ services:
     depends_on:
       - loki
       - tempo
+      - jaeger
     restart: unless-stopped
     networks:
       - topobre-net
+
+networks:
+  topobre-net:
+    external: true

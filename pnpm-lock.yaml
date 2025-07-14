@@ -345,31 +345,6 @@ importers:
         specifier: workspace:*
         version: link:../winston
 
-  packages/redis:
-    dependencies:
-      '@topobre/env':
-        specifier: workspace:*
-        version: link:../env
-      '@topobre/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
-      '@topobre/winston':
-        specifier: workspace:*
-        version: link:../winston
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.6.1
-    devDependencies:
-      '@topobre/eslint':
-        specifier: workspace:*
-        version: link:../../config/eslint
-      '@topobre/prettier':
-        specifier: workspace:*
-        version: link:../../config/prettier
-      '@topobre/tsconfig':
-        specifier: workspace:*
-        version: link:../../config/tsconfig
-
   packages/resend:
     dependencies:
       '@topobre/tsconfig':

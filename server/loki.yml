@@ -12,3 +12,7 @@ services:
       - "3100:3100"
     networks:
       - topobre-net
+
+networks:
+  topobre-net:
+    external: true

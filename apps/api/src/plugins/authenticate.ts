@@ -11,6 +11,7 @@ export const verifySession = async (request: FastifyRequest) => {
         // 1. Extrai o token do header
         const token = request.headers.authorization?.replace('Bearer ', '');
         if (!token) {
+            //TODO Custom Exceptions
             throw new Error('Token não fornecido.');
         }
 

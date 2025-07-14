@@ -1,4 +1,5 @@
 import { TopobreDataSource } from "../index";
+import { DataSource } from "typeorm";
 import { Category } from "../entities/category.entity";
 import { logger } from "@topobre/winston";
 
@@ -20,10 +21,10 @@ const categories = [
     { displayName: "Transporte", name: "Transport", color: "#FF3300" }
 ];
 
-export async function saveCategories() {
+export async function saveCategories(db?: DataSource | any) {
     try {
         logger.info("[TYPEORM] Inicializando datasource...");
-        const dataSource = await TopobreDataSource.initialize();
+        const dataSource = db || await TopobreDataSource.initialize();
         const categoryRepo = dataSource.getRepository(Category);
         logger.info("[TYPEORM] Datasource conectado com sucesso.");
 
@@ -60,7 +61,7 @@ export async function saveCategories() {
 
         // Log das categorias criadas
         newCategories.forEach(cat => {
-            logger.debug(`[TYPEORM] Categoria '${cat.name}' criada.`);
+            logger.info(`[TYPEORM] Categoria '${cat.name}' criada.`);
         });
 
         logger.info("[TYPEORM] Seed finalizado.");

@@ -45,6 +45,7 @@ const sharedSchema = z.object({
     // Variáveis acessíveis em qualquer lugar (útil em ambos)
     API_HOST: z.preprocess(preprocessEmptyString, z.string().default('0.0.0.0')),
     API_PORT: z.coerce.number().default(3003),
+    API_PREFIX: z.preprocess(preprocessEmptyString, z.string().default('/v1')),
     PGHOST: z.preprocess(preprocessEmptyString, z.string()),
     PGDATABASE: z.preprocess(preprocessEmptyString, z.string()),
     PGUSER: z.preprocess(preprocessEmptyString, z.string()),
@@ -60,6 +61,7 @@ const sharedSchema = z.object({
     OTEL_EXPORTER_OTLP_TRACES: z.preprocess(preprocessEmptyString, z.string()),
     PROMETHEUS_PORT: z.coerce.number().default(9090),
     PROMETHEUS_HOST: z.preprocess(preprocessEmptyString, z.string().default('localhost')),
+    LOKI_ENDPOINT: z.preprocess(preprocessEmptyString, z.string()),
     RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     NODE_ENV: z.preprocess(preprocessEmptyString, z.enum(['development', 'production', 'test']).default('development')),
 });

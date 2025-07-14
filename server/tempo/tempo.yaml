@@ -1,6 +1,6 @@
 server:
   http_listen_port: 3200
-  grpc_listen_port: 0
+  grpc_listen_port: 4317
 
 distributor:
   receivers:
@@ -12,7 +12,6 @@ distributor:
 ingester:
   trace_idle_period: 10s
   max_block_duration: 5m
-  # WAL is enabled by default in newer versions, no need to specify
 
 compactor:
   compaction:
@@ -26,15 +25,9 @@ storage:
 
 metrics_generator:
   processor:
-    # Enable service graphs processor
     service_graphs:
-      # This enables the metrics generator functionality
-    # You can also enable span metrics if needed
-    # span_metrics:
   storage:
     path: /tmp/tempo/metrics
-
-search_enabled: true
 
 query_frontend:
   search:

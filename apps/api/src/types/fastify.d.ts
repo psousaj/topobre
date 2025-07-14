@@ -16,7 +16,18 @@ declare module "fastify" {
     interface FastifyInstance {
         db: DatabaseService;
         mailer: Mailer;
+
         authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+
+        hasRole: (roles: string | string[]) => (
+            request: FastifyRequest,
+            reply: FastifyReply
+        ) => Promise<void>;
+
+        isOwner: (paramName?: string) => (
+            request: FastifyRequest,
+            reply: FastifyReply
+        ) => Promise<void>;
     }
 }
 

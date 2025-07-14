@@ -9,6 +9,7 @@ import { saveCategories } from '@topobre/typeorm'
 export async function categoriesRoutes(app: FastifyZodApp) {
     app.get('/seed',
         {
+            preHandler: [app.authenticate, app.hasRole('admin')],
             schema: {
                 tags: ['Categories'],
                 description: 'Roda o script de seed para categorias padrões',

@@ -1,6 +1,6 @@
 import '../src/types';
 
-import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
+// import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
 
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
@@ -9,8 +9,13 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProv
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyAuth from '@fastify/auth';
 import fastifyMultipart from '@fastify/multipart';
+import fastifyCookie from '@fastify/cookie';
+import { hostname as host } from 'os';
+import { env } from '@topobre/env';
+import { z } from 'zod';
 
 import datasourcePlugin from "./plugins/datasource";
+import authorizationPlugin from './plugins/authorization';
 import mailerPlugin from './plugins/mailer';
 import templatePreview from './plugins/templatePreview';
 import { errorHandler } from "./handlers/error-handlers";
@@ -19,12 +24,9 @@ import { userRoutes } from './modules/user/user.route';
 import { publicUserRoutes } from './modules/user/user.public.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { financialRecordsRoutes } from './modules/financial-record/financial-record.route';
-import { z } from 'zod';
-import fastifyCookie from '@fastify/cookie';
-import { hostname as host } from 'os';
-import pkg from '../package.json'
-import { env } from '@topobre/env';
 import { logger } from '@topobre/winston'
+import pkg from '../package.json'
+
 
 const logLevelMap = {
     10: 'trace',
@@ -36,7 +38,6 @@ const logLevelMap = {
 };
 
 import { verifySession } from './plugins/authenticate';
-import { hasRole, isOwner } from './plugins/authorization';
 import fastifyJwt from '@fastify/jwt';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
@@ -105,6 +106,7 @@ export const buildApp = async () => {
 
     await app.register(fastifyMultipart);
     await app.register(datasourcePlugin);
+    await app.register(authorizationPlugin);
     await app.register(fastifyAuth);
     await app.register(fastifyJwt, {
         secret: env.JWT_SECRET,

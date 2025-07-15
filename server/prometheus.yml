@@ -9,7 +9,3 @@ services:
       - "9090:9090"
     networks:
       - topobre-net
-
-networks:
-  topobre-net:
-    external: true

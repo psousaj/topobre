@@ -36,7 +36,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.post(
         '/upload',
         {
-            preHandler: app.authenticate,
+            preHandler: [app.hasRole(['admin', 'user'])],
             schema: {
                 tags: ['Financial Records'],
                 description: 'Faz upload de um extrato bancário para processamento em fila',
@@ -153,7 +153,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.get(
         '',
         {
-            preHandler: [app.authenticate],
+            preHandler: [app.hasRole('admin')],
             schema: {
                 tags: ['Financial Records'],
                 description: 'Lista todas as transações do usuário',
@@ -178,7 +178,6 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
     app.post(
         '',
         {
-            preHandler: [app.authenticate],
             schema: {
                 tags: ['Financial Records'],
                 description: 'Cria uma nova transação',
@@ -218,12 +217,10 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
             return reply.status(201).send(financialRecord)
         }
     )
-    console.log('essa merda aqui', app.isOwner)
     // Atualizar transação
     app.patch(
         '',
         {
-            preHandler: [app.authenticate, app.hasRole('user')],
             schema: {
                 tags: ['Financial Records'],
                 description: 'Atualiza uma transação existente',

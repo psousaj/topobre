@@ -16,7 +16,3 @@ services:
       - tempo
     networks:
       - topobre-net
-
-networks:
-  topobre-net:
-    external: true

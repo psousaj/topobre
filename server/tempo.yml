@@ -11,7 +11,3 @@ services:
       - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml
     networks:
       - topobre-net
-
-networks:
-  topobre-net:
-    external: true

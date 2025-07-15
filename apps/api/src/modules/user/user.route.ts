@@ -3,7 +3,6 @@ import { FastifyZodApp } from "../../types";
 import { REPOSITORIES, SALT_ROUNDS } from "../../shared/constant";
 import { badRequestResponseSchema, conflictErrorResponseSchema, notFoundErrorResponseSchema } from "../../shared/schemas";
 import { z } from "zod";
-import { hasRole, isOwner } from "../../plugins/authorization";
 
 export async function userRoutes(app: FastifyZodApp) {
     app.get("/:id",

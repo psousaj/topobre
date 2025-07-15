@@ -1,6 +1,6 @@
 import z from "zod";
 import { TransactionStatus, TransactionType } from "../../types";
-import currency from "currency.js";
+// import currency from "currency.js";
 
 export const createTransactionSchema = z.object({
     amount: z.number()

@@ -17,6 +17,8 @@
     "@topobre/winston": "../../packages/winston/dist"
   },
   "dependencies": {
+    "@bull-board/api": "^6.11.0",
+    "@bull-board/fastify": "^6.11.0",
     "@fastify/auth": "^5.0.2",
     "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^10.0.1",

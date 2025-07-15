@@ -9,7 +9,7 @@
             "runtimeExecutable": "pnpm",
             "runtimeArgs": [
                 // "--exec",
-                "dev:api",
+                "dev:backend",
                 // "dev:finloader",
                 // "${workspaceFolder}/apps/finloader/index.ts"
             ],

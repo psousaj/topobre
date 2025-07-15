@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { FastifyZodApp, TransactionStatus } from '../../types'
-import { createFinancialRecordSchema, financialRecordSchema } from './financial-record.schema'
+import { createTransactionSchema, transactionSchema } from './financial-record.schema'
 import { REPOSITORIES } from '../../shared/constant'
 import { notFoundErrorResponseSchema } from '../../shared/schemas'
 import { finloaderQueue } from '@topobre/bullmq'
@@ -159,20 +159,20 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 description: 'Lista todas as transações do usuário',
                 summary: 'Lista todas as transações',
                 response: {
-                    200: z.array(financialRecordSchema)
+                    200: z.array(transactionSchema)
                 }
             }
         },
         async (request, reply) => {
             const { userId } = request.user
 
-            const [financialRecords, total] = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findAndCount({
+            const [financialTransactions, total] = await app.db.getRepository(REPOSITORIES.FINANCIALTRANSACTION).findAndCount({
                 where: { user: { id: userId } },
                 order: { dueDate: 'ASC' },
                 relations: ['category'],
             })
 
-            return reply.status(200).send(financialRecords)
+            return reply.status(200).send(financialTransactions)
         })
     // Criar transação
     app.post(
@@ -182,15 +182,15 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 tags: ['Financial Records'],
                 description: 'Cria uma nova transação',
                 summary: 'Cria uma nova transação',
-                body: createFinancialRecordSchema,
+                body: createTransactionSchema,
                 response: {
-                    201: financialRecordSchema,
+                    201: transactionSchema,
                     404: notFoundErrorResponseSchema
                 }
             }
         },
         async (request, reply) => {
-            const { categoryId, description, dueDate, type, valueInCents } = request.body
+            const { categoryId, description, dueDate, type, amount, currency } = request.body
 
             const categoryExists = await app.db.getRepository(REPOSITORIES.CATEGORY).findOne({
                 where: { id: categoryId }
@@ -202,12 +202,13 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const financialRecord = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).save({
+            const financialRecord = await app.db.getRepository(REPOSITORIES.FINANCIALTRANSACTION).save({
                 description,
                 dueDate: new Date(dueDate),
                 type,
-                valueInCents,
+                amount,
                 category: categoryExists,
+                currency,
                 user: {
                     id: request.user.userId
                 },
@@ -225,14 +226,14 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 tags: ['Financial Records'],
                 description: 'Atualiza uma transação existente',
                 summary: 'Atualiza uma transação',
-                body: financialRecordSchema
+                body: transactionSchema
                     .partial()
                     .refine((data) => data.id !== undefined, {
                         message: 'O campo "id" é obrigatório',
                         path: ['id'],
                     }),
                 response: {
-                    200: financialRecordSchema,
+                    200: transactionSchema,
                     404: notFoundErrorResponseSchema
                 }
             }
@@ -240,7 +241,7 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
         async (request, reply) => {
             const { id, ...data } = request.body
 
-            const transactionExists = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).findOne({
+            const transactionExists = await app.db.getRepository(REPOSITORIES.FINANCIALTRANSACTION).findOne({
                 where: {
                     id,
                     user: { id: request.user.userId }
@@ -253,14 +254,14 @@ export async function financialRecordsRoutes(app: FastifyZodApp) {
                 })
             }
 
-            const updatedTransaction = await app.db.getRepository(REPOSITORIES.FINANCIALRECORD).update({
+            const updatedTransaction = await app.db.getRepository(REPOSITORIES.FINANCIALTRANSACTION).update({
                 id,
             }, {
                 ...data,
                 dueDate: data.dueDate ? new Date(data.dueDate) : undefined,
             })
 
-            return financialRecordSchema.parse(updatedTransaction)
+            return transactionSchema.parse(updatedTransaction)
         }
     )
 

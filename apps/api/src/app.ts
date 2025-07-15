@@ -12,8 +12,12 @@ import fastifyMultipart from '@fastify/multipart';
 import fastifyJwt from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 import { hostname as host } from 'os';
-import { env } from '@topobre/env';
 import { z } from 'zod';
+
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { FastifyAdapter } from '@bull-board/fastify';
+import { FINLOADER_QUEUE_NAME, Queue, redisConnection } from '@topobre/bullmq';
 
 import datasourcePlugin from "./plugins/datasource";
 import authorizationPlugin from './plugins/authorization';
@@ -26,6 +30,7 @@ import { publicUserRoutes } from './modules/user/user.public.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { financialRecordsRoutes } from './modules/financial-record/financial-record.route';
 import { logger } from '@topobre/winston'
+import { env } from '@topobre/env';
 import { verifySession } from './plugins/authenticate';
 import pkg from '../package.json'
 
@@ -41,9 +46,19 @@ const logLevelMap = {
 
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
+    //BULLMQ
+    const serverAdapter = new FastifyAdapter();
+    createBullBoard({
+        queues: [new BullMQAdapter(new Queue(FINLOADER_QUEUE_NAME, { connection: redisConnection }))],
+        serverAdapter,
+    });
+    serverAdapter.setBasePath('/admin/queues/ui');
+
+
     // Rotas públicas
     await app.register(authRoutes, { prefix: 'auth' });
     await app.register(publicUserRoutes, { prefix: 'users' });
+    await app.register(serverAdapter.registerPlugin(), { prefix: '/admin/queues/ui' });
 
     // Rotas que precisam de autenticação
     app.register(async (authApp) => {

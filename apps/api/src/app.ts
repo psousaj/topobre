@@ -9,10 +9,15 @@ import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProv
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import fastifyAuth from '@fastify/auth';
 import fastifyMultipart from '@fastify/multipart';
+import fastifyJwt from '@fastify/jwt';
 import fastifyCookie from '@fastify/cookie';
 import { hostname as host } from 'os';
-import { env } from '@topobre/env';
 import { z } from 'zod';
+
+import { createBullBoard } from '@bull-board/api';
+import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
+import { FastifyAdapter } from '@bull-board/fastify';
+import { FINLOADER_QUEUE_NAME, Queue, redisConnection } from '@topobre/bullmq';
 
 import datasourcePlugin from "./plugins/datasource";
 import authorizationPlugin from './plugins/authorization';
@@ -25,6 +30,8 @@ import { publicUserRoutes } from './modules/user/user.public.route';
 import { categoriesRoutes } from "./modules/category/categories.route";
 import { financialRecordsRoutes } from './modules/financial-record/financial-record.route';
 import { logger } from '@topobre/winston'
+import { env } from '@topobre/env';
+import { verifySession } from './plugins/authenticate';
 import pkg from '../package.json'
 
 
@@ -37,22 +44,30 @@ const logLevelMap = {
     60: 'fatal',
 };
 
-import { verifySession } from './plugins/authenticate';
-import fastifyJwt from '@fastify/jwt';
 
 const appRoutes = async (app: FastifyInstance, opts: any) => {
+    //BULLMQ
+    const serverAdapter = new FastifyAdapter();
+    createBullBoard({
+        queues: [new BullMQAdapter(new Queue(FINLOADER_QUEUE_NAME, { connection: redisConnection }))],
+        serverAdapter,
+    });
+    serverAdapter.setBasePath('/admin/queues/ui');
+
+
     // Rotas públicas
     await app.register(authRoutes, { prefix: 'auth' });
     await app.register(publicUserRoutes, { prefix: 'users' });
+    await app.register(serverAdapter.registerPlugin(), { prefix: '/admin/queues/ui' });
 
     // Rotas que precisam de autenticação
-    app.register(async (authenticatedApp) => {
+    app.register(async (authApp) => {
         // Aplica o hook de autenticação a todas as rotas neste escopo
-        authenticatedApp.addHook('preHandler', authenticatedApp.auth([verifySession]));
+        authApp.addHook('preHandler', authApp.auth([verifySession]));
 
-        await authenticatedApp.register(financialRecordsRoutes, { prefix: 'transactions' });
-        await authenticatedApp.register(categoriesRoutes, { prefix: 'categories' });
-        await authenticatedApp.register(userRoutes, { prefix: 'users' });
+        await authApp.register(financialRecordsRoutes, { prefix: 'transactions' });
+        await authApp.register(categoriesRoutes, { prefix: 'categories' });
+        await authApp.register(userRoutes, { prefix: 'users' });
     });
 
     app.get('/health', {
@@ -110,6 +125,7 @@ export const buildApp = async () => {
     await app.register(fastifyAuth);
     await app.register(fastifyJwt, {
         secret: env.JWT_SECRET,
+        sign: { expiresIn: env.JWT_EXPIRATION }
     });
     await app.register(fastifyCookie, { secret: env.API_COOKIE_SECRET });
     await app.register(mailerPlugin);

@@ -9,11 +9,16 @@ if (process.env.NODE_ENV === 'production') {
 import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
 
 import { TopobreDataSource } from '@topobre/typeorm';
-import { FinancialRecord, Category } from '@topobre/typeorm';
+import { FinancialTransaction, Category } from '@topobre/typeorm';
 import { processTransactionFile, BankType } from '@topobre/finloader';
-import { FINLOADER_QUEUE_NAME, Worker, redisConnection } from '@topobre/bullmq';
+import { FINLOADER_QUEUE_NAME, QueueEvents, Worker, redisConnection } from '@topobre/bullmq';
 import { logger } from '@topobre/winston';
 import { gemini } from '@topobre/gemini';
+
+const queueEvents = new QueueEvents('finloader', { connection: redisConnection });
+queueEvents.on('failed', ({ jobId, failedReason }) => {
+  logger.error(`[CSV-WORKER] Job ${jobId} failed: ${failedReason}`);
+});
 
 async function getCategoriesFromIA(
   transactions: { description: string }[],
@@ -85,7 +90,7 @@ TopobreDataSource.initialize()
 
           // 2. Processar o arquivo
           const transactions = processTransactionFile(fileContent, bank as BankType);
-          const recordRepository = TopobreDataSource.getRepository(FinancialRecord);
+          const recordRepository = TopobreDataSource.getRepository(FinancialTransaction);
 
           // 3. Processar cada transação com a IA
           const categoryIds = await getCategoriesFromIA(transactions, userCategories);
@@ -96,7 +101,7 @@ TopobreDataSource.initialize()
 
             const newRecord = recordRepository.create({
               description: tx.description,
-              valueInCents: tx.amount,
+              amount: tx.amount,
               dueDate: new Date(tx.date),
               user: { id: userId },
               category: { id: categoryId },

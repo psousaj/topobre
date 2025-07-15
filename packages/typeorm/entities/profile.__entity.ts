@@ -1,7 +1,7 @@
 // @ts-nocheck
 
 import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { FinancialRecord } from './financial-record.entity';
+import { FinancialRecord } from './transaction.entity';
 
 @Entity('profiles')
 @Index('idx_profile_email', ['email'], { unique: true })

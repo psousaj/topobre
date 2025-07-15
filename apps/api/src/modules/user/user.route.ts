@@ -2,14 +2,13 @@ import { createUserResponseSchema, createUserSchema } from "./user.schema";
 import { FastifyZodApp } from "../../types";
 import { REPOSITORIES, SALT_ROUNDS } from "../../shared/constant";
 import { badRequestResponseSchema, conflictErrorResponseSchema, notFoundErrorResponseSchema } from "../../shared/schemas";
-import bcrypt from "bcrypt";
 import { z } from "zod";
 import { hasRole, isOwner } from "../../plugins/authorization";
 
 export async function userRoutes(app: FastifyZodApp) {
     app.get("/:id",
         {
-            preHandler: app.auth([hasRole(['admin']), isOwner('id')]),
+            preHandler: [app.hasRole(['admin']), app.isOwner('id')],
             schema: {
                 tags: ['User'],
                 description: 'Get user by ID',
@@ -38,7 +37,7 @@ export async function userRoutes(app: FastifyZodApp) {
 
     app.patch("/:id",
         {
-            preHandler: app.auth([hasRole(['admin']), isOwner('id')]),
+            preHandler: [app.hasRole(['admin']), app.isOwner('id')],
             schema: {
                 tags: ['User'],
                 description: 'Update user by ID',
@@ -72,7 +71,7 @@ export async function userRoutes(app: FastifyZodApp) {
         });
 
     app.delete("/:id", {
-        preHandler: app.auth([hasRole(['admin']), isOwner('id')]),
+        preHandler: [app.hasRole(['admin']), app.isOwner('id')],
         schema: {
             tags: ['User'],
             description: 'Delete user by ID',

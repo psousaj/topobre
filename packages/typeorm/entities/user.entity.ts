@@ -2,7 +2,7 @@
 
 import { Entity, Column, PrimaryGeneratedColumn, Index, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Session } from './session.entity';
-import { FinancialRecord } from './financial-record.entity';
+import { Transaction } from './transaction.entity';
 
 export enum Role {
     ADMIN = 'admin',
@@ -44,8 +44,8 @@ export class User {
     @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 
-    @OneToMany(() => FinancialRecord, (financialRecord) => financialRecord.user)
-    financialRecords: FinancialRecord[];
+    @OneToMany(() => Transaction, (transaction) => transaction.user)
+    transactions: Transaction[];
 
     @OneToMany(() => Session, (session) => session.user)
     sessions: Session[];

@@ -2,10 +2,10 @@
   "name": "@topobre/telemetry",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/index.js",
+  "main": "index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsup"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
@@ -25,7 +25,5 @@
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*"
   },
-  "devDependencies": {
-    "@topobre/tsup": "workspace:*"
-  }
+  "devDependencies": {}
 }

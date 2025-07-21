@@ -2,10 +2,10 @@
   "name": "@topobre/gemini",
   "version": "1.0.0",
   "private": true,
-  "main": "dist/index.js",
+  "main": "index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ."
+    "build": "tsup"
   },
   "dependencies": {
     "@google/generative-ai": "^0.11.3",
@@ -13,7 +13,5 @@
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*"
   },
-  "devDependencies": {
-    "@topobre/tsup": "workspace:*"
-  }
+  "devDependencies": {}
 }

@@ -1,11 +1,11 @@
 {
   "name": "@topobre/typeorm",
-  "main": "dist/index.js",
+  "main": "index.ts",
   "types": "dist/index.d.ts",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsup",
     "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
     "lint": "npx eslint ."
   },
@@ -14,15 +14,14 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv-cli": "7.3.0",
+    "pg": "^8.16.3",
     "zod": "^3.25.56"
   },
   "devDependencies": {
     "@topobre/eslint": "workspace:*",
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
-    "@topobre/winston": "workspace:*",
-    "pg": "8.11.3",
-    "@topobre/tsup": "workspace:*"
+    "@topobre/winston": "workspace:*"
   },
   "peerDependencies": {
     "typeorm": "^0.3.24"

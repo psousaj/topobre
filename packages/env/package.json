@@ -14,7 +14,8 @@
   "devDependencies": {
     "@topobre/eslint": "workspace:*",
     "@topobre/prettier": "workspace:*",
-    "@topobre/tsconfig": "workspace:*"
+    "@topobre/tsconfig": "workspace:*",
+    "@topobre/tsup": "workspace:*"
   },
   "eslintConfig": {
     "root": true,

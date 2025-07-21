@@ -11,5 +11,8 @@
     "@topobre/tsconfig": "workspace:*",
     "winston": "^3.17.0",
     "winston-loki": "^6.1.3"
+  },
+  "devDependencies": {
+    "@topobre/tsup": "workspace:*"
   }
 }

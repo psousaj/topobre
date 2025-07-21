@@ -13,6 +13,7 @@
         "@topobre/env": "workspace:*"
     },
     "devDependencies": {
-        "@topobre/tsconfig": "workspace:*"
+        "@topobre/tsconfig": "workspace:*",
+        "@topobre/tsup": "workspace:*"
     }
 }

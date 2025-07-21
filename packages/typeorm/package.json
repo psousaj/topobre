@@ -21,7 +21,8 @@
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*",
-    "pg": "8.11.3"
+    "pg": "8.11.3",
+    "@topobre/tsup": "workspace:*"
   },
   "peerDependencies": {
     "typeorm": "^0.3.24"

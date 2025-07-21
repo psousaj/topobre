@@ -24,5 +24,8 @@
     "@topobre/env": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*"
+  },
+  "devDependencies": {
+    "@topobre/tsup": "workspace:*"
   }
 }

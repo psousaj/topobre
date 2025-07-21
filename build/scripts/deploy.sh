@@ -40,4 +40,8 @@ docker compose -f docker-compose.apps.yml pull
 docker compose -f docker-compose.apps.yml down -v --remove-orphans
 docker compose -f docker-compose.apps.yml up -d
 
+# echo "${cwd}"
+
+# cd ../../../ && echo "${PASS}" | sudo -S chmod 777 -R .
+
 echo "✅ Deploy finalizado com sucesso!"

@@ -1,0 +1,17 @@
+{
+    "extends": "@topobre/tsconfig/lib.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist",
+        "module": "es2022",
+        "target": "es2022"
+    },
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
+}

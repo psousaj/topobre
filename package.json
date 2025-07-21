@@ -16,7 +16,8 @@
     "start:backend": "pnpm --filter=@topobre/worker --filter=@topobre/api start",
     "start:web": "echo 'WEB RODOU'",
     "start:api": "pnpm --filter @topobre/api start",
-    "start:worker": "pnpm --filter @topobre/worker start"
+    "start:worker": "pnpm --filter @topobre/worker start",
+    "ngrok": "pnpm --filter @topobre/ngrok dev"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",

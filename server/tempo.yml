@@ -8,6 +8,7 @@ services:
       - "3200:3200"  # HTTP
       - "4317:4317"  # gRPC
     volumes:
-      - ${APPDATA}/tempo/tempo.yaml:/etc/tempo/tempo.yaml
+      - ./tempo.yaml:/etc/tempo/tempo.yaml
+      - ${APPDATA}/tempo:/var/tempo
     networks:
       - topobre-net

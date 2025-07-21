@@ -5,7 +5,7 @@ services:
     user: "1000:1000"
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:
-      - ${APPDATA}/loki/loki-config.yml:/etc/loki/loki-config.yml
+      - ./loki/loki-config.yml:/etc/loki/loki-config.yml
       - ${APPDATA}/loki/wal:/wal  
       - ${APPDATA}/loki/chunks:/loki/chunks
     ports:

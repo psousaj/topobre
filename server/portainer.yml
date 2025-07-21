@@ -8,7 +8,7 @@ services:
       - "8000:8000"
       - "9000:9000"
     volumes:
-      - "./portainer/data:/data"
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ${APPDATA}/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - topobre-net

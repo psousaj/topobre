@@ -7,6 +7,7 @@ ENV_FILE=".env.runtime"
 echo "🔧 Gerando .env.runtime com variáveis de ambiente..."
 cat > $ENV_FILE <<EOF
 # API e Worker
+APPDATA=${APPDATA}
 API_HOST=${API_HOST}
 API_PORT=${API_PORT}
 API_COOKIE_SECRET=${API_COOKIE_SECRET}

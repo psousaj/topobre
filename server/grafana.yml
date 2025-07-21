@@ -7,9 +7,9 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:
-      - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
-      - ./grafana/dashboard-provider.yml:/etc/grafana/provisioning/dashboards/dashboard-provider.yml
-      - ./grafana/dashboards.json:/etc/grafana/provisioning/dashboards/dashboards.json
+      - ${APPDATA}/grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ${APPDATA}/grafana/dashboard-provider.yml:/etc/grafana/provisioning/dashboards/dashboard-provider.yml
+      - ${APPDATA}/grafana/dashboards.json:/etc/grafana/provisioning/dashboards/dashboards.json
     depends_on:
       - prometheus
       - loki

@@ -9,4 +9,4 @@ services:
       - POSTGRES_PASSWORD=${PGPASSWORD}
       - POSTGRES_DB=${PGDATABASE}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ${APPDATA}/postgres:/var/lib/postgresql/data

@@ -3,8 +3,6 @@
     "compilerOptions": {
         "composite": true,
         "outDir": "./dist",
-        "module": "es2022",
-        "target": "es2022"
     },
     "include": [
         "."

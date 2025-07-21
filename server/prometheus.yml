@@ -4,7 +4,7 @@ services:
     container_name: prometheus
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${APPDATA}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:

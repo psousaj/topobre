@@ -17,7 +17,8 @@
     "start:web": "echo 'WEB RODOU'",
     "start:api": "pnpm --filter @topobre/api start",
     "start:worker": "pnpm --filter @topobre/worker start",
-    "ngrok": "pnpm --filter @topobre/ngrok dev"
+    "ngrok": "pnpm --filter @topobre/ngrok dev",
+    "clean:build": "node ./build/scripts/maintenance/cleanBuildArtifacts.js"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",

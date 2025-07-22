@@ -16,14 +16,15 @@ export default defineConfig((options: Options) => {
         entry: [
             'src/index.ts',
             'src/main.ts',
-            'index.ts'
+            'src/server.ts',
+            'index.ts',
         ],
         format: ['esm', 'cjs'],
         target: 'es2020',
         sourcemap: true,
         clean: true,
         dts: Boolean(pkg.types || pkg.typings),
-        outDir: 'dist',
+        outDir: options.outDir ?? 'dist',
         skipNodeModulesBundle: true,
         splitting: false,
         minify: false,

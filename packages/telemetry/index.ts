@@ -15,7 +15,7 @@ import { IORedisInstrumentation } from '@opentelemetry/instrumentation-ioredis';
 import { BatchSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { MeterProvider } from '@opentelemetry/sdk-metrics';
 import { metrics, trace } from '@opentelemetry/api';
-import type { IncomingMessage, ServerResponse } from 'http';
+// import type { IncomingMessage, ServerResponse } from 'http';
 import { logger } from '@topobre/winston';
 import { env } from '@topobre/env';
 
@@ -101,14 +101,14 @@ export function initTelemetry(config: TelemetryConfig | string) {
             '@opentelemetry/instrumentation-http': {
                 enabled: true,
                 requestHook: (span, request) => {
-                    const incomingMessage = request as IncomingMessage;
+                    const incomingMessage = request as any;
                     span.setAttributes({
                         'http.request.header.user-agent': incomingMessage.headers['user-agent'] || '',
                         'http.request.header.content-type': incomingMessage.headers['content-type'] || '',
                     });
                 },
                 responseHook: (span, response) => {
-                    const serverResponse = response as ServerResponse;
+                    const serverResponse = response as any;
                     span.setAttributes({
                         'http.response.header.content-type': serverResponse.getHeader('content-type') || '',
                     });

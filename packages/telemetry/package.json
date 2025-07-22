@@ -5,7 +5,7 @@
   "main": "index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --config package.json",
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register index.ts",
     "start": "node dist/index.js"
   },
@@ -27,5 +27,15 @@
     "@topobre/tsconfig": "workspace:*",
     "@topobre/winston": "workspace:*"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "tsup": {
+    "entry": [
+      "index.ts"
+    ],
+    "format": [
+      "cjs",
+      "esm"
+    ],
+    "dts": true
+  }
 }

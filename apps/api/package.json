@@ -2,9 +2,10 @@
   "name": "@topobre/api",
   "description": "API para gerenciamento de finanças pessoais",
   "version": "1.1.2",
+  "main": "src/server.ts",
   "scripts": {
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/server.ts",
-    "build": "tsc -b",
+    "build": "tsup --clean",
     "start": "node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -51,5 +52,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.9.1",
     "rimraf": "^5.0.0"
+  },
+  "tsup": {
+    "outDir": "dist/src"
   }
 }

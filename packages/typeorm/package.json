@@ -6,7 +6,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsup",
+    "build": "tsup --config package.json",
     "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
     "lint": "pnpm dlx eslint ."
   },
@@ -47,7 +47,7 @@
     "target": "es2020",
     "sourcemap": true,
     "clean": true,
-    "dts": true,
+    "dts": false,
     "outDir": "dist",
     "skipNodeModulesBundle": true,
     "splitting": false,

@@ -16,3 +16,6 @@ jobs:
 
       - name: Deploy Infra
         run: docker compose -f docker-compose.infra.yml up -d
+        env: 
+          APPDATA: ${{ vars.APPDATA }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}

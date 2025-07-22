@@ -1,27 +1,30 @@
 {
   "name": "@topobre/typeorm",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsup --config package.json",
     "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
-    "lint": "npx eslint ."
+    "lint": "pnpm dlx eslint ."
   },
   "dependencies": {
     "@topobre/env": "workspace:*",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv-cli": "7.3.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
     "zod": "^3.25.56"
   },
   "devDependencies": {
+    "@swc/core": "^1.13.1",
     "@topobre/eslint": "workspace:*",
     "@topobre/prettier": "workspace:*",
     "@topobre/tsconfig": "workspace:*",
-    "@topobre/winston": "workspace:*",
-    "pg": "8.11.3"
+    "@topobre/winston": "workspace:*"
   },
   "peerDependencies": {
     "typeorm": "^0.3.24"
@@ -32,5 +35,23 @@
       "@topobre/eslint-config/lib"
     ]
   },
-  "prettier": "@topobre/prettier"
+  "prettier": "@topobre/prettier",
+  "tsup": {
+    "entry": [
+      "index.ts"
+    ],
+    "format": [
+      "esm",
+      "cjs"
+    ],
+    "target": "es2020",
+    "sourcemap": true,
+    "clean": true,
+    "dts": false,
+    "outDir": "dist",
+    "skipNodeModulesBundle": true,
+    "splitting": false,
+    "minify": false,
+    "shims": false
+  }
 }

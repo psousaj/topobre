@@ -1,5 +1,5 @@
 services:
-  otel-collector:
+   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.87.0
     container_name: otel-collector
     command: ["--config=/etc/otel-collector-config.yml"]
@@ -16,3 +16,4 @@ services:
     restart: unless-stopped
     networks:
       - topobre-net
+

@@ -64,6 +64,7 @@ const sharedSchema = z.object({
     LOKI_ENDPOINT: z.preprocess(preprocessEmptyString, z.string()),
     RESEND_API_KEY: z.preprocess(preprocessEmptyString, z.string()),
     NODE_ENV: z.preprocess(preprocessEmptyString, z.enum(['development', 'production', 'test']).default('development')),
+    NGROK_AUTH_TOKEN: z.preprocess(preprocessEmptyString, z.string().optional()),
 });
 
 const envSchema = serverSchema.merge(clientSchema).merge(sharedSchema);

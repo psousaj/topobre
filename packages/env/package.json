@@ -1,10 +1,10 @@
 {
   "name": "@topobre/env",
   "version": "0.0.0",
-  "main": "dist/index.js",
+  "main": "index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p .",
+    "build": "tsup",
     "lint": "npx eslint ."
   },
   "dependencies": {

@@ -6,8 +6,8 @@ services:
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:
       - ./loki/loki-config.yml:/etc/loki/loki-config.yml
-      - ./loki/wal:/wal  
-      - ./loki/chunks:/loki/chunks
+      - ${APPDATA}/loki/wal:/wal  
+      - ${APPDATA}/loki/chunks:/loki/chunks
     ports:
       - "3100:3100"
     networks:

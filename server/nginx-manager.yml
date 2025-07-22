@@ -14,7 +14,7 @@ services:
       DB_POSTGRES_PASSWORD: ${PGPASSWORD}
       DB_POSTGRES_NAME: ${NG_DB}
     volumes:
-      - ./ng-manager/data:/data
-      - ./ng-manager/letsencrypt:/etc/letsencrypt
+      - ${APPDATA}/ng-manager/data:/data
+      - ${APPDATA}/ng-manager/letsencrypt:/etc/letsencrypt
     networks:
       - topobre-net

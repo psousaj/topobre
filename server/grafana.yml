@@ -10,6 +10,7 @@ services:
       - ./grafana/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
       - ./grafana/dashboard-provider.yml:/etc/grafana/provisioning/dashboards/dashboard-provider.yml
       - ./grafana/dashboards.json:/etc/grafana/provisioning/dashboards/dashboards.json
+      - ${APPDATA}/grafana:/var/lib/grafana
     depends_on:
       - prometheus
       - loki

@@ -1,0 +1,15 @@
+{
+    "extends": "@topobre/tsconfig/lib.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist",
+    },
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
+}

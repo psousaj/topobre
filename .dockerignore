@@ -3,7 +3,7 @@
 .gitignore
 
 # Ignora dependências instaladas localmente (serão instaladas na imagem)
-node_modules
+**/node_modules
 bower_components
 vendor
 
@@ -17,8 +17,8 @@ yarn-error.log*
 tmp
 temp
 .cache
-dist
-build
+**/dist
+**/build
 
 # Ignora arquivos de configuração e de ambiente locais
 .env

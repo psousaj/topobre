@@ -61,6 +61,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
           NODE_ENV: ${{ vars.NODE_ENV }}
+          APPDATA: ${{ vars.APPDATA }}
           API_HOST: ${{ secrets.API_HOST }}
           API_PORT: ${{ secrets.API_PORT }}
           WEB_PORT: ${{ secrets.WEB_PORT }}

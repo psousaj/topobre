@@ -8,14 +8,14 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout
+      - name: Checkout código
         uses: actions/checkout@v3
-        
-      - name: Stop infra containers and clean volumes
-        run: docker compose -f docker-compose.infra.yml down -v
 
-      - name: Deploy Infra
-        run: docker compose -f docker-compose.infra.yml up -d
-        env: 
+      - name: Gerar .env.runtime e subir containers
+        working-directory: infra
+        run: 
+          chmod +x build/scripts/infra.sh
+          build/scripts/infra.sh
+        env:
           APPDATA: ${{ vars.APPDATA }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}

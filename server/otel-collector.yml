@@ -2,7 +2,11 @@ services:
    otel-collector:
     image: otel/opentelemetry-collector-contrib:0.87.0
     container_name: otel-collector
+    restart: unless-stopped
+    env_file:
+      - .env.runtime
     command: ["--config=/etc/otel-collector-config.yml"]
+    user: "${UID}:${GID}"
     volumes:
       - ./otel/otel-collector-config.yml:/etc/otel-collector-config.yml
     ports:

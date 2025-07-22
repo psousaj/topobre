@@ -2,9 +2,12 @@ services:
   grafana:
     image: grafana/grafana:9.5.3
     container_name: grafana
+    restart: unless-stopped
     user: "${UID}:${GID}"
     ports:
       - "3001:3000"
+    env_file:
+      - .env.runtime
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     volumes:

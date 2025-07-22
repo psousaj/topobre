@@ -3,6 +3,7 @@ services:
     image: jc21/nginx-proxy-manager:latest
     container_name: ng-manager
     restart: unless-stopped
+    user: "${UID}:${GID}"
     ports:
       - '80:80'
       - '443:443'

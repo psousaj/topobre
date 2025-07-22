@@ -4,6 +4,7 @@ services:
     container_name: portainer
     restart: always
     privileged: true
+    user: "${UID}:${GID}"
     ports:
       - "8000:8000"
       - "9000:9000"

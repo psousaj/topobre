@@ -29,6 +29,8 @@ NODE_ENV=production
 NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 WEB_PORT=${WEB_PORT}
 IMAGE_TAG=${IMAGE_TAG}
+UID=$(id -u)
+GID=$(id -g)
 EOF
 
 echo "📄 .env.runtime gerado com sucesso:"
@@ -40,9 +42,5 @@ echo "🚀 Subindo containers com docker compose..."
 docker compose -f docker-compose.apps.yml pull
 docker compose -f docker-compose.apps.yml down -v --remove-orphans
 docker compose -f docker-compose.apps.yml up -d
-
-# echo "${cwd}"
-
-# cd ../../../ && echo "${PASS}" | sudo -S chmod 777 -R .
 
 echo "✅ Deploy finalizado com sucesso!"

@@ -3,8 +3,6 @@ services:
     image: portainer/portainer
     container_name: portainer
     restart: unless-stopped
-    env_file:
-      - .env.runtime
     privileged: true
     user: "${UID}:${GID}"
     ports:

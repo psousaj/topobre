@@ -4,8 +4,6 @@ services:
     container_name: prometheus
     restart: unless-stopped
     user: "${UID}:${GID}"
-    env_file:
-      - .env.runtime
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml

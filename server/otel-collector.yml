@@ -17,7 +17,6 @@ services:
       - loki
       - tempo
       - jaeger
-    restart: unless-stopped
     networks:
       - topobre-net
 

@@ -17,6 +17,10 @@ exporters:
     endpoint: "tempo:4317"
     tls:
       insecure: true
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
 
 processors:
   batch:

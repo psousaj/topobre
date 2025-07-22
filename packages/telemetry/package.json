@@ -5,7 +5,9 @@
   "main": "index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register index.ts",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

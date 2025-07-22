@@ -2,6 +2,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.44.0
     container_name: prometheus
+    user: "${UID}:${GID}"
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml

@@ -3,8 +3,6 @@ services:
     image: grafana/loki:2.8.2
     container_name: loki
     restart: unless-stopped
-    env_file:
-      - .env.runtime
     user: "${UID}:${GID}"
     command: ["-config.file=/etc/loki/loki-config.yml"]
     volumes:

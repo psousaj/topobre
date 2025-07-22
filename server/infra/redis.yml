@@ -3,8 +3,6 @@ services:
     image: redis:7-alpine
     container_name: redis
     user: "${UID}:${GID}"
-    env_file:
-      - ../.env.runtime
     ports:
       - "${REDIS_PORT:-6379}:6379"  
     command: redis-server --requirepass "${REDIS_PASSWORD}"

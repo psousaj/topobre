@@ -11,10 +11,11 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: Gerar .env.runtime e subir containers
-        run: 
-          chmod +x build/scripts/infra.sh
-          build/scripts/infra.sh
+      - name: Tornar o script executável
+        run: chmod +x build/scripts/infra.sh
+
+      - name: Rodar script infra.sh
+        run: ./build/scripts/infra.sh
         env:
           APPDATA: ${{ vars.APPDATA }}
           REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}

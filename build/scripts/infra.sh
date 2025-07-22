@@ -4,8 +4,6 @@ set -e
 export APPDATA=${APPDATA}
 export REDIS_PASSWORD=${REDIS_PASSWORD}
 export NODE_ENV=production
-export UID=$(id -u)
-export GID=$(id -g)
 
 echo "🚀 Subindo containers de infraestrutura com docker compose..."
 

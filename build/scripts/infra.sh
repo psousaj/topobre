@@ -19,8 +19,8 @@ cat $ENV_FILE
 
 echo "🚀 Subindo containers de infraestrutura com docker compose..."
 
-docker compose -f docker-compose.infra.yml --env-file $ENV_FILE pull
-docker compose -f docker-compose.infra.yml --env-file $ENV_FILE down -v --remove-orphans
+docker compose -f docker-compose.infra.yml pull
+docker compose -f docker-compose.infra.yml down -v --remove-orphans
 docker compose -f docker-compose.infra.yml --env-file $ENV_FILE up -d
 
 echo "✅ Deploy da infraestrutura finalizado com sucesso!"

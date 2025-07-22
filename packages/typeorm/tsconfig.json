@@ -10,14 +10,20 @@
             ],
             "@t3-oss/env-nextjs": [
                 "../env/node_modules/@t3-oss/env-nextjs"
-            ],
+            ]
         },
         "composite": true,
         "declaration": true,
-        "outDir": "./dist",
+        "emitDeclarationOnly": true,
+        "outDir": "./dist"
     },
     "include": [
-        "."
+        "index.ts",
+        "entities/index.ts",
+        "seed/index.ts",
+        "entities/**/*.ts",
+        "seed/**/*.ts",
+        "types/**/*.ts"
     ],
     "exclude": [
         "dist",

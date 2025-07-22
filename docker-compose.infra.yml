@@ -12,6 +12,3 @@ include:
 networks:
   topobre-net:
     driver: bridge
-
-volumes:
-  postgres_data:

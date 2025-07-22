@@ -12,7 +12,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Gerar .env.runtime e subir containers
-        working-directory: infra
         run: 
           chmod +x build/scripts/infra.sh
           build/scripts/infra.sh

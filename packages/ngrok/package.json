@@ -1,6 +1,8 @@
 {
     "name": "@topobre/ngrok",
     "version": "0.0.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "build:tsc": "tsc -b",
         "build:tsup": "tsup",

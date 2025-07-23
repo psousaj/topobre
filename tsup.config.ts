@@ -1,55 +1,72 @@
 import { defineConfig } from 'tsup'
-import { readdirSync } from 'fs'
+import { readdirSync, existsSync } from 'fs'
 import { join } from 'path'
+import { Options } from 'tsup'
 
 function generateAliases() {
     const aliases = {}
-
-    // Diretórios a serem escaneados
     const dirs = ['packages', 'apps']
 
     dirs.forEach((dir) => {
         const dirPath = join(__dirname, dir)
         try {
-            // Lista todas as pastas em packages/* e apps/*
             const packages = readdirSync(dirPath, { withFileTypes: true })
                 .filter((entry) => entry.isDirectory())
                 .map((entry) => entry.name)
 
-            // Cria aliases para cada pacote/app
             packages.forEach((pkg) => {
-                aliases[`@topobre/${pkg}`] = join(__dirname, dir, pkg, 'dist')
+                const distPath = join(__dirname, dir, pkg, 'dist')
+                if (existsSync(distPath)) {
+                    aliases[`@topobre/${pkg}`] = distPath
+                }
             })
         } catch (error) {
             console.warn(`Não foi possível ler o diretório ${dir}: ${error.message}`)
         }
     })
 
-    // Alias específico para typeorm/types e t3-oss/env-nextjs
+    // Aliases específicos
     aliases['@topobre/typeorm/types'] = join(__dirname, 'packages', 'typeorm', 'dist', 'types')
-    aliases['@t3-oss/env-nextjs'] = join(__dirname, 'packages', 'env', 'node_modules', '@t3-oss', 'env-nextjs')
 
     return aliases
 }
 
-export default defineConfig((options) => ({
-    entry: options.entry || ['dist/index.js', 'dist/server.js'],
-    format: ['cjs'],
-    target: 'es2020',
-    sourcemap: true,
-    clean: false,
-    dts: false,
-    outDir: 'dist/bundle',
-    skipNodeModulesBundle: false,
-    splitting: false,
-    minify: true,
-    outExtension() {
-        return {
-            js: '.js'
-        }
-    },
-    name: 'index',
-    esbuildOptions(config) {
-        config.alias = generateAliases()
+export default defineConfig((options: Options) => {
+    const defaultEntries = ['dist/index.js', 'dist/server.js']
+    const entries = options.entry as string[] || defaultEntries
+    const validEntries = entries.filter((entry) => existsSync(join(process.cwd(), entry)))
+
+    if (validEntries.length === 0) {
+        console.warn(`Nenhuma entrada válida encontrada. Tentando: ${entries.join(', ')}`)
+        return {} // Evita falha total
     }
-}))
+
+    return {
+        entry: validEntries,
+        format: ['cjs'],
+        target: 'es2020',
+        sourcemap: true,
+        clean: false,
+        dts: false,
+        outDir: 'dist/bundle',
+        skipNodeModulesBundle: false,
+        splitting: false,
+        bundle: true,
+        minify: true,
+        external: [],
+        outExtension() {
+            return {
+                js: '.js'
+            }
+        },
+        name: 'index',
+        esbuildOptions(config) {
+            config.alias = generateAliases()
+            config.platform = 'node'
+            config.bundle = true
+            config.mainFields = ['main', 'module']
+            console.log(config)
+        }
+    }
+}
+)

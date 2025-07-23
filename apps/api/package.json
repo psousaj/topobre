@@ -7,7 +7,7 @@
     "build": "pnpm build:tsc && pnpm build:tsup",
     "build:tsc": "tsc -b",
     "build:tsup": "tsup",
-    "start": "node dist/bundle/index.js",
+    "start": "node dist/bundle/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

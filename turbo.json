@@ -30,6 +30,7 @@
         "build:tsup": {
             "dependsOn": [
                 "build:tsc",
+                "^build:tsc",
                 "^build:tsup"
             ],
             "outputs": [

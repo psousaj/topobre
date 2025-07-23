@@ -1,9 +1,9 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": ".",
         "baseUrl": ".",
+        "outDir": "./dist",
+        "rootDir": "./src",
         "composite": true
     },
     "references": [

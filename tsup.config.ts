@@ -15,7 +15,7 @@ function generateAliases() {
                 .map((entry) => entry.name)
 
             packages.forEach((pkg) => {
-                const distPath = join(__dirname, dir, pkg, 'dist')
+                const distPath = join(__dirname, dir, pkg, 'dist', 'bundle', 'index.js')
                 if (existsSync(distPath)) {
                     aliases[`@topobre/${pkg}`] = distPath
                 }
@@ -46,7 +46,7 @@ export default defineConfig((options: Options) => {
         format: ['cjs'],
         target: 'es2020',
         sourcemap: true,
-        clean: false,
+        clean: true,
         dts: false,
         outDir: 'dist/bundle',
         skipNodeModulesBundle: false,
@@ -65,6 +65,7 @@ export default defineConfig((options: Options) => {
             config.platform = 'node'
             config.bundle = true
             config.mainFields = ['main', 'module']
+            config.resolveExtensions = ['.js', '.ts']
             console.log(config)
         }
     }

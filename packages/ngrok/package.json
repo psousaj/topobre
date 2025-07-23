@@ -1,14 +1,14 @@
 {
     "name": "@topobre/ngrok",
     "version": "0.0.0",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "dist/bundle/index.js",
+    "types": "dist/bundle/index.d.ts",
     "scripts": {
         "build:tsc": "tsc -b",
         "build:tsup": "tsup",
         "build": "pnpm build:tsc && pnpm build:tsup",
         "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register index.ts",
-        "start": "node dist/index.js"
+        "start": "node dist/bundle/index.js"
     },
     "dependencies": {
         "@ngrok/ngrok": "^1.5.1",

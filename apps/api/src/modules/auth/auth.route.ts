@@ -34,7 +34,7 @@ export async function authRoutes(app: FastifyZodApp) {
             // Verifica a senha
             const userPassword = user?.password ?? '';
             const isPasswordValid = await bcrypt.compare(password, userPassword);
-            app.log.debug(password, user, user?.password)
+
             if (!user || !isPasswordValid) {
                 return reply.status(401).send({
                     error: 'Unauthorized',

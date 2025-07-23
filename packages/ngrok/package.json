@@ -7,7 +7,7 @@
         "build:tsc": "tsc -b",
         "build:tsup": "tsup",
         "build": "pnpm build:tsc && pnpm build:tsup",
-        "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register index.ts",
+        "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/index.ts",
         "start": "node dist/bundle/index.js"
     },
     "dependencies": {

@@ -3,6 +3,8 @@ import { DataSource } from "typeorm";
 import * as path from "path";
 import { env } from "@topobre/env";
 
+import { Category, FinancialTransaction, PasswordResetToken, Session, User } from './entities'
+
 export * from 'typeorm';
 export * from './entities';
 export * from './types';
@@ -17,7 +19,12 @@ export const TopobreDataSource = new DataSource({
     port: 5432,
 
     entities: [
-        path.resolve(__dirname, './entities/*.entity.{js,ts}'),
+        // path.resolve(__dirname, './entities/*.entity.{js,ts}'),
+        Category,
+        FinancialTransaction,
+        PasswordResetToken,
+        Session,
+        User
     ],
     synchronize: true,
     // logging: true,

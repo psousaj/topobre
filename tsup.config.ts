@@ -36,11 +36,6 @@ export default defineConfig((options: Options) => {
     const entries = options.entry as string[] || defaultEntries
     const validEntries = entries.filter((entry) => existsSync(join(process.cwd(), entry)))
 
-    if (validEntries.length === 0) {
-        console.warn(`Nenhuma entrada válida encontrada. Tentando: ${entries.join(', ')}`)
-        return {} // Evita falha total
-    }
-
     return {
         entry: validEntries,
         format: ['cjs'],
@@ -65,7 +60,7 @@ export default defineConfig((options: Options) => {
             config.platform = 'node'
             config.bundle = true
             config.mainFields = ['main', 'module']
-            console.log(config)
+            // console.log(config)
         }
     }
 }

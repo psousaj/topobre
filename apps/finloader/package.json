@@ -2,8 +2,8 @@
   "name": "@topobre/finloader",
   "version": "1.0.0",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/bundle/index.js",
+  "types": "dist/bundle/index.d.ts",
   "scripts": {
     "build": "tsc -b"
   },

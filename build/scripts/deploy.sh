@@ -40,7 +40,7 @@ echo "🏷️ Usando tag da imagem: ${IMAGE_TAG}"
 echo "🚀 Subindo containers com docker compose..."
 
 docker compose -f docker-compose.apps.yml pull
-docker compose -f docker-compose.apps.yml down -v --remove-orphans
+docker compose -f docker-compose.apps.yml down
 docker compose -f docker-compose.apps.yml up -d
 
 echo "✅ Deploy finalizado com sucesso!"

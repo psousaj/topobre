@@ -22,7 +22,8 @@
     "skipLibCheck": true,
     "paths": {
       "@topobre/*": [
-        "../../packages/*/src/"
+        "../../packages/*/src/",
+        "../*/src/",
       ]
     }
   },

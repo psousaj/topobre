@@ -1,41 +1,55 @@
-// tsup.config.ts na raiz do monorepo
-import { defineConfig, Options } from 'tsup'
-import path from 'path'
-import fs from 'fs'
+import { defineConfig } from 'tsup'
+import { readdirSync } from 'fs'
+import { join } from 'path'
 
-const pkg = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf-8'))
+function generateAliases() {
+    const aliases = {}
 
-// Detecta se deve usar decorators
-const tsconfigPath = path.resolve(__dirname, 'tsconfig.json')
-const usesDecorators = fs.existsSync(tsconfigPath)
-    ? fs.readFileSync(tsconfigPath, 'utf-8').includes('experimentalDecorators')
-    : false
+    // Diretórios a serem escaneados
+    const dirs = ['packages', 'apps']
 
-export default defineConfig((options: Options) => {
-    return {
-        entry: [
-            'src/index.ts',
-            'src/main.ts',
-            'src/server.ts',
-            'index.ts',
-        ],
-        format: ['esm', 'cjs'],
-        target: 'es2020',
-        sourcemap: true,
-        clean: true,
-        dts: Boolean(pkg.types || pkg.typings),
-        outDir: options.outDir ?? 'dist',
-        skipNodeModulesBundle: true,
-        splitting: false,
-        minify: false,
-        shims: false,
-        esbuildOptions(options) {
-            options.define ||= {}
+    dirs.forEach((dir) => {
+        const dirPath = join(__dirname, dir)
+        try {
+            // Lista todas as pastas em packages/* e apps/*
+            const packages = readdirSync(dirPath, { withFileTypes: true })
+                .filter((entry) => entry.isDirectory())
+                .map((entry) => entry.name)
 
-            if (usesDecorators) {
-                options.define['Reflect.decorate'] = 'Reflect.decorate'
-            }
-        },
+            // Cria aliases para cada pacote/app
+            packages.forEach((pkg) => {
+                aliases[`@topobre/${pkg}`] = join(__dirname, dir, pkg, 'dist')
+            })
+        } catch (error) {
+            console.warn(`Não foi possível ler o diretório ${dir}: ${error.message}`)
+        }
+    })
+
+    // Alias específico para typeorm/types e t3-oss/env-nextjs
+    aliases['@topobre/typeorm/types'] = join(__dirname, 'packages', 'typeorm', 'dist', 'types')
+    aliases['@t3-oss/env-nextjs'] = join(__dirname, 'packages', 'env', 'node_modules', '@t3-oss', 'env-nextjs')
+
+    return aliases
+}
+
+export default defineConfig((options) => ({
+    entry: options.entry || ['dist/index.js'], // Usa dist/index.js por padrão
+    format: ['cjs'],
+    target: 'es2020',
+    sourcemap: true,
+    clean: false,
+    dts: false,
+    outDir: 'dist/bundle',
+    skipNodeModulesBundle: false,
+    splitting: false,
+    minify: true,
+    outExtension() {
+        return {
+            js: '.js'
+        }
+    },
+    name: 'index',
+    esbuildOptions(config) {
+        config.alias = generateAliases()
     }
-})
-
+}))

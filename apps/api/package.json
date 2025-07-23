@@ -2,20 +2,15 @@
   "name": "@topobre/api",
   "description": "API para gerenciamento de finanças pessoais",
   "version": "1.1.2",
-  "main": "src/server.ts",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
   "scripts": {
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/server.ts",
-    "build": "tsup --clean",
-    "start": "node dist/src/server.js",
+    "build": "pnpm build:tsc && pnpm build:tsup",
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup --entry dist/server.js",
+    "start": "node dist/bundle/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "_moduleAliases": {
-    "@topobre/finloader": "../finloader/dist",
-    "@topobre/bullmq": "../../packages/bullmq/dist",
-    "@topobre/env": "../../packages/env/dist",
-    "@topobre/telemetry": "../../packages/telemetry/dist",
-    "@topobre/typeorm": "../../packages/typeorm/dist",
-    "@topobre/winston": "../../packages/winston/dist"
   },
   "dependencies": {
     "@bull-board/api": "^6.11.0",
@@ -52,8 +47,5 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.9.1",
     "rimraf": "^5.0.0"
-  },
-  "tsup": {
-    "outDir": "dist/src"
   }
 }

@@ -14,7 +14,26 @@
             ],
             "outputs": [
                 "dist/**",
+                "dist/bundle/**",
                 "package.json"
+            ]
+        },
+        "build:tsc": {
+            "dependsOn": [
+                "^build:tsc"
+            ],
+            "outputs": [
+                "dist/**",
+                "package.json"
+            ]
+        },
+        "build:tsup": {
+            "dependsOn": [
+                "build:tsc",
+                "^build:tsup"
+            ],
+            "outputs": [
+                "dist/bundle/**"
             ]
         },
         "lint": {

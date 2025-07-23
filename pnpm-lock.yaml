@@ -17,15 +17,9 @@ importers:
       ioredis:
         specifier: ^5.6.1
         version: 5.6.1
-      module-alias:
-        specifier: ^2.2.3
-        version: 2.2.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.13.1)(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
     devDependencies:
       '@types/node':
         specifier: ^24.0.1
@@ -36,6 +30,9 @@ importers:
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(@swc/core@1.13.1)(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)(yaml@2.8.0)
       tsx:
         specifier: ^4.20.3
         version: 4.20.3
@@ -313,8 +310,6 @@ importers:
 
   config/tsconfig: {}
 
-  config/tsup: {}
-
   packages/bullmq:
     dependencies:
       '@topobre/env':
@@ -376,7 +371,7 @@ importers:
         version: link:../../config/tsconfig
 
   packages/resend:
-    dependencies:
+    devDependencies:
       '@topobre/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
@@ -425,12 +420,13 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
-      '@topobre/tsconfig':
-        specifier: workspace:*
-        version: link:../../config/tsconfig
       '@topobre/winston':
         specifier: workspace:*
         version: link:../winston
+    devDependencies:
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
 
   packages/typeorm:
     dependencies:
@@ -480,15 +476,16 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
-      '@topobre/tsconfig':
-        specifier: workspace:*
-        version: link:../../config/tsconfig
       winston:
         specifier: ^3.17.0
         version: 3.17.0
       winston-loki:
         specifier: ^6.1.3
         version: 6.1.3
+    devDependencies:
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
 
 packages:
 
@@ -4220,9 +4217,6 @@ packages:
 
   mnemonist@0.40.3:
     resolution: {integrity: sha512-Vjyr90sJ23CKKH/qPAgUKicw/v6pRoamxIEDFOF8uSgFME7DqPRpHgRTejWVjkdGg5dXj0/NyxZHZ9bcjH+2uQ==}
-
-  module-alias@2.2.3:
-    resolution: {integrity: sha512-23g5BFj4zdQL/b6tor7Ji+QY4pEfNH784BMslY9Qb0UnJWRAt+lQGLYmRaM0KDBwIG23ffEBELhZDP2rhi9f/Q==}
 
   module-details-from-path@1.0.4:
     resolution: {integrity: sha512-EGWKgxALGMgzvxYF1UyGTy0HXX/2vHLkw6+NvDKW2jypWbHpjQuj4UMcqQWXHERJhVGKikolT06G3bcKe4fi7w==}
@@ -9653,8 +9647,6 @@ snapshots:
   mnemonist@0.40.3:
     dependencies:
       obliterator: 2.0.5
-
-  module-alias@2.2.3: {}
 
   module-details-from-path@1.0.4: {}
 

@@ -1,6 +1,6 @@
 import winston from "winston"
-import { env } from '@topobre/env'
 import LokiTransport from 'winston-loki';
+import { env } from '@topobre/env'
 // import { OpenTelemetryTransport } from './OpenTelemetryTransport';
 
 export const logger = winston.createLogger({

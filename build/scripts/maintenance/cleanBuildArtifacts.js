@@ -1,10 +1,11 @@
-const fs = require('fs/promises');
-const path = require('path');
+import fs from 'fs/promises'
+import path from 'path'
+import process from 'process';
 
 const rootDir = process.cwd();
 const foldersToDelete = [];
 
-async function getFoldersToDelete(folder) {
+async function getFoldersToDelete(folder, deleteNodeModules = false) {
     try {
         const files = await fs.readdir(folder);
 
@@ -14,7 +15,7 @@ async function getFoldersToDelete(folder) {
         const promises = files.map(async file => {
             const filePath = path.join(folder, file);
 
-            if (file === 'node_modules') {
+            if (file === 'node_modules' && !deleteNodeModules) {
                 // pula node_modules completamente
                 return;
             }
@@ -28,7 +29,7 @@ async function getFoldersToDelete(folder) {
             }
 
             if (stats.isDirectory()) {
-                if (Array.from(['dist', '.turbo']).includes(path.basename(filePath))) {
+                if (Array.from(['dist', '.turbo', 'node_modules']).includes(path.basename(filePath))) {
                     foldersToDelete.push(filePath);
                 } else {
                     await getFoldersToDelete(filePath); // recursão
@@ -43,16 +44,17 @@ async function getFoldersToDelete(folder) {
 }
 
 (async () => {
-    await getFoldersToDelete(rootDir);
+    const deleteNodeModules = process.argv.includes('-D');
+    await getFoldersToDelete(rootDir, deleteNodeModules);
 
     for (const folder of foldersToDelete) {
-        console.log(`Deleting folder: ${folder}`);
+        console.log(`\n\n\nDeleting folder: ${folder}`);
         try {
             await fs.rm(folder, { recursive: true, force: true });
         } catch (err) {
-            console.error(`Erro deletando ${folder}:`, err.message);
+            console.error(`\n\nErro deletando ${folder}: \n\n`, err.message);
         }
     }
 
-    console.log(`✅ Done. Deleted ${foldersToDelete.length} build artifact folder(s).`);
+    console.log(`\n\n✅ Done. Deleted ${foldersToDelete.length} build artifact folder(s).`);
 })();

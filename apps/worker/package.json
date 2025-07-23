@@ -2,12 +2,11 @@
   "name": "@topobre/worker",
   "version": "0.0.0",
   "private": true,
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/index.ts",
-    "build": "tsc -b",
-    "start": "node dist/src/index.js"
+    "build": "tsc -b && tsup",
+    "start": "node dist/bundle/index.js"
   },
   "_moduleAliases": {
     "@topobre/finloader": "../finloader/dist",

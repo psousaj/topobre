@@ -1,12 +1,11 @@
 {
   "name": "@topobre/typeorm",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsup --config package.json",
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup",
+    "build": "pnpm build:tsc && pnpm build:tsup",
     "db:seed": "ts-node -r reflect-metadata ./seed/index.ts",
     "lint": "pnpm dlx eslint ."
   },
@@ -35,23 +34,5 @@
       "@topobre/eslint-config/lib"
     ]
   },
-  "prettier": "@topobre/prettier",
-  "tsup": {
-    "entry": [
-      "index.ts"
-    ],
-    "format": [
-      "esm",
-      "cjs"
-    ],
-    "target": "es2020",
-    "sourcemap": true,
-    "clean": true,
-    "dts": false,
-    "outDir": "dist",
-    "skipNodeModulesBundle": true,
-    "splitting": false,
-    "minify": false,
-    "shims": false
-  }
+  "prettier": "@topobre/prettier"
 }

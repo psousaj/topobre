@@ -1,16 +1,17 @@
 {
   "name": "@topobre/winston",
   "version": "0.0.0",
-  "main": "index.ts",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup"
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup",
+    "build": "pnpm build:tsc && pnpm build:tsup"
   },
   "dependencies": {
     "@topobre/env": "workspace:*",
-    "@topobre/tsconfig": "workspace:*",
     "winston": "^3.17.0",
     "winston-loki": "^6.1.3"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@topobre/tsconfig": "workspace:*"
+  }
 }

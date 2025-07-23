@@ -26,6 +26,6 @@ COPY --from=topobre-builder /topobre/packages/winston/dist/bundle/index.js ./pac
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store pnpm install --prod --frozen-lockfile
 
-HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:${API_PORT}/health || exit 1
+# HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:${API_PORT}/health || exit 1
 
 CMD ["pnpm", "start:api"]

@@ -1,11 +1,12 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
+        "baseUrl": ".",
         "outDir": "./dist",
-        "rootDir": "./src"
+        "rootDir": "./src",
     },
     "include": [
-        "src"
+        "./src/**/*.ts"
     ],
     "exclude": [
         "node_modules",

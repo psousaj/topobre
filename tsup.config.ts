@@ -33,7 +33,7 @@ function generateAliases() {
 }
 
 export default defineConfig((options) => ({
-    entry: options.entry || ['dist/index.js'], // Usa dist/index.js por padrão
+    entry: options.entry || ['dist/index.js', 'dist/server.js'],
     format: ['cjs'],
     target: 'es2020',
     sourcemap: true,

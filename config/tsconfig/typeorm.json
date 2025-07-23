@@ -1,5 +1,5 @@
 {
-    "extends": "@topobre/tsconfig/base.json",
+    "extends": "./base.json",
     "compilerOptions": {
         "lib": [
             "ES2021"
@@ -27,8 +27,7 @@
         }
     },
     "include": [
-        "src/**/*",
-        "types/**/*"
+        "src/**/*"
     ],
     "exclude": [
         "node_modules",

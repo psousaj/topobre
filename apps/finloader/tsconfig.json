@@ -6,6 +6,20 @@
         "baseUrl": ".",
         "composite": true
     },
+    "references": [
+        {
+            "path": "../../packages/typeorm"
+        },
+        {
+            "path": "../../packages/winston"
+        },
+        {
+            "path": "../../packages/telemetry"
+        },
+        {
+            "path": "../../packages/bullmq"
+        },
+    ],
     "include": [
         "src"
     ],

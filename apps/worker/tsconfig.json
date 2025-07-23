@@ -5,8 +5,25 @@
     "rootDir": ".",
     "baseUrl": ".",
   },
+  "references": [
+    {
+      "path": "../../packages/typeorm"
+    },
+    {
+      "path": "../../packages/winston"
+    },
+    {
+      "path": "../../packages/telemetry"
+    },
+    {
+      "path": "../../packages/bullmq"
+    },
+    {
+      "path": "../finloader"
+    },
+  ],
   "include": [
-    "src"
+    "./src"
   ],
   "exclude": [
     "node_modules",

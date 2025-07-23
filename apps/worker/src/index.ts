@@ -2,11 +2,7 @@ import { initTelemetry } from '@topobre/telemetry';
 // Inicializa a telemetria ANTES de qualquer outra coisa
 initTelemetry(process.env.OTEL_SERVICE_NAME || 'worker');
 
-if (process.env.NODE_ENV === 'production') {
-  require('module-alias/register');
-}
-
-import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
+// import '../debug/debugRedis'; // tem que vir antes de qualquer import que use ioredis
 
 import { TopobreDataSource } from '@topobre/typeorm';
 import { FinancialTransaction, Category } from '@topobre/typeorm';

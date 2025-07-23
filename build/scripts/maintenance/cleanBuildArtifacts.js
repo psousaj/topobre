@@ -34,6 +34,10 @@ async function getFoldersToDelete(folder, deleteNodeModules = false) {
                 } else {
                     await getFoldersToDelete(filePath); // recursão
                 }
+            } else if (stats.isFile()) {
+                if (path.basename(filePath) === 'tsconfig.tsbuildinfo') {
+                    foldersToDelete.push(filePath);
+                }
             }
         });
 

@@ -8,9 +8,6 @@
             "ES2021"
         ],
         "moduleResolution": "node",
-        "baseUrl": ".",
-        "outDir": "./dist",
-        "rootDir": "./src",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "strict": true,

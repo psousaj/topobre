@@ -1,33 +1,27 @@
 {
     "extends": "@topobre/tsconfig/typeorm.json",
     "compilerOptions": {
+        "baseUrl": ".",
         "outDir": "./dist",
-        "rootDir": "./",
+        "rootDir": "./src",
         "composite": true,
         "declaration": true,
         "declarationMap": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "strict": false,
-        "paths": {
-            "@topobre/typeorm/types": [
-                "./types"
-            ],
-            "@topobre/typeorm": [
-                "./entities"
-            ],
-        }
+        "skipLibCheck": false
     },
     "references": [
         {
             "path": "../env"
         },
+        {
+            "path": "../winston"
+        }
     ],
     "include": [
-        "index.ts",
-        "entities/**/*.ts",
-        "seed/**/*.ts",
-        "types/**/*.ts"
+        "./src/**/*.ts",
     ],
     "exclude": [
         "dist",

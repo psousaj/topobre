@@ -5,7 +5,7 @@ import { env } from "@topobre/env";
 
 export * from 'typeorm';
 export * from './entities';
-export * from '../types';
+export * from './types';
 export * from './seed';
 
 export const TopobreDataSource = new DataSource({

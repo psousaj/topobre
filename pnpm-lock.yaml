@@ -350,12 +350,13 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
-      '@topobre/tsconfig':
-        specifier: workspace:*
-        version: link:../../config/tsconfig
       '@topobre/winston':
         specifier: workspace:*
         version: link:../winston
+    devDependencies:
+      '@topobre/tsconfig':
+        specifier: workspace:*
+        version: link:../../config/tsconfig
 
   packages/ngrok:
     dependencies:
@@ -433,6 +434,9 @@ importers:
       '@topobre/env':
         specifier: workspace:*
         version: link:../env
+      '@topobre/winston':
+        specifier: workspace:*
+        version: link:../winston
       class-transformer:
         specifier: ^0.5.1
         version: 0.5.1
@@ -467,9 +471,6 @@ importers:
       '@topobre/tsconfig':
         specifier: workspace:*
         version: link:../../config/tsconfig
-      '@topobre/winston':
-        specifier: workspace:*
-        version: link:../winston
 
   packages/winston:
     dependencies:

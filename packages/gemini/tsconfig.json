@@ -1,16 +1,20 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
+        "baseUrl": ".",
         "outDir": "./dist",
-        "rootDir": "./src"
+        "rootDir": "./src",
     },
     "references": [
         {
             "path": "../env"
         },
+        {
+            "path": "../winston"
+        },
     ],
     "include": [
-        "src/**/*"
+        "./src/**/*.ts"
     ],
     "exclude": [
         "node_modules",

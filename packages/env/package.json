@@ -2,7 +2,7 @@
   "name": "@topobre/env",
   "version": "0.0.0",
   "scripts": {
-    "build:tsc": "tsc -b",
+    "build:tsc": "tsc -p .",
     "build:tsup": "tsup",
     "build": "pnpm build:tsc && pnpm build:tsup",
     "lint": "npx eslint ."

@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { Category } from "./category.entity";
 import { User } from "./user.entity";
-import { TransactionStatus, TransactionType } from "../../types";
+import { TransactionStatus, TransactionType } from "../types";
 import { IsString, Length } from "class-validator";
 
 @Entity()

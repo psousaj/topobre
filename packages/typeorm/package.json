@@ -10,23 +10,21 @@
     "lint": "pnpm dlx eslint ."
   },
   "dependencies": {
-    "@topobre/env": "workspace:*",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv-cli": "7.3.0",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
-    "zod": "^3.25.56"
+    "zod": "^3.25.56",
+    "typeorm": "^0.3.24",
+    "@topobre/env": "workspace:*",
+    "@topobre/winston": "workspace:*"
   },
   "devDependencies": {
     "@swc/core": "^1.13.1",
     "@topobre/eslint": "workspace:*",
     "@topobre/prettier": "workspace:*",
-    "@topobre/tsconfig": "workspace:*",
-    "@topobre/winston": "workspace:*"
-  },
-  "peerDependencies": {
-    "typeorm": "^0.3.24"
+    "@topobre/tsconfig": "workspace:*"
   },
   "eslintConfig": {
     "root": true,

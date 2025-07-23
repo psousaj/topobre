@@ -7,5 +7,5 @@ RUN npm install -g pnpm
 
 COPY . .
 
-RUN pnpm install
-RUN pnpm build
+RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store pnpm build

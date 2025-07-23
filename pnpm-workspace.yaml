@@ -8,6 +8,7 @@ hoistPattern:
 
 ignoredBuiltDependencies:
   - '@clerk/shared'
+  - '@swc/core'
 
 onlyBuiltDependencies:
   - bcrypt

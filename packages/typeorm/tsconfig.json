@@ -1,33 +1,30 @@
 {
     "extends": "@topobre/tsconfig/typeorm.json",
     "compilerOptions": {
-        "paths": {
-            "@topobre/typeorm/types": [
-                "./types"
-            ],
-            "@topobre/typeorm": [
-                "./entities"
-            ],
-            "@t3-oss/env-nextjs": [
-                "../env/node_modules/@t3-oss/env-nextjs"
-            ]
-        },
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "rootDir": "./src",
         "composite": true,
         "declaration": true,
-        "emitDeclarationOnly": true,
-        "outDir": "./dist"
+        "declarationMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "strict": false,
+        "skipLibCheck": false
     },
+    "references": [
+        {
+            "path": "../env"
+        },
+        {
+            "path": "../winston"
+        }
+    ],
     "include": [
-        "index.ts",
-        "entities/index.ts",
-        "seed/index.ts",
-        "entities/**/*.ts",
-        "seed/**/*.ts",
-        "types/**/*.ts"
+        "./src/**/*.ts",
     ],
     "exclude": [
         "dist",
-        "build",
         "node_modules"
     ]
 }

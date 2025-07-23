@@ -1,12 +1,29 @@
 {
-  "extends": "@topobre/tsconfig/typeorm.json",
+  "extends": "@topobre/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "rootDir": ".",
     "baseUrl": ".",
+    "outDir": "./dist",
+    "rootDir": "./src",
   },
+  "references": [
+    {
+      "path": "../../packages/typeorm"
+    },
+    {
+      "path": "../../packages/winston"
+    },
+    {
+      "path": "../../packages/telemetry"
+    },
+    {
+      "path": "../../packages/bullmq"
+    },
+    {
+      "path": "../finloader"
+    },
+  ],
   "include": [
-    "src"
+    "./src"
   ],
   "exclude": [
     "node_modules",

@@ -20,6 +20,7 @@
 
 # production
 **/dist
+**/files
 # **/build
 
 # misc

@@ -1,11 +1,30 @@
 {
     "extends": "@topobre/tsconfig/lib.json",
     "compilerOptions": {
-        "outDir": "dist",
-        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": "./dist",
+        "rootDir": "./src",
         "composite": true
     },
+    "references": [
+        {
+            "path": "../../packages/typeorm"
+        },
+        {
+            "path": "../../packages/winston"
+        },
+        {
+            "path": "../../packages/telemetry"
+        },
+        {
+            "path": "../../packages/bullmq"
+        },
+    ],
     "include": [
-        "index.ts"
+        "src"
+    ],
+    "exclude": [
+        "dist",
+        "node_modules"
     ]
 }

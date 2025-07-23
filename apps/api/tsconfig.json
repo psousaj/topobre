@@ -1,12 +1,12 @@
 {
   "extends": "@topobre/tsconfig/base.json",
   "include": [
-    "./src",
-    "./src/types"
+    "./src/**/*.ts",
+    "package.json"
   ],
   "typeRoots": [
-    "./types",
-    "./node_modules/@types"
+    "types",
+    "node_modules/@types"
   ],
   "ts-node": {
     "require": [
@@ -16,9 +16,9 @@
     "files": true
   },
   "compilerOptions": {
-    "outDir": "./dist",
-    "rootDir": "./",
     "baseUrl": ".",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "skipLibCheck": true,
     "paths": {
       "@topobre/*": [

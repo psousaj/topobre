@@ -2,23 +2,37 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "Library",
     "compilerOptions": {
-        "composite": false,
-        "esModuleInterop": true,
-        "forceConsistentCasingInFileNames": true,
-        "inlineSources": false,
-        "isolatedModules": true,
-        "moduleResolution": "node",
-        "noUnusedLocals": false,
-        "noUnusedParameters": false,
-        "preserveWatchOutput": true,
-        "skipLibCheck": true,
-        "strict": true,
-        "jsx": "react-jsx",
+        "target": "ES2020",
+        "module": "CommonJS",
         "lib": [
-            "DOM",
             "ES2021"
         ],
-        "module": "CommonJS",
-        "target": "es6",
-    }
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "types": [
+            "node"
+        ],
+        "paths": {
+            "@topobre/*": [
+                "../../packages/*/dist",
+                "../../packages/*/src",
+                "../../apps/*/dist",
+                "../../apps/*/src"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }

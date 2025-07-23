@@ -7,6 +7,8 @@
         ],
         "moduleResolution": "node",
         "baseUrl": ".",
+        "outDir": "dist",
+        "rootDir": ".",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "strict": true,
@@ -14,8 +16,27 @@
         "sourceMap": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
         "types": [
             "node"
-        ]
-    }
+        ],
+        "paths": {
+            "@topobre/*": [
+                "../../packages/*/dist",
+                "../../packages/*/src",
+                "../../apps/*/dist",
+                "../../apps/*/src"
+            ]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "src/types/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }

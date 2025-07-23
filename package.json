@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "turbo run dev --parallel --",
     "build": "turbo run build --",
+    "build:tsc": "turbo run build:tsc --",
+    "build:tsup": "turbo run build:tsup --",
+    "build:all": "pnpm build:tsc && pnpm build:tsup",
     "lint": "turbo run lint --",
     "db:seed": "turbo run db:seed --filter=@topobre/typeorm",
     "dev:api": "turbo run dev --filter=@topobre/api --cache=local:r,remote:r",
@@ -17,7 +20,14 @@
     "start:web": "echo 'WEB RODOU'",
     "start:api": "pnpm --filter @topobre/api start",
     "start:worker": "pnpm --filter @topobre/worker start",
-    "ngrok": "pnpm --filter @topobre/ngrok dev"
+    "ngrok": "pnpm --filter @topobre/ngrok dev",
+    "clean:build": "node ./build/scripts/maintenance/cleanBuildArtifacts.js"
+  },
+  "dependencies": {
+    "@bull-board/api": "^6.11.0",
+    "@bull-board/fastify": "^6.11.0",
+    "ioredis": "^5.6.1",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^24.0.1",
@@ -25,14 +35,7 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.20.3",
     "turbo": "^2.5.4",
-    "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "@bull-board/api": "^6.11.0",
-    "@bull-board/fastify": "^6.11.0",
-    "ioredis": "^5.6.1",
-    "module-alias": "^2.2.3",
-    "reflect-metadata": "^0.2.2",
+    "typescript": "^5.8.3",
     "tsup": "^8.5.0"
   }
 }

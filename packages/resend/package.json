@@ -1,19 +1,17 @@
 {
   "name": "@topobre/resend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "version": "0.0.0",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup",
+    "build": "pnpm build:tsc && pnpm build:tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "packageManager": "pnpm@10.11.1",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@topobre/tsconfig": "workspace:*"
-  },
-  "devDependencies": {}
+  }
 }

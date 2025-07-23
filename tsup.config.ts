@@ -65,7 +65,6 @@ export default defineConfig((options: Options) => {
             config.platform = 'node'
             config.bundle = true
             config.mainFields = ['main', 'module']
-            config.resolveExtensions = ['.js', '.ts']
             console.log(config)
         }
     }

@@ -9,7 +9,6 @@ export const redisConnection = new Redis({
   port: env.REDIS_PORT,
   password: env.REDIS_PASSWORD,
   maxRetriesPerRequest: null,
-  tls: {},
 })
 
 export const finloaderQueue = new Queue(FINLOADER_QUEUE_NAME, {

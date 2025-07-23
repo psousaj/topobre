@@ -5,7 +5,9 @@
   "main": "dist/bundle/index.js",
   "types": "dist/bundle/index.d.ts",
   "scripts": {
-    "build": "tsc -b"
+    "build": "pnpm build:tsc && pnpm build:tsup",
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup"
   },
   "dependencies": {
     "@topobre/tsconfig": "workspace:*",

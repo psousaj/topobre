@@ -13,6 +13,9 @@ function findMonorepoRootEnv() {
         possiblePath = resolve(__dirname, '../../../', filename);
         if (existsSync(possiblePath)) return possiblePath;
 
+        possiblePath = resolve(__dirname, '../../../../', filename);
+        if (existsSync(possiblePath)) return possiblePath;
+
         possiblePath = resolve(process.cwd(), filename);
         if (existsSync(possiblePath)) return possiblePath;
 

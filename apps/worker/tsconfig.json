@@ -4,6 +4,12 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "rootDir": "./src",
+    "paths": {
+      "@topobre/*": [
+        "../../packages/*/src/",
+        "../*/src/",
+      ]
+    }
   },
   "references": [
     {
@@ -17,6 +23,9 @@
     },
     {
       "path": "../../packages/bullmq"
+    },
+    {
+      "path": "../../packages/gemini"
     },
     {
       "path": "../finloader"

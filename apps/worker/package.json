@@ -6,7 +6,9 @@
   "types": "dist/bundle/index.d.ts",
   "scripts": {
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/index.ts",
-    "build": "tsc -b && tsup",
+    "build": "pnpm build:tsc && pnpm build:tsup",
+    "build:tsc": "tsc -b",
+    "build:tsup": "tsup",
     "start": "node dist/bundle/index.js"
   },
   "_moduleAliases": {

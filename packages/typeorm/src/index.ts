@@ -33,7 +33,6 @@ export const TopobreDataSource = new DataSource({
             port: env.REDIS_PORT,
             password: env.REDIS_PASSWORD,
             ignoreErrors: true,
-            tls: {},
             maxRetriesPerRequest: null,
         },
         duration: 60000 * 1 // 5 minutos

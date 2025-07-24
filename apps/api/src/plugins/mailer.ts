@@ -5,11 +5,13 @@ import path from "path";
 import fs from "fs/promises";
 import handlebars from "handlebars";
 
+
 import { Mailer, SendEmailOptions, TemplateParams } from "../types";
 import { env } from "@topobre/env";
 
 async function renderTemplate(templateName: string, params: TemplateParams): Promise<string> {
-    const filePath = path.join(__dirname, "..", "templates", `${templateName}.hbs`);
+    const relativeFolderPath = env.NODE_ENV === "production" ? "../../" : "..";
+    const filePath = path.join(__dirname, relativeFolderPath, "templates", `${templateName}.hbs`);
     const source = await fs.readFile(filePath, "utf8");
     const compiled = handlebars.compile(source);
     return compiled(params);

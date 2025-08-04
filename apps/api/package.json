@@ -4,6 +4,7 @@
   "version": "1.1.2",
   "main": "dist/bundle/server.js",
   "types": "dist/bundle/server.d.ts",
+  "copyStatic": [".hbs", ".html"],
   "scripts": {
     "dev": "ts-node --project tsconfig.json -r tsconfig-paths/register src/server.ts",
     "build": "pnpm build:tsc && pnpm build:tsup",

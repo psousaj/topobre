@@ -2,15 +2,13 @@ import fp from 'fastify-plugin';
 import fastifyView from '@fastify/view';
 import handlebars from 'handlebars';
 import path from 'path';
-import qs from 'qs';
 import { previewQuerySchema } from '../shared/schemas';
 import { z } from 'zod';
-
+import { FastifyZodApp } from 'src/types';
 
 handlebars.registerHelper('year', () => new Date().getFullYear());
 
-
-export default fp(async (app, opts: { devMode?: boolean; prefix?: string }) => {
+export default fp(async (app: FastifyZodApp, opts: { devMode?: boolean; prefix?: string }) => {
     if (!opts.devMode) return;
 
     await app.register(fastifyView, {
@@ -31,10 +29,9 @@ export default fp(async (app, opts: { devMode?: boolean; prefix?: string }) => {
             }
         }
     }, async (req, reply) => {
-        const query = req.query as Record<string, string>;
-        const parsed = qs.parse(new URLSearchParams(query as any).toString());
+        const parsed = req.query;
 
-        const { template, ...data } = parsed;
+        const { t: template, ...data } = parsed;
 
         if (typeof template !== 'string') {
             return reply.code(400).send('Invalid template name');

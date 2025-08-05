@@ -1,46 +1,68 @@
 const fs = require('fs');
 const path = require('path');
 
-
 const IGNORED_FILES = new Set([
     'package.json',
     'tsconfig.json',
+    'node_modules',
+    'dist',
     'tsconfig.build.json',
     'README.md',
     'README',
     '.DS_Store',
 ]);
 
-export async function copyRecursiveSync(srcPath, baseDir, outDir, extensions) {
-    if (!fs.existsSync(srcPath)) return;
+function copyMatchingFilesFromRoot(rootDir, extensions) {
+    let copiedCount = 0;
 
-    const stats = fs.statSync(srcPath);
-    const name = path.basename(srcPath);
+    function walk(currentPath) {
+        const stats = fs.statSync(currentPath);
+        const name = path.basename(currentPath);
 
-    if (IGNORED_FILES.has(name)) return;
+        if (IGNORED_FILES.has(name)) return;
 
-    if (stats.isDirectory()) {
-        for (const entry of fs.readdirSync(srcPath)) {
-            copyRecursiveSync(path.join(srcPath, entry), baseDir, outDir, extensions);
+        if (stats.isDirectory()) {
+            for (const entry of fs.readdirSync(currentPath)) {
+                walk(path.join(currentPath, entry));
+            }
+        } else {
+            const shouldCopy = extensions.some(ext => currentPath.endsWith(ext));
+            if (!shouldCopy) return;
+
+            // Ex: apps/api/src/templates/email.hbs
+            const relativeParts = path.relative(rootDir, currentPath).split(path.sep);
+            const appsIndex = relativeParts.indexOf('apps');
+
+            if (appsIndex === -1 || appsIndex + 2 >= relativeParts.length) return;
+
+            const appName = relativeParts[appsIndex + 1];
+            let subPathParts = relativeParts.slice(appsIndex + 2);
+
+            // Se a primeira parte após o app for "src", removemos
+            if (subPathParts[0] === 'src') {
+                subPathParts = subPathParts.slice(1);
+            }
+
+            const destPath = path.join(rootDir, 'apps', appName, 'dist', ...subPathParts);
+            const destDir = path.dirname(destPath);
+
+            if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
+
+            fs.copyFileSync(currentPath, destPath);
+            console.log(`✓ Copiado: ${currentPath} -> ${destPath}`);
+            copiedCount++;
         }
-    } else {
-        const shouldCopy = extensions.some(ext => srcPath.endsWith(ext));
-        if (!shouldCopy) return;
-
-        const relPath = path.relative(baseDir, srcPath);
-        const destPath = path.join(outDir, relPath);
-        const destDir = path.dirname(destPath);
-
-        if (!fs.existsSync(destDir)) fs.mkdirSync(destDir, { recursive: true });
-        fs.copyFileSync(srcPath, destPath);
     }
+
+    console.log(`🔍 Procurando arquivos com extensões [${extensions.join(', ')}] em ${rootDir}...\n`);
+    walk(rootDir);
+    console.log(`\n✅ Total de arquivos copiados: ${copiedCount}`);
 }
 
 // ---------------------------
 
-const srcDir = process.argv[2];
-const distDir = process.argv[3];
-const extArg = process.argv[4] || '.hbs';
+const rootDir = process.argv[2]; // Ex: . (raiz do monorepo)
+const extArg = process.argv[3] || '.hbs';
 
 const extensions = extArg
     .split(',')
@@ -48,9 +70,9 @@ const extensions = extArg
     .filter(Boolean)
     .map(ext => (ext.startsWith('.') ? ext : `.${ext}`));
 
-if (!srcDir || !distDir) {
-    console.error('Uso: node copyStatic.js srcDir distDir [.hbs,.html,.json]');
+if (!rootDir) {
+    console.error('Uso: node copyStatic.js rootDir [.hbs,.html,.json]');
     process.exit(1);
 }
 
-copyRecursiveSync(srcDir, srcDir, distDir, extensions);
+copyMatchingFilesFromRoot(rootDir, extensions);

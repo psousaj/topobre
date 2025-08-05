@@ -2,7 +2,6 @@ import { defineConfig } from 'tsup';
 import { readdirSync, existsSync, readFileSync } from 'fs';
 import * as path from 'path';
 import { Options } from 'tsup';
-import { copyRecursiveSync } from './build/scripts/copyStatic.js';
 
 function generateAliases() {
   const aliases = {};
@@ -61,25 +60,5 @@ export default defineConfig((options: Options) => {
       config.bundle = true;
       config.mainFields = ['main', 'module'];
     },
-    async onSuccess() {
-      const packageRoot = process.cwd();
-      const srcDir = path.join(packageRoot, 'src');
-      const outDir = path.join(packageRoot, 'dist', 'bundle');
-
-      const packageJsonPath = path.join(packageRoot, 'package.json');
-      let extensionsToCopy = []; 
-      if (existsSync(packageJsonPath)) {
-        const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-        if (packageJson.copyStatic && Array.isArray(packageJson.copyStatic)) {
-          extensionsToCopy = packageJson.copyStatic;
-        }
-      }
-
-      if (existsSync(srcDir) && extensionsToCopy.length > 0) {
-        console.log(`Copying static files with extensions: ${extensionsToCopy.join(', ')}`);
-        copyRecursiveSync(srcDir, outDir, extensionsToCopy);
-        console.log(`Static files copied for ${path.basename(packageRoot)}`);
-      }
-    },
   };
-});
+})

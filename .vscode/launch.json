@@ -4,33 +4,29 @@
         {
             "type": "node",
             "request": "launch",
-        }JMNHG;.L,MNHBGVC-0
-    ]98/´Ç"Debug API (TypeScript, Nodemon)",
-    // "runtimeExecutable": "nodemon",
-    "runtimeExecutable": "pnpm",
-    "runtimeArgs": [
-        // "--exec",
-        "dev:backend",
-        // "dev:finloader",
-        // "${workspaceFolder}/apps/finloader/index.ts"
-    ],
-    // "envFile": "${workspaceFolder}/apps/api/.env",
-    "cwd": "${workspaceFolder}",
-    "restart": true,
-    "console": "integratedTerminal",
-    "internalConsoleOptions": "neverOpen"
-},
-// {
-//     "type": "node",
-//     "request": "launch",
-//     "name": "Debug Web (Next.js)",
-//     "runtimeExecutable": "pnpm",
-//     "runtimeArgs": [
-//         "dev"
-//     ],
-//     "cwd": "${workspaceFolder}/apps/web",
-//     "envFile": "${workspaceFolder}/apps/web/.env",
-//     "console": "integratedTerminal"
-// }
-]
+            "name": "Debug API (TypeScript, Nodemon)",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": [
+                "dev:api"
+            ],
+            "cwd": "${workspaceFolder}",
+            "restart": true,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+        // Para habilitar o debug do frontend (Next.js), descomente abaixo:
+        /*
+    ,
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Web (Next.js)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "cwd": "${workspaceFolder}/apps/web",
+      "envFile": "${workspaceFolder}/apps/web/.env",
+      "console": "integratedTerminal"
+    }
+    */
+    ]
 }

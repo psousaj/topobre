@@ -4,10 +4,9 @@
   "packageManager": "pnpm@10.12.4",
   "scripts": {
     "dev": "turbo run dev --parallel --",
-    "build": "turbo run build --",
+    "build": "turbo run build --  && node ./build/scripts/copyStatic.js . .hbs,.html",
     "build:tsc": "turbo run build:tsc --",
     "build:tsup": "turbo run build:tsup --",
-    "build:all": "pnpm build:tsc && pnpm build:tsup",
     "lint": "turbo run lint --",
     "db:seed": "turbo run db:seed --filter=@topobre/typeorm",
     "dev:api": "turbo run dev --filter=@topobre/api --cache=local:r,remote:r",
